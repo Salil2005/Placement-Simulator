@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: placement-simulator-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: ./server
+    container_name: placement-simulator-server
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    environment:
+      PORT: 7000
+      MONGO_URI: mongodb://mongo:27017/placement-simulator
+      CLIENT_URL: http://localhost:5002
+      # Containers need the host gateway (not localhost) to reach a locally
+      # running Ollama server. This setting is ignored by cloud AI providers.
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL_DOCKER:-http://host.docker.internal:11434}
+    ports:
+      - "7000:7000"
+    volumes:
+      - ./server/uploads:/app/uploads
+      - ./server/reports:/app/reports
+    depends_on:
+      mongo:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: http://localhost:7000
+    container_name: placement-simulator-client
+    restart: unless-stopped
+    ports:
+      - "5002:5002"
+    depends_on:
+      - server
+
+volumes:
+  mongodata:
