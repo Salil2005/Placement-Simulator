@@ -364,160 +364,224 @@ Answer these questions:
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PLACEMENT SIMULATOR — Resume Parsing
+// PLACEMENT SIMULATOR — AI PROMPTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-function buildResumeParsePrompt({
-    resumeText
-}) {
+// ==========================================================
+// RESUME PARSING
+// ==========================================================
 
-    return [
+function buildResumeParsePrompt({ resumeText }) {
+  return `
+You are a resume information extraction system.
 
-        `You are a highly accurate resume information extraction system.`,
+Extract ONLY information explicitly present in the resume.
 
-        `Extract structured information from the resume below.`,
-
-        `Resume:
+RESUME:
 """
 ${resumeText}
-"""`,
+"""
 
-        `
-EXTRACTION RULES:
+RULES:
+1. Extract only explicitly stated information.
+2. Never infer skills from job titles.
+3. Never infer technologies from projects unless explicitly mentioned.
+4. Remove duplicates.
+5. Use short, standardized labels.
+6. Do not add generic skills.
+7. Keep languages, frameworks, databases, tools, and concepts separate.
+8. If a category has no information, return [].
+9. Projects must contain only explicitly stated project names or concise descriptions.
+10. Experience must contain only explicitly stated roles, companies, or experience.
+11. Certifications must contain only explicitly stated certification names.
+12. Do not explain your reasoning.
+13. Do not include markdown.
+14. Return ONLY valid JSON.
+15. Keep the response concise.
 
-1. Extract ONLY information explicitly present in the resume.
-2. Never infer skills from job titles alone.
-3. Never infer a technology from a project unless it is explicitly mentioned.
-4. Preserve the candidate's actual technologies.
-5. Remove duplicates.
-6. Use short, standardized labels.
-7. Do not add generic skills that are not explicitly stated.
-8. Do not confuse libraries, frameworks, languages, databases, tools, and concepts.
-9. If a category has no information, return an empty array.
-10. Projects should contain project names or concise project descriptions explicitly present.
-11. Experience should contain concise role/company/experience entries explicitly present.
-12. Certifications should contain actual certification names explicitly present.
-`,
-
-        `Respond with ONLY valid JSON matching exactly this shape:
+Return EXACTLY this JSON structure:
 
 {
-  "skills": string[],
-  "programmingLanguages": string[],
-  "frameworks": string[],
-  "databases": string[],
-  "coreCsSubjects": string[],
-  "projects": string[],
-  "experience": string[],
-  "certifications": string[]
-}`
-
-    ].join("\n\n");
+  "skills": [],
+  "programmingLanguages": [],
+  "frameworks": [],
+  "databases": [],
+  "coreCsSubjects": [],
+  "projects": [],
+  "experience": [],
+  "certifications": []
+}
+`.trim();
 }
 
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PLACEMENT SIMULATOR — Resume vs Interview
-// ─────────────────────────────────────────────────────────────────────────────
+// ==========================================================
+// RESUME VS INTERVIEW ANALYSIS
+// ==========================================================
 
 function buildResumeVsInterviewPrompt({
-    resumeProfile,
-    categoryReports
+  resumeProfile,
+  categoryReports,
 }) {
 
-    const claimed = [
-        ...(resumeProfile?.skills || []),
-        ...(resumeProfile?.programmingLanguages || []),
-        ...(resumeProfile?.frameworks || []),
-        ...(resumeProfile?.databases || []),
-        ...(resumeProfile?.coreCsSubjects || [])
-    ];
+  // --------------------------------------------------------
+  // Collect claimed skills
+  // --------------------------------------------------------
+
+  const claimed = [
+    ...(resumeProfile?.skills || []),
+    ...(resumeProfile?.programmingLanguages || []),
+    ...(resumeProfile?.frameworks || []),
+    ...(resumeProfile?.databases || []),
+    ...(resumeProfile?.coreCsSubjects || []),
+  ];
+
+  const claimedText =
+    [...new Set(
+      claimed
+        .filter(Boolean)
+        .map((skill) => String(skill).trim())
+        .filter(Boolean)
+    )].join(", ") || "none listed";
 
 
-    const claimedText =
-        [...new Set(claimed)].join(", ") ||
-        "none listed";
+  // --------------------------------------------------------
+  // Interview performance
+  // --------------------------------------------------------
+
+  const perf = (categoryReports || [])
+    .map((c) => {
+      const label =
+        CATEGORY_LABELS[c.category] || c.category;
+
+      const overall =
+        c.scores?.overall ?? 0;
+
+      const technical =
+        c.scores?.technical ?? 0;
+
+      const strengths =
+        (c.strengths || [])
+          .slice(0, 5)
+          .join("; ") || "none";
+
+      const weaknesses =
+        (c.weaknesses || [])
+          .slice(0, 5)
+          .join("; ") || "none";
+
+      return `${label}:
+Overall=${overall}
+Technical=${technical}
+Strengths=${strengths}
+Weaknesses=${weaknesses}`;
+    })
+    .join("\n\n");
 
 
-    const perf =
-        (categoryReports || [])
-            .map(
-                (c) =>
-                    `${CATEGORY_LABELS[c.category] || c.category}:
-Overall=${c.scores?.overall ?? 0},
-Technical=${c.scores?.technical ?? 0},
-Strengths=${(c.strengths || []).join("; ") || "none"},
-Weaknesses=${(c.weaknesses || []).join("; ") || "none"}`
-            )
-            .join("\n\n");
+  // --------------------------------------------------------
+  // Final prompt
+  // --------------------------------------------------------
 
+  return `
+You are a technical recruiter evaluating how strongly a candidate's resume claims are supported by their mock-interview performance.
 
-    return [
+RESUME SKILLS:
+${claimedText}
 
-        `You are an expert technical recruiter comparing a candidate's resume claims with their demonstrated mock-interview performance.`,
+INTERVIEW PERFORMANCE:
+${perf || "No interview performance available."}
 
-        `SKILLS CLAIMED ON RESUME:
-${claimedText}`,
+EVALUATION RULES:
 
-        `INTERVIEW PERFORMANCE:
-${perf || "No interview performance available."}`,
+1. Verified:
+   The interview evidence clearly demonstrates the skill.
 
-        EVALUATION_RULES,
+2. Unverified:
+   The skill is claimed on the resume but was not sufficiently demonstrated.
 
-        `
-MATCH ANALYSIS RULES:
+3. Improvement needed:
+   The candidate demonstrated the skill but showed incorrect, weak, or incomplete knowledge.
 
-1. A resume skill is "verified" only when interview evidence strongly supports it.
-2. Merely listing a skill on the resume is NOT evidence that it is verified.
-3. A low interview score does not necessarily prove the candidate does not know the skill, but it does indicate that the skill was not strongly demonstrated.
-4. Do not call a skill unverified merely because it was never tested.
-5. Distinguish:
-   - Verified: clearly demonstrated.
-   - Unverified: claimed but not sufficiently demonstrated.
-   - Improvement needed: demonstrated but weak.
-   - Missing area: important skill/knowledge area absent from the resume and relevant to the candidate's target role.
-6. Do not infer missing skills from unrelated technologies.
-7. MatchScore should reflect how strongly interview performance supports the resume claims, not whether the resume itself is good.
-8. Be conservative when interview evidence is limited.
-9. Suggestions must be actionable.
-10. Do not use em dashes.
-`,
+4. Missing area:
+   An important technical skill relevant to a software engineering role that is absent from the resume.
 
-        `
-MATCH SCORE CALIBRATION:
+5. Do not infer skills from unrelated technologies.
 
-90-100 = Resume claims are strongly supported by interview evidence.
-80-89 = Most important claims are supported with minor gaps.
-70-79 = Reasonable alignment but several claims lack strong evidence.
-50-69 = Significant mismatch between claimed and demonstrated skills.
-0-49 = Resume claims are poorly supported by available interview evidence.
-`,
+6. Do not treat an untested skill as proof that the candidate does not know it.
 
-        `Respond with ONLY valid JSON matching exactly this shape:
+7. A low score does not automatically mean the skill is absent.
+
+8. MatchScore measures how strongly interview evidence supports the resume claims.
+
+9. Be conservative when evidence is limited.
+
+10. Suggestions must be actionable.
+
+11. Do not list every academic subject as a missing area.
+
+12. Focus missingAreas on important software engineering skills.
+
+13. Do not duplicate skills between arrays unless necessary.
+
+14. Keep each skill array to a maximum of 10 items.
+
+15. Keep suggestions to a maximum of 5 items.
+
+16. Keep the summary below 60 words.
+
+17. Keep suggestions concise.
+
+18. Do not use em dashes.
+
+MATCH SCORE:
+
+90-100:
+Resume claims are strongly supported by interview evidence.
+
+80-89:
+Most important claims are supported with minor gaps.
+
+70-79:
+Reasonable alignment but several claims lack strong evidence.
+
+50-69:
+Significant mismatch between claimed and demonstrated skills.
+
+0-49:
+Resume claims are poorly supported by available interview evidence.
+
+IMPORTANT OUTPUT RULES:
+
+- Do not explain your reasoning.
+- Do not output analysis.
+- Do not output markdown.
+- Do not use code fences.
+- Do not output text before or after the JSON.
+- Return ONLY valid JSON.
+- Follow the exact schema below.
 
 {
-  "matchScore": number,
-  "verifiedSkills": string[],
-  "unverifiedSkills": string[],
-  "improvementSkills": string[],
-  "missingAreas": string[],
-  "suggestions": string[],
-  "summary": string
-}`
-
-    ].join("\n\n");
+  "matchScore": 0,
+  "verifiedSkills": [],
+  "unverifiedSkills": [],
+  "improvementSkills": [],
+  "missingAreas": [],
+  "suggestions": [],
+  "summary": ""
+}
+`.trim();
 }
 
 
-// ─────────────────────────────────────────────────────────────────────────────
-// EXPORTS
-// ─────────────────────────────────────────────────────────────────────────────
+// ==========================================================
+// EXPORT
+// ==========================================================
 
 module.exports = {
-    CATEGORY_LABELS,
-    buildEvaluationPrompt,
-    buildFinalReportPrompt,
-    buildPlacementAnalysisPrompt,
-    buildResumeParsePrompt,
-    buildResumeVsInterviewPrompt
+  buildEvaluationPrompt,
+  buildFinalReportPrompt,
+  buildPlacementAnalysisPrompt,
+  buildResumeParsePrompt,
+  buildResumeVsInterviewPrompt,
 };
