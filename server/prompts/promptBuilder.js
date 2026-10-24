@@ -368,14 +368,16 @@ Answer these questions:
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ==========================================================
-// RESUME PARSING
+// RESUME PARSING — PART 1 (sent to KEY_1)
+// Extracts: skills, languages, frameworks, databases,
+//           core CS subjects, certifications.
 // ==========================================================
 
-function buildResumeParsePrompt({ resumeText }) {
+function buildResumeSkillsPrompt({ resumeText }) {
   return `
-You are a resume information extraction system.
+You are a resume information extraction system focused on technical skills.
 
-Extract ONLY information explicitly present in the resume.
+Extract ONLY information explicitly present in the resume below.
 
 RESUME:
 """
@@ -383,33 +385,66 @@ ${resumeText}
 """
 
 RULES:
-1. Extract only explicitly stated information.
-2. Never infer skills from job titles.
-3. Never infer technologies from projects unless explicitly mentioned.
-4. Remove duplicates.
-5. Use short, standardized labels.
-6. Do not add generic skills.
-7. Keep languages, frameworks, databases, tools, and concepts separate.
-8. If a category has no information, return [].
-9. Projects must contain only explicitly stated project names or concise descriptions.
-10. Experience must contain only explicitly stated roles, companies, or experience.
-11. Certifications must contain only explicitly stated certification names.
-12. Do not explain your reasoning.
-13. Do not include markdown.
-14. Return ONLY valid JSON.
-15. Keep the response concise.
+1. Extract only explicitly stated information. Never infer or assume.
+2. Separate categories strictly — a language is NOT a framework, a framework is NOT a database.
+3. skills: General technical skills not covered by the other categories (e.g. Git, Docker, REST APIs, CI/CD, Linux, Agile).
+4. programmingLanguages: Only programming/scripting languages (e.g. Python, Java, C++, JavaScript, TypeScript, SQL).
+5. frameworks: Libraries and frameworks (e.g. React, Node.js, Django, Spring Boot, Express, TensorFlow).
+6. databases: Database systems (e.g. MySQL, PostgreSQL, MongoDB, Redis, Firebase).
+7. coreCsSubjects: Explicitly mentioned CS fundamentals (e.g. Data Structures, Algorithms, OS, DBMS, Computer Networks, OOP).
+8. certifications: Explicitly stated certification names (e.g. AWS Certified Developer, Google Cloud Associate).
+9. Return [] for any category with no matching information.
+10. Use short standardized labels. No long sentences.
+11. Remove duplicates.
+12. Return ONLY valid JSON. No markdown, no fences, no explanation.
 
-Return EXACTLY this JSON structure:
-
+Return EXACTLY this JSON:
 {
   "skills": [],
   "programmingLanguages": [],
   "frameworks": [],
   "databases": [],
   "coreCsSubjects": [],
-  "projects": [],
-  "experience": [],
   "certifications": []
+}
+`.trim();
+}
+
+
+// ==========================================================
+// RESUME PARSING — PART 2 (sent to KEY_2)
+// Extracts: projects and experience with full written context.
+// ==========================================================
+
+function buildResumeContextPrompt({ resumeText }) {
+  return `
+You are a resume information extraction system focused on projects and work experience.
+
+Extract ONLY information explicitly present in the resume below.
+
+RESUME:
+"""
+${resumeText}
+"""
+
+RULES:
+1. Extract only explicitly stated information. Never infer, summarize, or elaborate.
+2. projects: Each entry must include the project name AND the exact context written in the resume
+   (technologies used, what was built, key features, outcomes — whatever is explicitly stated).
+   Format each project as an object: { "title": "...", "description": "..." }
+   where "description" contains the verbatim or near-verbatim context from the resume.
+3. experience: Each entry must include the role, company/organization name, and the exact
+   responsibilities or achievements explicitly written in the resume.
+   Format each entry as an object: { "role": "...", "company": "...", "description": "..." }
+4. If a section has no information, return [].
+5. Preserve the exact wording from the resume — do not paraphrase or summarize.
+6. Do not add technologies that are not explicitly mentioned in that specific project/role.
+7. Return ONLY valid JSON. No markdown, no fences, no explanation.
+
+Return EXACTLY this JSON:
+{
+  "projects": [],
+  "experience": []
 }
 `.trim();
 }
@@ -582,6 +617,7 @@ module.exports = {
   buildEvaluationPrompt,
   buildFinalReportPrompt,
   buildPlacementAnalysisPrompt,
-  buildResumeParsePrompt,
+  buildResumeSkillsPrompt,
+  buildResumeContextPrompt,
   buildResumeVsInterviewPrompt,
 };

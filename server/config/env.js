@@ -159,11 +159,23 @@ module.exports = {
     "llama3:latest",
 
   // ==========================================================
-  // GROQ
+  // DUAL-API RESUME PARSER
+  // Set DUAL_API_PROVIDER to the provider whose two keys should be used.
+  // Must match one of: groq | gemini
+  // ==========================================================
+
+  DUAL_API_PROVIDER:
+    process.env.DUAL_API_PROVIDER || "groq",
+
+  // ==========================================================
+  // GROQ  (KEY_1 = primary, KEY_2 = secondary for dual parsing)
   // ==========================================================
 
   GROQ_API_KEY:
     process.env.GROQ_API_KEY,
+
+  GROQ_API_KEY_2:
+    process.env.GROQ_API_KEY_2,
 
   GROQ_BASE_URL:
     process.env.GROQ_BASE_URL ||
@@ -171,7 +183,7 @@ module.exports = {
 
   GROQ_MODEL:
     process.env.GROQ_MODEL ||
-    "openai/gpt-oss-20b",
+    "llama3-8b-8192",
 
   // ==========================================================
   // GROK / XAI
@@ -189,11 +201,14 @@ module.exports = {
     "grok-2-latest",
 
   // ==========================================================
-  // GEMINI
+  // GEMINI  (KEY_1 = primary, KEY_2 = secondary for dual parsing)
   // ==========================================================
 
   GEMINI_API_KEY:
     process.env.GEMINI_API_KEY,
+
+  GEMINI_API_KEY_2:
+    process.env.GEMINI_API_KEY_2,
 
   GEMINI_MODEL:
     process.env.GEMINI_MODEL ||

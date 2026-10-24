@@ -580,9 +580,12 @@ const {
   buildEvaluationPrompt,
   buildFinalReportPrompt,
   buildPlacementAnalysisPrompt,
-  buildResumeParsePrompt,
+  buildResumeSkillsPrompt,
+  buildResumeContextPrompt,
   buildResumeVsInterviewPrompt,
 } = require("../../prompts/promptBuilder");
+
+const { dualComplete, mergeResumeResults } = require("./dualApiClient");
 
 // ============================================================
 // AI PROVIDERS
@@ -890,35 +893,19 @@ Do not provide a long explanation.
   },
 
   // ==========================================================
-  // PARSE RESUME
+  // PARSE RESUME  (dual-API: two keys fire in parallel)
   // ==========================================================
 
-  async parseResume({
-    resumeText,
-  }) {
-    const prompt = buildResumeParsePrompt({
-      resumeText,
-    });
+  async parseResume({ resumeText }) {
+    // Build two focused prompts — one per API key.
+    const skillsPrompt  = buildResumeSkillsPrompt({ resumeText });
+    const contextPrompt = buildResumeContextPrompt({ resumeText });
 
-    const provider = getProvider();
+    // Fire both calls simultaneously.
+    const [raw1, raw2] = await dualComplete(skillsPrompt, contextPrompt);
 
-    const text = await provider.complete([
-      {
-        role: "user",
-        content: prompt,
-      },
-    ]);
-
-    return safeParseJSON(text, {
-      skills: [],
-      programmingLanguages: [],
-      frameworks: [],
-      databases: [],
-      coreCsSubjects: [],
-      projects: [],
-      experience: [],
-      certifications: [],
-    });
+    // Deep-merge deduplicated results.
+    return mergeResumeResults(raw1, raw2);
   },
 
   // ==========================================================
