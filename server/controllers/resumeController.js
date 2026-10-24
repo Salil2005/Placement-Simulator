@@ -85,5 +85,136 @@ const removeSkill = asyncHandler(async (req, res) => {
   res.json({ profile });
 });
 
-module.exports = { uploadResume, getResume, analyze, addSkill, removeSkill };
+// Projects CRUD
+const addProject = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+  if (!title?.trim() && !description?.trim()) {
+    return res.status(400).json({ error: "Project must have a title or description." });
+  }
+
+  const profile = await ResumeProfile.findOne({ user: req.user._id });
+  if (!profile) return res.status(404).json({ error: "No resume profile found." });
+
+  profile.projects = profile.projects || [];
+  profile.projects.push({
+    title: (title || "").trim(),
+    description: (description || "").trim(),
+  });
+  profile.markModified("projects");
+  await profile.save();
+
+  res.json({ profile });
+});
+
+const updateProject = asyncHandler(async (req, res) => {
+  const index = parseInt(req.params.index, 10);
+  const { title, description } = req.body;
+
+  const profile = await ResumeProfile.findOne({ user: req.user._id });
+  if (!profile) return res.status(404).json({ error: "No resume profile found." });
+
+  if (isNaN(index) || index < 0 || index >= (profile.projects || []).length) {
+    return res.status(400).json({ error: "Invalid project index." });
+  }
+
+  profile.projects[index] = {
+    title: (title || "").trim(),
+    description: (description || "").trim(),
+  };
+  profile.markModified("projects");
+  await profile.save();
+
+  res.json({ profile });
+});
+
+const deleteProject = asyncHandler(async (req, res) => {
+  const index = parseInt(req.params.index, 10);
+  const profile = await ResumeProfile.findOne({ user: req.user._id });
+  if (!profile) return res.status(404).json({ error: "No resume profile found." });
+
+  if (isNaN(index) || index < 0 || index >= (profile.projects || []).length) {
+    return res.status(400).json({ error: "Invalid project index." });
+  }
+
+  profile.projects.splice(index, 1);
+  profile.markModified("projects");
+  await profile.save();
+
+  res.json({ profile });
+});
+
+// Experience CRUD
+const addExperience = asyncHandler(async (req, res) => {
+  const { role, company, description } = req.body;
+  if (!role?.trim() && !company?.trim() && !description?.trim()) {
+    return res.status(400).json({ error: "Experience must have a role, company, or description." });
+  }
+
+  const profile = await ResumeProfile.findOne({ user: req.user._id });
+  if (!profile) return res.status(404).json({ error: "No resume profile found." });
+
+  profile.experience = profile.experience || [];
+  profile.experience.push({
+    role: (role || "").trim(),
+    company: (company || "").trim(),
+    description: (description || "").trim(),
+  });
+  profile.markModified("experience");
+  await profile.save();
+
+  res.json({ profile });
+});
+
+const updateExperience = asyncHandler(async (req, res) => {
+  const index = parseInt(req.params.index, 10);
+  const { role, company, description } = req.body;
+
+  const profile = await ResumeProfile.findOne({ user: req.user._id });
+  if (!profile) return res.status(404).json({ error: "No resume profile found." });
+
+  if (isNaN(index) || index < 0 || index >= (profile.experience || []).length) {
+    return res.status(400).json({ error: "Invalid experience index." });
+  }
+
+  profile.experience[index] = {
+    role: (role || "").trim(),
+    company: (company || "").trim(),
+    description: (description || "").trim(),
+  };
+  profile.markModified("experience");
+  await profile.save();
+
+  res.json({ profile });
+});
+
+const deleteExperience = asyncHandler(async (req, res) => {
+  const index = parseInt(req.params.index, 10);
+  const profile = await ResumeProfile.findOne({ user: req.user._id });
+  if (!profile) return res.status(404).json({ error: "No resume profile found." });
+
+  if (isNaN(index) || index < 0 || index >= (profile.experience || []).length) {
+    return res.status(400).json({ error: "Invalid experience index." });
+  }
+
+  profile.experience.splice(index, 1);
+  profile.markModified("experience");
+  await profile.save();
+
+  res.json({ profile });
+});
+
+module.exports = {
+  uploadResume,
+  getResume,
+  analyze,
+  addSkill,
+  removeSkill,
+  addProject,
+  updateProject,
+  deleteProject,
+  addExperience,
+  updateExperience,
+  deleteExperience,
+};
+
 

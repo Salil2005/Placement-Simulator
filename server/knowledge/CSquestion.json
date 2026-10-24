@@ -1,0 +1,3002 @@
+[
+  {
+    "question": "What are the four pillars of object-oriented programming?",
+    "tag": "oops_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between a class and an object?",
+    "tag": "oops_classes_objects",
+    "level": "easy"
+  },
+  {
+    "question": "What is an object in OOP, and what are its state and behavior?",
+    "tag": "oops_classes_objects",
+    "level": "easy"
+  },
+  {
+    "question": "What is encapsulation, and how is it achieved in a class?",
+    "tag": "oops_encapsulation",
+    "level": "easy"
+  },
+  {
+    "question": "What is abstraction, and how does it differ from encapsulation?",
+    "tag": "oops_abstraction",
+    "level": "easy"
+  },
+  {
+    "question": "What is inheritance, and why is it used?",
+    "tag": "oops_inheritance",
+    "level": "easy"
+  },
+  {
+    "question": "What are the different types of inheritance?",
+    "tag": "oops_inheritance",
+    "level": "easy"
+  },
+  {
+    "question": "What is polymorphism? Give a real-world example.",
+    "tag": "oops_polymorphism",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between compile-time and runtime polymorphism?",
+    "tag": "oops_polymorphism",
+    "level": "easy"
+  },
+  {
+    "question": "What is method overloading?",
+    "tag": "oops_overloading_overriding",
+    "level": "easy"
+  },
+  {
+    "question": "What is method overriding?",
+    "tag": "oops_overloading_overriding",
+    "level": "easy"
+  },
+  {
+    "question": "What is a constructor, and when is it called?",
+    "tag": "oops_constructors",
+    "level": "easy"
+  },
+  {
+    "question": "What is a default constructor?",
+    "tag": "oops_constructors",
+    "level": "easy"
+  },
+  {
+    "question": "What is a copy constructor, and why might you need one?",
+    "tag": "oops_constructors",
+    "level": "easy"
+  },
+  {
+    "question": "What is a destructor, and when is it invoked?",
+    "tag": "oops_destructors",
+    "level": "easy"
+  },
+  {
+    "question": "What are access modifiers, and what is the difference between public, private, and protected?",
+    "tag": "oops_access_modifiers",
+    "level": "easy"
+  },
+  {
+    "question": "What is a static member, and how does it differ from an instance member?",
+    "tag": "oops_static_members",
+    "level": "easy"
+  },
+  {
+    "question": "What is an abstract class?",
+    "tag": "oops_abstract_interface",
+    "level": "easy"
+  },
+  {
+    "question": "What is an interface in OOP?",
+    "tag": "oops_abstract_interface",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between an 'is-a' relationship and a 'has-a' relationship?",
+    "tag": "oops_relationships",
+    "level": "easy"
+  },
+  {
+    "question": "What do coupling and cohesion mean in software design?",
+    "tag": "oops_coupling_cohesion",
+    "level": "easy"
+  },
+  {
+    "question": "What does SOLID stand for?",
+    "tag": "oops_solid",
+    "level": "easy"
+  },
+  {
+    "question": "What is the Single Responsibility Principle?",
+    "tag": "oops_solid",
+    "level": "easy"
+  },
+  {
+    "question": "What is an exception, and why do we handle exceptions?",
+    "tag": "oops_exception_handling",
+    "level": "easy"
+  },
+  {
+    "question": "What are try, catch, and finally blocks used for?",
+    "tag": "oops_exception_handling",
+    "level": "easy"
+  },
+  {
+    "question": "What is the purpose of the this keyword (or pointer) in a class?",
+    "tag": "oops_this_keyword",
+    "level": "easy"
+  },
+  {
+    "question": "What is message passing between objects?",
+    "tag": "oops_message_passing",
+    "level": "easy"
+  },
+  {
+    "question": "What is dynamic binding?",
+    "tag": "oops_dynamic_binding",
+    "level": "easy"
+  },
+  {
+    "question": "What is data hiding, and why is it important?",
+    "tag": "oops_data_hiding",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between procedural programming and object-oriented programming?",
+    "tag": "oops_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is the super keyword used for in inheritance?",
+    "tag": "oops_inheritance",
+    "level": "easy"
+  },
+  {
+    "question": "What are the main advantages of object-oriented programming?",
+    "tag": "oops_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What are getters and setters, and why are they used?",
+    "tag": "oops_encapsulation",
+    "level": "easy"
+  },
+  {
+    "question": "What are the rules for overriding a method in a subclass?",
+    "tag": "oops_overloading_overriding",
+    "level": "medium"
+  },
+  {
+    "question": "Why can't a method be overloaded by changing only its return type?",
+    "tag": "oops_overloading_overriding",
+    "level": "medium"
+  },
+  {
+    "question": "How does runtime polymorphism work internally using virtual tables?",
+    "tag": "oops_polymorphism",
+    "level": "medium"
+  },
+  {
+    "question": "When would you choose an abstract class over an interface, and vice versa?",
+    "tag": "oops_abstract_interface",
+    "level": "medium"
+  },
+  {
+    "question": "Why would a language allow interfaces to contain default method implementations?",
+    "tag": "oops_abstract_interface",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between aggregation and composition? Give an example of each.",
+    "tag": "oops_relationships",
+    "level": "medium"
+  },
+  {
+    "question": "How does association differ from dependency between classes?",
+    "tag": "oops_relationships",
+    "level": "medium"
+  },
+  {
+    "question": "Why is composition often preferred over inheritance?",
+    "tag": "oops_inheritance",
+    "level": "medium"
+  },
+  {
+    "question": "What is the diamond problem, and how do different languages handle it?",
+    "tag": "oops_multiple_inheritance",
+    "level": "medium"
+  },
+  {
+    "question": "What is constructor chaining, and how does it work in an inheritance hierarchy?",
+    "tag": "oops_constructors",
+    "level": "medium"
+  },
+  {
+    "question": "Why might you make a constructor private?",
+    "tag": "oops_constructors",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a shallow copy and a deep copy of an object?",
+    "tag": "oops_constructors",
+    "level": "medium"
+  },
+  {
+    "question": "Why should a base class destructor be virtual when objects are deleted through a base pointer?",
+    "tag": "oops_destructors",
+    "level": "medium"
+  },
+  {
+    "question": "Can a static method access instance variables? Explain why or why not.",
+    "tag": "oops_static_members",
+    "level": "medium"
+  },
+  {
+    "question": "When are static variables a poor design choice?",
+    "tag": "oops_static_members",
+    "level": "medium"
+  },
+  {
+    "question": "How does encapsulation help in maintaining and changing large codebases?",
+    "tag": "oops_encapsulation",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between protected and default (package-private) access?",
+    "tag": "oops_access_modifiers",
+    "level": "medium"
+  },
+  {
+    "question": "Why do we aim for high cohesion and low coupling? Give an example of each being violated.",
+    "tag": "oops_coupling_cohesion",
+    "level": "medium"
+  },
+  {
+    "question": "Explain the Open/Closed Principle with an example.",
+    "tag": "oops_solid",
+    "level": "medium"
+  },
+  {
+    "question": "Explain the Liskov Substitution Principle with an example of a violation.",
+    "tag": "oops_solid",
+    "level": "medium"
+  },
+  {
+    "question": "What is the Interface Segregation Principle, and what problem does it solve?",
+    "tag": "oops_solid",
+    "level": "medium"
+  },
+  {
+    "question": "What does the Dependency Inversion Principle say, and how does dependency injection relate to it?",
+    "tag": "oops_solid",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between checked and unchecked exceptions?",
+    "tag": "oops_exception_handling",
+    "level": "medium"
+  },
+  {
+    "question": "Why is catching a generic Exception everywhere considered bad practice?",
+    "tag": "oops_exception_handling",
+    "level": "medium"
+  },
+  {
+    "question": "How would you design custom exceptions for an application, and when are they worth creating?",
+    "tag": "oops_exception_handling",
+    "level": "medium"
+  },
+  {
+    "question": "How does dynamic binding differ from static binding?",
+    "tag": "oops_dynamic_binding",
+    "level": "medium"
+  },
+  {
+    "question": "What is the Singleton pattern, and what are its drawbacks?",
+    "tag": "oops_design_patterns",
+    "level": "medium"
+  },
+  {
+    "question": "What is the Factory pattern, and what problem does it solve?",
+    "tag": "oops_design_patterns",
+    "level": "medium"
+  },
+  {
+    "question": "What is the Observer pattern, and where is it commonly used?",
+    "tag": "oops_design_patterns",
+    "level": "medium"
+  },
+  {
+    "question": "How does the Strategy pattern help replace long conditional logic?",
+    "tag": "oops_design_patterns",
+    "level": "medium"
+  },
+  {
+    "question": "What is an immutable object, and what are its advantages?",
+    "tag": "oops_immutability",
+    "level": "medium"
+  },
+  {
+    "question": "How would you design the classes for a library management system?",
+    "tag": "oops_object_design",
+    "level": "medium"
+  },
+  {
+    "question": "How would you model a parking lot using object-oriented principles?",
+    "tag": "oops_object_design",
+    "level": "medium"
+  },
+  {
+    "question": "What is operator overloading, and what are the risks of misusing it?",
+    "tag": "oops_polymorphism",
+    "level": "medium"
+  },
+  {
+    "question": "How do interfaces provide a form of multiple inheritance without its usual problems?",
+    "tag": "oops_multiple_inheritance",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between comparing object references and comparing object contents?",
+    "tag": "oops_object_equality",
+    "level": "medium"
+  },
+  {
+    "question": "What are generics (templates), and how do they improve type safety and reuse?",
+    "tag": "oops_generics",
+    "level": "medium"
+  },
+  {
+    "question": "How does abstraction help when designing a payment system that supports multiple payment methods?",
+    "tag": "oops_abstraction",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between method overriding and method hiding?",
+    "tag": "oops_inheritance",
+    "level": "medium"
+  },
+  {
+    "question": "How do object lifetimes and garbage collection affect the design of classes that hold resources such as files or connections?",
+    "tag": "oops_object_lifecycle",
+    "level": "medium"
+  },
+  {
+    "question": "A Square class extends Rectangle and breaks client code that sets width and height independently. Which principle is violated, and how would you redesign it?",
+    "tag": "oops_solid",
+    "level": "hard"
+  },
+  {
+    "question": "Compare how C++, Java, and Python handle multiple inheritance and the diamond problem. What trade-offs does each approach make?",
+    "tag": "oops_multiple_inheritance",
+    "level": "hard"
+  },
+  {
+    "question": "What are the performance implications of virtual function calls, and when might they matter?",
+    "tag": "oops_polymorphism",
+    "level": "hard"
+  },
+  {
+    "question": "What is the fragile base class problem, and how can it be mitigated?",
+    "tag": "oops_inheritance",
+    "level": "hard"
+  },
+  {
+    "question": "When do deep inheritance hierarchies hurt maintainability, and what would you use instead?",
+    "tag": "oops_design_trade_offs",
+    "level": "hard"
+  },
+  {
+    "question": "You have a class with 15 constructor parameters, many of them optional. How would you redesign object creation?",
+    "tag": "oops_design_trade_offs",
+    "level": "hard"
+  },
+  {
+    "question": "Why do some consider the Singleton pattern an anti-pattern, and how would you make one thread-safe?",
+    "tag": "oops_design_patterns",
+    "level": "hard"
+  },
+  {
+    "question": "Design a class hierarchy for an e-commerce system's discount rules so that new rules can be added without modifying existing code.",
+    "tag": "oops_object_design",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design an elevator system using OOP, identifying classes, responsibilities, and relationships?",
+    "tag": "oops_object_design",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design a chess game, and where would polymorphism simplify the piece movement rules?",
+    "tag": "oops_object_design",
+    "level": "hard"
+  },
+  {
+    "question": "A class is used by 40 other classes and changes frequently. How would you reduce the ripple effect of its changes?",
+    "tag": "oops_coupling_cohesion",
+    "level": "hard"
+  },
+  {
+    "question": "What problems can arise from calling an overridable method inside a constructor?",
+    "tag": "oops_object_lifecycle",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design exception handling in a layered application so errors are logged once and translated appropriately between layers?",
+    "tag": "oops_exception_handling",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design an immutable class that contains a mutable field such as a list or a date?",
+    "tag": "oops_immutability",
+    "level": "hard"
+  },
+  {
+    "question": "What bugs can occur if you override equals but not hashCode when objects are used as hash map keys?",
+    "tag": "oops_object_equality",
+    "level": "hard"
+  },
+  {
+    "question": "Does exposing a getter and setter for every field really provide encapsulation? Discuss.",
+    "tag": "oops_encapsulation",
+    "level": "hard"
+  },
+  {
+    "question": "How do you balance following SOLID principles against over-engineering in a small project?",
+    "tag": "oops_solid",
+    "level": "hard"
+  },
+  {
+    "question": "How does shared mutable state in objects cause thread-safety issues, and how can OOP design reduce the problem?",
+    "tag": "oops_concurrency",
+    "level": "hard"
+  },
+  {
+    "question": "Explain how static and dynamic dispatch interact when a method is both overloaded and overridden across a class hierarchy.",
+    "tag": "oops_dynamic_binding",
+    "level": "hard"
+  },
+  {
+    "question": "How would you evolve a published interface that many clients implement without breaking them?",
+    "tag": "oops_abstract_interface",
+    "level": "hard"
+  },
+  {
+    "question": "How would you decide whether the relationship between two classes should be inheritance, composition, or delegation?",
+    "tag": "oops_relationships",
+    "level": "hard"
+  },
+  {
+    "question": "How does the Decorator pattern differ from inheritance for adding behavior, and what are its drawbacks?",
+    "tag": "oops_design_patterns",
+    "level": "hard"
+  },
+  {
+    "question": "Compare the Adapter, Facade, and Proxy patterns and explain when each is appropriate.",
+    "tag": "oops_design_patterns",
+    "level": "hard"
+  },
+  {
+    "question": "How would you model a banking system where account types have different withdrawal rules while always enforcing invariants such as non-negative balances?",
+    "tag": "oops_object_design",
+    "level": "hard"
+  },
+  {
+    "question": "What are covariance and contravariance in generics, and why can a list of Dogs not simply be treated as a list of Animals?",
+    "tag": "oops_generics",
+    "level": "hard"
+  },
+  {
+    "question": "How would you prevent resource leaks in an object that owns resources when exceptions occur, and what is the idea behind RAII or try-with-resources?",
+    "tag": "oops_object_lifecycle",
+    "level": "hard"
+  },
+  {
+    "question": "How do the Template Method and Strategy patterns differ in how they vary behavior, and when would you choose one over the other?",
+    "tag": "oops_design_patterns",
+    "level": "hard"
+  },
+  {
+    "question": "What is a DBMS, and how is it different from a file system?",
+    "tag": "dbms_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What are the main advantages of using a DBMS?",
+    "tag": "dbms_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is the three-schema architecture of a database?",
+    "tag": "dbms_architecture",
+    "level": "easy"
+  },
+  {
+    "question": "What is data independence?",
+    "tag": "dbms_architecture",
+    "level": "easy"
+  },
+  {
+    "question": "What is the relational model?",
+    "tag": "dbms_relational_model",
+    "level": "easy"
+  },
+  {
+    "question": "What are tuples, attributes, and relations in a relational database?",
+    "tag": "dbms_relational_model",
+    "level": "easy"
+  },
+  {
+    "question": "What is a primary key?",
+    "tag": "dbms_keys",
+    "level": "easy"
+  },
+  {
+    "question": "What is a foreign key, and why is it used?",
+    "tag": "dbms_keys",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between a candidate key and a super key?",
+    "tag": "dbms_keys",
+    "level": "easy"
+  },
+  {
+    "question": "What is a composite key?",
+    "tag": "dbms_keys",
+    "level": "easy"
+  },
+  {
+    "question": "What are the NOT NULL, UNIQUE, and CHECK constraints?",
+    "tag": "dbms_constraints",
+    "level": "easy"
+  },
+  {
+    "question": "What is referential integrity?",
+    "tag": "dbms_constraints",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between DDL, DML, DCL, and TCL?",
+    "tag": "dbms_sql_basics",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between DELETE, TRUNCATE, and DROP?",
+    "tag": "dbms_sql_basics",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between WHERE and HAVING?",
+    "tag": "dbms_sql_basics",
+    "level": "easy"
+  },
+  {
+    "question": "What are the different types of joins in SQL?",
+    "tag": "dbms_joins",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between an INNER JOIN and a LEFT JOIN?",
+    "tag": "dbms_joins",
+    "level": "easy"
+  },
+  {
+    "question": "What are aggregate functions in SQL? Name some common ones.",
+    "tag": "dbms_aggregates",
+    "level": "easy"
+  },
+  {
+    "question": "What does the GROUP BY clause do?",
+    "tag": "dbms_aggregates",
+    "level": "easy"
+  },
+  {
+    "question": "What is a subquery?",
+    "tag": "dbms_subqueries",
+    "level": "easy"
+  },
+  {
+    "question": "What is normalization, and why is it needed?",
+    "tag": "dbms_normalization",
+    "level": "easy"
+  },
+  {
+    "question": "What is First Normal Form (1NF)?",
+    "tag": "dbms_normalization",
+    "level": "easy"
+  },
+  {
+    "question": "What is a functional dependency?",
+    "tag": "dbms_functional_dependencies",
+    "level": "easy"
+  },
+  {
+    "question": "What is a transaction in a database?",
+    "tag": "dbms_transactions",
+    "level": "easy"
+  },
+  {
+    "question": "What does ACID stand for?",
+    "tag": "dbms_transactions",
+    "level": "easy"
+  },
+  {
+    "question": "What is an index in a database?",
+    "tag": "dbms_indexing",
+    "level": "easy"
+  },
+  {
+    "question": "What is a view, and why is it used?",
+    "tag": "dbms_views",
+    "level": "easy"
+  },
+  {
+    "question": "What is a trigger?",
+    "tag": "dbms_triggers",
+    "level": "easy"
+  },
+  {
+    "question": "What is a stored procedure?",
+    "tag": "dbms_stored_procedures",
+    "level": "easy"
+  },
+  {
+    "question": "What is NoSQL, and how does it differ from a relational database?",
+    "tag": "dbms_nosql",
+    "level": "easy"
+  },
+  {
+    "question": "What is an ER diagram?",
+    "tag": "dbms_er_model",
+    "level": "easy"
+  },
+  {
+    "question": "What is a deadlock in a database?",
+    "tag": "dbms_deadlocks",
+    "level": "easy"
+  },
+  {
+    "question": "Why are database backups important?",
+    "tag": "dbms_backup_recovery",
+    "level": "easy"
+  },
+  {
+    "question": "What are the differences between 2NF and 3NF?",
+    "tag": "dbms_normalization",
+    "level": "medium"
+  },
+  {
+    "question": "How is BCNF stricter than 3NF, and when do the two differ?",
+    "tag": "dbms_normalization",
+    "level": "medium"
+  },
+  {
+    "question": "What are update, insertion, and deletion anomalies? Give an example.",
+    "tag": "dbms_normalization",
+    "level": "medium"
+  },
+  {
+    "question": "What is denormalization, and when might you intentionally use it?",
+    "tag": "dbms_normalization",
+    "level": "medium"
+  },
+  {
+    "question": "How do you find the candidate keys of a relation from its functional dependencies?",
+    "tag": "dbms_functional_dependencies",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a partial dependency and a transitive dependency?",
+    "tag": "dbms_functional_dependencies",
+    "level": "medium"
+  },
+  {
+    "question": "What is attribute closure, and how is it used?",
+    "tag": "dbms_functional_dependencies",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a self join and a cross join, and when is each used?",
+    "tag": "dbms_joins",
+    "level": "medium"
+  },
+  {
+    "question": "How does a FULL OUTER JOIN differ from the union of a left join and a right join?",
+    "tag": "dbms_joins",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a correlated and a non-correlated subquery?",
+    "tag": "dbms_subqueries",
+    "level": "medium"
+  },
+  {
+    "question": "When would you use EXISTS instead of IN?",
+    "tag": "dbms_subqueries",
+    "level": "medium"
+  },
+  {
+    "question": "How do NULL values behave in aggregate functions and comparisons?",
+    "tag": "dbms_aggregates",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between UNION and UNION ALL?",
+    "tag": "dbms_sql_basics",
+    "level": "medium"
+  },
+  {
+    "question": "Why might you choose a surrogate key over a natural key?",
+    "tag": "dbms_keys",
+    "level": "medium"
+  },
+  {
+    "question": "What happens when you delete a parent row that is referenced by a foreign key, and what are ON DELETE CASCADE and SET NULL?",
+    "tag": "dbms_constraints",
+    "level": "medium"
+  },
+  {
+    "question": "Explain each ACID property using a banking example.",
+    "tag": "dbms_transactions",
+    "level": "medium"
+  },
+  {
+    "question": "What are the different states of a transaction?",
+    "tag": "dbms_transactions",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between COMMIT, ROLLBACK, and SAVEPOINT?",
+    "tag": "dbms_transactions",
+    "level": "medium"
+  },
+  {
+    "question": "What problems occur without concurrency control, such as dirty reads, lost updates, and non-repeatable reads?",
+    "tag": "dbms_concurrency",
+    "level": "medium"
+  },
+  {
+    "question": "What are the SQL isolation levels, and which anomalies does each prevent?",
+    "tag": "dbms_concurrency",
+    "level": "medium"
+  },
+  {
+    "question": "How does two-phase locking work?",
+    "tag": "dbms_concurrency",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between pessimistic and optimistic concurrency control?",
+    "tag": "dbms_concurrency",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between shared locks and exclusive locks?",
+    "tag": "dbms_locks",
+    "level": "medium"
+  },
+  {
+    "question": "How can a database detect and resolve deadlocks?",
+    "tag": "dbms_deadlocks",
+    "level": "medium"
+  },
+  {
+    "question": "What is serializability, and how does conflict serializability differ from view serializability?",
+    "tag": "dbms_serializability",
+    "level": "medium"
+  },
+  {
+    "question": "How can you test conflict serializability using a precedence graph?",
+    "tag": "dbms_serializability",
+    "level": "medium"
+  },
+  {
+    "question": "How does an index speed up queries, and what is its cost?",
+    "tag": "dbms_indexing",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between clustered and non-clustered indexes?",
+    "tag": "dbms_indexing",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a B-tree and a B+ tree?",
+    "tag": "dbms_indexing",
+    "level": "medium"
+  },
+  {
+    "question": "Why do databases prefer B+ trees over binary search trees for indexes?",
+    "tag": "dbms_indexing",
+    "level": "medium"
+  },
+  {
+    "question": "What steps does a DBMS take to process a SQL query?",
+    "tag": "dbms_query_optimization",
+    "level": "medium"
+  },
+  {
+    "question": "How do you read a query execution plan to find a slow operation?",
+    "tag": "dbms_query_optimization",
+    "level": "medium"
+  },
+  {
+    "question": "What are the differences between a view and a materialized view?",
+    "tag": "dbms_views",
+    "level": "medium"
+  },
+  {
+    "question": "When are triggers useful, and what are the risks of overusing them?",
+    "tag": "dbms_triggers",
+    "level": "medium"
+  },
+  {
+    "question": "What are the advantages and drawbacks of stored procedures?",
+    "tag": "dbms_stored_procedures",
+    "level": "medium"
+  },
+  {
+    "question": "What types of NoSQL databases exist, and which use case suits each?",
+    "tag": "dbms_nosql",
+    "level": "medium"
+  },
+  {
+    "question": "What is write-ahead logging, and how does it help recovery?",
+    "tag": "dbms_backup_recovery",
+    "level": "medium"
+  },
+  {
+    "question": "What is SQL injection, and how do you prevent it?",
+    "tag": "dbms_security",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a primary key and a unique key?",
+    "tag": "dbms_keys",
+    "level": "medium"
+  },
+  {
+    "question": "How do you convert a many-to-many relationship in an ER diagram into relational tables?",
+    "tag": "dbms_er_model",
+    "level": "medium"
+  },
+  {
+    "question": "A query that was fast last month is now slow with unchanged code, and the table has grown tenfold. How would you diagnose it?",
+    "tag": "dbms_query_optimization",
+    "level": "hard"
+  },
+  {
+    "question": "Why might the optimizer ignore an index you created, and how would you investigate?",
+    "tag": "dbms_indexing",
+    "level": "hard"
+  },
+  {
+    "question": "How does the column order of a composite index affect which queries it can serve?",
+    "tag": "dbms_indexing",
+    "level": "hard"
+  },
+  {
+    "question": "What are the trade-offs of adding many indexes to a write-heavy table?",
+    "tag": "dbms_indexing",
+    "level": "hard"
+  },
+  {
+    "question": "How does MVCC allow readers and writers to avoid blocking each other, and what are its costs?",
+    "tag": "dbms_concurrency",
+    "level": "hard"
+  },
+  {
+    "question": "Explain the phantom read problem and how it can be prevented.",
+    "tag": "dbms_concurrency",
+    "level": "hard"
+  },
+  {
+    "question": "Two concurrent transactions repeatedly deadlock in production. How would you find the cause and redesign to avoid it?",
+    "tag": "dbms_deadlocks",
+    "level": "hard"
+  },
+  {
+    "question": "How do distributed transactions work, and what is the two-phase commit protocol and its weaknesses?",
+    "tag": "dbms_transactions",
+    "level": "hard"
+  },
+  {
+    "question": "When would you choose BCNF decomposition even if it loses a functional dependency?",
+    "tag": "dbms_normalization",
+    "level": "hard"
+  },
+  {
+    "question": "What are lossless-join and dependency-preserving decompositions, and can both always be achieved?",
+    "tag": "dbms_normalization",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design the schema for a ride-sharing app, considering keys, relationships, and indexes?",
+    "tag": "dbms_schema_design",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design the database for a social network's friendship feature, and how would you query friends-of-friends efficiently?",
+    "tag": "dbms_schema_design",
+    "level": "hard"
+  },
+  {
+    "question": "How does the CAP theorem influence the choice between relational and NoSQL databases?",
+    "tag": "dbms_nosql",
+    "level": "hard"
+  },
+  {
+    "question": "When would you choose a document database over a relational one for a product catalog, and what would you give up?",
+    "tag": "dbms_nosql",
+    "level": "hard"
+  },
+  {
+    "question": "What is the difference between replication and sharding, and what problems does each solve?",
+    "tag": "dbms_scalability",
+    "level": "hard"
+  },
+  {
+    "question": "How would you choose a shard key, and what goes wrong with a poor choice?",
+    "tag": "dbms_scalability",
+    "level": "hard"
+  },
+  {
+    "question": "Explain ARIES-style recovery with its analysis, redo, and undo phases at a high level.",
+    "tag": "dbms_backup_recovery",
+    "level": "hard"
+  },
+  {
+    "question": "How do checkpoints reduce recovery time, and what do they cost?",
+    "tag": "dbms_backup_recovery",
+    "level": "hard"
+  },
+  {
+    "question": "Why is a long-running transaction harmful in a busy system?",
+    "tag": "dbms_transactions",
+    "level": "hard"
+  },
+  {
+    "question": "How do nested loop, hash, and merge joins differ, and when does the optimizer prefer each?",
+    "tag": "dbms_query_optimization",
+    "level": "hard"
+  },
+  {
+    "question": "Why can pagination with OFFSET become slow on large tables, and what alternatives exist?",
+    "tag": "dbms_query_optimization",
+    "level": "hard"
+  },
+  {
+    "question": "How would you enforce a business rule across multiple rows, such as preventing double-booking of a room, at the database level?",
+    "tag": "dbms_constraints",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design access control and auditing for a database holding sensitive customer data?",
+    "tag": "dbms_security",
+    "level": "hard"
+  },
+  {
+    "question": "Is every serializable schedule recoverable? Explain recoverability, cascading rollbacks, and strict schedules.",
+    "tag": "dbms_serializability",
+    "level": "hard"
+  },
+  {
+    "question": "What is the difference between snapshot isolation and serializable isolation, and what anomaly such as write skew can snapshot isolation still allow?",
+    "tag": "dbms_transactions",
+    "level": "hard"
+  },
+  {
+    "question": "How would you handle a hot row, such as a global counter, that thousands of transactions update every second?",
+    "tag": "dbms_scalability",
+    "level": "hard"
+  },
+  {
+    "question": "How do statistics and cardinality estimation influence the query optimizer's plan choice, and what happens when the estimates are badly wrong?",
+    "tag": "dbms_query_optimization",
+    "level": "hard"
+  },
+  {
+    "question": "What is a computer network?",
+    "tag": "cn_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between a LAN, a MAN, and a WAN?",
+    "tag": "cn_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What are bandwidth and latency, and how are they different?",
+    "tag": "cn_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is the OSI model, and how many layers does it have?",
+    "tag": "cn_models",
+    "level": "easy"
+  },
+  {
+    "question": "What are the layers of the TCP/IP model?",
+    "tag": "cn_models",
+    "level": "easy"
+  },
+  {
+    "question": "What is the role of the transport layer?",
+    "tag": "cn_models",
+    "level": "easy"
+  },
+  {
+    "question": "What is the role of the network layer?",
+    "tag": "cn_models",
+    "level": "easy"
+  },
+  {
+    "question": "What is encapsulation in the context of network layers?",
+    "tag": "cn_models",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between TCP and UDP?",
+    "tag": "cn_tcp_udp",
+    "level": "easy"
+  },
+  {
+    "question": "Name some applications that use TCP and some that use UDP.",
+    "tag": "cn_tcp_udp",
+    "level": "easy"
+  },
+  {
+    "question": "What is an IP address?",
+    "tag": "cn_ip_addressing",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between IPv4 and IPv6?",
+    "tag": "cn_ip_addressing",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between a public and a private IP address?",
+    "tag": "cn_ip_addressing",
+    "level": "easy"
+  },
+  {
+    "question": "What is a subnet mask?",
+    "tag": "cn_ip_addressing",
+    "level": "easy"
+  },
+  {
+    "question": "What is a MAC address, and how does it differ from an IP address?",
+    "tag": "cn_mac_arp",
+    "level": "easy"
+  },
+  {
+    "question": "What is ARP used for?",
+    "tag": "cn_mac_arp",
+    "level": "easy"
+  },
+  {
+    "question": "What is DNS, and why is it needed?",
+    "tag": "cn_dns",
+    "level": "easy"
+  },
+  {
+    "question": "What does DHCP do?",
+    "tag": "cn_dhcp",
+    "level": "easy"
+  },
+  {
+    "question": "What is HTTP, and what are its common methods?",
+    "tag": "cn_http",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between HTTP and HTTPS?",
+    "tag": "cn_http",
+    "level": "easy"
+  },
+  {
+    "question": "What do the HTTP status codes 200, 404, and 500 mean?",
+    "tag": "cn_http",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between a hub, a switch, and a router?",
+    "tag": "cn_devices",
+    "level": "easy"
+  },
+  {
+    "question": "What is a gateway?",
+    "tag": "cn_devices",
+    "level": "easy"
+  },
+  {
+    "question": "What is NAT?",
+    "tag": "cn_nat",
+    "level": "easy"
+  },
+  {
+    "question": "What is a firewall?",
+    "tag": "cn_firewalls",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between client-server and peer-to-peer architectures?",
+    "tag": "cn_architectures",
+    "level": "easy"
+  },
+  {
+    "question": "What is a port number, and what is a socket?",
+    "tag": "cn_sockets_ports",
+    "level": "easy"
+  },
+  {
+    "question": "Which port numbers are used by HTTP, HTTPS, FTP, and SSH?",
+    "tag": "cn_sockets_ports",
+    "level": "easy"
+  },
+  {
+    "question": "What is the TCP three-way handshake?",
+    "tag": "cn_tcp_connection",
+    "level": "easy"
+  },
+  {
+    "question": "What is routing?",
+    "tag": "cn_routing",
+    "level": "easy"
+  },
+  {
+    "question": "What is a proxy server?",
+    "tag": "cn_proxy",
+    "level": "easy"
+  },
+  {
+    "question": "What does the ping command do?",
+    "tag": "cn_network_troubleshooting",
+    "level": "easy"
+  },
+  {
+    "question": "What is SSL/TLS used for?",
+    "tag": "cn_tls",
+    "level": "easy"
+  },
+  {
+    "question": "How does data travel through the layers of the OSI model from sender to receiver?",
+    "tag": "cn_models",
+    "level": "medium"
+  },
+  {
+    "question": "Why do the OSI and TCP/IP models differ, and which one is used in practice?",
+    "tag": "cn_models",
+    "level": "medium"
+  },
+  {
+    "question": "Why is UDP used for video streaming and online gaming despite being unreliable?",
+    "tag": "cn_tcp_udp",
+    "level": "medium"
+  },
+  {
+    "question": "Why does TCP use a three-way handshake instead of a two-way handshake?",
+    "tag": "cn_tcp_connection",
+    "level": "medium"
+  },
+  {
+    "question": "How is a TCP connection terminated, and what is the TIME_WAIT state?",
+    "tag": "cn_tcp_connection",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between flow control and congestion control?",
+    "tag": "cn_flow_congestion_control",
+    "level": "medium"
+  },
+  {
+    "question": "How does the TCP sliding window protocol work?",
+    "tag": "cn_flow_congestion_control",
+    "level": "medium"
+  },
+  {
+    "question": "What are slow start and congestion avoidance in TCP?",
+    "tag": "cn_flow_congestion_control",
+    "level": "medium"
+  },
+  {
+    "question": "How does TCP ensure reliable delivery using acknowledgements and retransmission?",
+    "tag": "cn_tcp_reliability",
+    "level": "medium"
+  },
+  {
+    "question": "What is CIDR notation, and how do you compute the number of hosts in a subnet such as /26?",
+    "tag": "cn_ip_addressing",
+    "level": "medium"
+  },
+  {
+    "question": "Why do we subnet a network, and how does it help?",
+    "tag": "cn_ip_addressing",
+    "level": "medium"
+  },
+  {
+    "question": "Why was IPv6 introduced, and what changes does it bring beyond larger addresses?",
+    "tag": "cn_ip_addressing",
+    "level": "medium"
+  },
+  {
+    "question": "How does ARP resolve an IP address to a MAC address on a local network?",
+    "tag": "cn_mac_arp",
+    "level": "medium"
+  },
+  {
+    "question": "How does recursive DNS resolution differ from iterative resolution?",
+    "tag": "cn_dns",
+    "level": "medium"
+  },
+  {
+    "question": "What are the common DNS record types such as A, AAAA, CNAME, MX, and NS?",
+    "tag": "cn_dns",
+    "level": "medium"
+  },
+  {
+    "question": "How does DNS caching work, and what is TTL?",
+    "tag": "cn_dns",
+    "level": "medium"
+  },
+  {
+    "question": "Describe the DHCP process of obtaining an IP address (DORA).",
+    "tag": "cn_dhcp",
+    "level": "medium"
+  },
+  {
+    "question": "How does HTTP/1.1 differ from HTTP/2?",
+    "tag": "cn_http",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between GET and POST, and when should each be used?",
+    "tag": "cn_http",
+    "level": "medium"
+  },
+  {
+    "question": "What are cookies and sessions, and how do they make HTTP stateful?",
+    "tag": "cn_http",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between persistent and non-persistent HTTP connections?",
+    "tag": "cn_http",
+    "level": "medium"
+  },
+  {
+    "question": "How does the TLS handshake establish a secure connection?",
+    "tag": "cn_tls",
+    "level": "medium"
+  },
+  {
+    "question": "What is a digital certificate, and how does a browser verify it?",
+    "tag": "cn_tls",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between static and dynamic routing?",
+    "tag": "cn_routing",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between distance-vector and link-state routing protocols?",
+    "tag": "cn_routing",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between circuit switching and packet switching?",
+    "tag": "cn_switching",
+    "level": "medium"
+  },
+  {
+    "question": "How does a switch learn MAC addresses and forward frames?",
+    "tag": "cn_switching",
+    "level": "medium"
+  },
+  {
+    "question": "How does NAT allow many devices to share one public IP address?",
+    "tag": "cn_nat",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between stateful and stateless firewalls?",
+    "tag": "cn_firewalls",
+    "level": "medium"
+  },
+  {
+    "question": "What are common network attacks such as DDoS, man-in-the-middle, and spoofing?",
+    "tag": "cn_network_security",
+    "level": "medium"
+  },
+  {
+    "question": "What is a load balancer, and what algorithms does it use?",
+    "tag": "cn_load_balancing",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a forward proxy and a reverse proxy?",
+    "tag": "cn_proxy",
+    "level": "medium"
+  },
+  {
+    "question": "How does a client-server application use sockets to communicate?",
+    "tag": "cn_sockets_ports",
+    "level": "medium"
+  },
+  {
+    "question": "What factors affect network throughput and latency?",
+    "tag": "cn_performance",
+    "level": "medium"
+  },
+  {
+    "question": "How do error detection techniques such as checksums and CRC work?",
+    "tag": "cn_error_detection",
+    "level": "medium"
+  },
+  {
+    "question": "How do traceroute and ping help diagnose network problems?",
+    "tag": "cn_network_troubleshooting",
+    "level": "medium"
+  },
+  {
+    "question": "What are the advantages and drawbacks of peer-to-peer systems?",
+    "tag": "cn_architectures",
+    "level": "medium"
+  },
+  {
+    "question": "What is a CDN, and how does it improve website performance?",
+    "tag": "cn_cdn",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between unicast, multicast, and broadcast communication?",
+    "tag": "cn_ip_addressing",
+    "level": "medium"
+  },
+  {
+    "question": "How does a VPN work, and what does it protect?",
+    "tag": "cn_vpn",
+    "level": "medium"
+  },
+  {
+    "question": "What happens, step by step, from typing a URL in a browser to the page being displayed?",
+    "tag": "cn_browser_to_server",
+    "level": "hard"
+  },
+  {
+    "question": "How do DNS, TCP, TLS, and HTTP interact when you first visit an HTTPS website?",
+    "tag": "cn_browser_to_server",
+    "level": "hard"
+  },
+  {
+    "question": "A web application has high latency even though server CPU utilization is low. How would you investigate?",
+    "tag": "cn_network_troubleshooting",
+    "level": "hard"
+  },
+  {
+    "question": "Users can reach a website by its IP address but not by its domain name. How would you troubleshoot this?",
+    "tag": "cn_network_troubleshooting",
+    "level": "hard"
+  },
+  {
+    "question": "A file download is much slower than the available bandwidth suggests. What could be the causes?",
+    "tag": "cn_network_troubleshooting",
+    "level": "hard"
+  },
+  {
+    "question": "How does TCP detect congestion, and how do Reno and CUBIC differ conceptually?",
+    "tag": "cn_flow_congestion_control",
+    "level": "hard"
+  },
+  {
+    "question": "Why can TCP perform poorly on long, high-bandwidth links, and how is the bandwidth-delay product relevant?",
+    "tag": "cn_flow_congestion_control",
+    "level": "hard"
+  },
+  {
+    "question": "What is a SYN flood attack, and how do SYN cookies mitigate it?",
+    "tag": "cn_tcp_connection",
+    "level": "hard"
+  },
+  {
+    "question": "What problems can occur when many connections are stuck in TIME_WAIT on a busy server, and how would you address them?",
+    "tag": "cn_tcp_connection",
+    "level": "hard"
+  },
+  {
+    "question": "How does HTTP/3 with QUIC avoid TCP head-of-line blocking?",
+    "tag": "cn_http",
+    "level": "hard"
+  },
+  {
+    "question": "What is forward secrecy, and why does it matter in TLS?",
+    "tag": "cn_tls",
+    "level": "hard"
+  },
+  {
+    "question": "How does certificate validation in TLS prevent man-in-the-middle attacks, and when can such an attack still succeed?",
+    "tag": "cn_tls",
+    "level": "hard"
+  },
+  {
+    "question": "What problems does NAT create for peer-to-peer applications, and how are they worked around?",
+    "tag": "cn_nat",
+    "level": "hard"
+  },
+  {
+    "question": "How can routing loops arise in distance-vector protocols, and how do techniques such as split horizon help?",
+    "tag": "cn_routing",
+    "level": "hard"
+  },
+  {
+    "question": "How does BGP differ from interior routing protocols, and why is it important for the internet?",
+    "tag": "cn_routing",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design load balancing for a global web service, including health checks and session persistence?",
+    "tag": "cn_load_balancing",
+    "level": "hard"
+  },
+  {
+    "question": "How can DNS be exploited in attacks such as cache poisoning, and what defenses exist?",
+    "tag": "cn_dns",
+    "level": "hard"
+  },
+  {
+    "question": "How does DNS-based load balancing work, and what are its limitations?",
+    "tag": "cn_dns",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design a subnetting plan for a company with offices of very different sizes?",
+    "tag": "cn_ip_addressing",
+    "level": "hard"
+  },
+  {
+    "question": "How would you design a network security architecture with a DMZ for a public-facing web application?",
+    "tag": "cn_network_security",
+    "level": "hard"
+  },
+  {
+    "question": "How do latency, jitter, and packet loss affect real-time voice or video calls, and how would you mitigate them?",
+    "tag": "cn_performance",
+    "level": "hard"
+  },
+  {
+    "question": "What is the spanning tree protocol, and what problem does it solve in switched networks?",
+    "tag": "cn_switching",
+    "level": "hard"
+  },
+  {
+    "question": "How would you choose between TCP, UDP, and a custom protocol on top of UDP for a multiplayer game?",
+    "tag": "cn_architectures",
+    "level": "hard"
+  },
+  {
+    "question": "How does TCP handle out-of-order and duplicate packets, and what is the effect of selective acknowledgements?",
+    "tag": "cn_tcp_reliability",
+    "level": "hard"
+  },
+  {
+    "question": "How do HTTP caching headers such as Cache-Control and ETag reduce load, and what pitfalls exist?",
+    "tag": "cn_http_caching",
+    "level": "hard"
+  },
+  {
+    "question": "How do WebSockets differ from HTTP polling, and when would you choose each?",
+    "tag": "cn_websockets",
+    "level": "hard"
+  },
+  {
+    "question": "How would you investigate and mitigate a suspected DDoS attack on a public web service while keeping legitimate users connected?",
+    "tag": "cn_network_security",
+    "level": "hard"
+  },
+  {
+    "question": "What is an operating system, and what are its main responsibilities?",
+    "tag": "os_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What are the different types of operating systems?",
+    "tag": "os_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is the kernel?",
+    "tag": "os_kernel",
+    "level": "easy"
+  },
+  {
+    "question": "What is a system call?",
+    "tag": "os_kernel",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between user mode and kernel mode?",
+    "tag": "os_kernel",
+    "level": "easy"
+  },
+  {
+    "question": "What is a process?",
+    "tag": "os_processes_threads",
+    "level": "easy"
+  },
+  {
+    "question": "What is a thread, and how is it different from a process?",
+    "tag": "os_processes_threads",
+    "level": "easy"
+  },
+  {
+    "question": "What are the different states of a process?",
+    "tag": "os_processes_threads",
+    "level": "easy"
+  },
+  {
+    "question": "What is a process control block (PCB)?",
+    "tag": "os_processes_threads",
+    "level": "easy"
+  },
+  {
+    "question": "What is a context switch?",
+    "tag": "os_context_switching",
+    "level": "easy"
+  },
+  {
+    "question": "What is CPU scheduling, and why is it needed?",
+    "tag": "os_scheduling",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between preemptive and non-preemptive scheduling?",
+    "tag": "os_scheduling",
+    "level": "easy"
+  },
+  {
+    "question": "What is FCFS scheduling?",
+    "tag": "os_scheduling",
+    "level": "easy"
+  },
+  {
+    "question": "What is Shortest Job First scheduling?",
+    "tag": "os_scheduling",
+    "level": "easy"
+  },
+  {
+    "question": "How does Round Robin scheduling work?",
+    "tag": "os_scheduling",
+    "level": "easy"
+  },
+  {
+    "question": "What are waiting time, turnaround time, and response time?",
+    "tag": "os_scheduling",
+    "level": "easy"
+  },
+  {
+    "question": "What is a critical section?",
+    "tag": "os_synchronization",
+    "level": "easy"
+  },
+  {
+    "question": "What is a race condition?",
+    "tag": "os_synchronization",
+    "level": "easy"
+  },
+  {
+    "question": "What is a mutex?",
+    "tag": "os_synchronization",
+    "level": "easy"
+  },
+  {
+    "question": "What is a semaphore?",
+    "tag": "os_synchronization",
+    "level": "easy"
+  },
+  {
+    "question": "What is a deadlock?",
+    "tag": "os_deadlocks",
+    "level": "easy"
+  },
+  {
+    "question": "What are the four necessary conditions for a deadlock?",
+    "tag": "os_deadlocks",
+    "level": "easy"
+  },
+  {
+    "question": "What is memory management in an operating system?",
+    "tag": "os_memory_management",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between logical and physical addresses?",
+    "tag": "os_memory_management",
+    "level": "easy"
+  },
+  {
+    "question": "What is paging?",
+    "tag": "os_paging",
+    "level": "easy"
+  },
+  {
+    "question": "What is segmentation?",
+    "tag": "os_paging",
+    "level": "easy"
+  },
+  {
+    "question": "What is virtual memory?",
+    "tag": "os_virtual_memory",
+    "level": "easy"
+  },
+  {
+    "question": "What is a page fault?",
+    "tag": "os_page_replacement",
+    "level": "easy"
+  },
+  {
+    "question": "What is fragmentation, and what are its types?",
+    "tag": "os_memory_management",
+    "level": "easy"
+  },
+  {
+    "question": "What is a file system?",
+    "tag": "os_file_systems",
+    "level": "easy"
+  },
+  {
+    "question": "What is inter-process communication?",
+    "tag": "os_ipc",
+    "level": "easy"
+  },
+  {
+    "question": "What is multithreading, and what are its benefits?",
+    "tag": "os_multithreading",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between multiprogramming, multitasking, and multiprocessing?",
+    "tag": "os_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What are monolithic kernels and microkernels, and how do they differ?",
+    "tag": "os_kernel",
+    "level": "medium"
+  },
+  {
+    "question": "How does a system call transition execution from user mode to kernel mode?",
+    "tag": "os_kernel",
+    "level": "medium"
+  },
+  {
+    "question": "How do user-level threads differ from kernel-level threads?",
+    "tag": "os_processes_threads",
+    "level": "medium"
+  },
+  {
+    "question": "What resources are shared between threads of the same process, and what is private to each thread?",
+    "tag": "os_processes_threads",
+    "level": "medium"
+  },
+  {
+    "question": "What happens when a process calls fork(), and what does exec() do?",
+    "tag": "os_processes_threads",
+    "level": "medium"
+  },
+  {
+    "question": "What are zombie and orphan processes?",
+    "tag": "os_processes_threads",
+    "level": "medium"
+  },
+  {
+    "question": "What information is saved during a context switch, and why is it expensive?",
+    "tag": "os_context_switching",
+    "level": "medium"
+  },
+  {
+    "question": "Compare SJF and SRTF scheduling, including starvation concerns.",
+    "tag": "os_scheduling",
+    "level": "medium"
+  },
+  {
+    "question": "How does the choice of time quantum affect Round Robin performance?",
+    "tag": "os_scheduling",
+    "level": "medium"
+  },
+  {
+    "question": "How does priority scheduling lead to starvation, and what is aging?",
+    "tag": "os_scheduling",
+    "level": "medium"
+  },
+  {
+    "question": "What is a multilevel feedback queue, and why is it widely used?",
+    "tag": "os_scheduling",
+    "level": "medium"
+  },
+  {
+    "question": "Given processes with different burst times, how would you compute the average waiting time under FCFS?",
+    "tag": "os_scheduling",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a mutex and a binary semaphore?",
+    "tag": "os_synchronization",
+    "level": "medium"
+  },
+  {
+    "question": "What is the producer-consumer problem, and how can semaphores solve it?",
+    "tag": "os_synchronization",
+    "level": "medium"
+  },
+  {
+    "question": "What is the readers-writers problem?",
+    "tag": "os_synchronization",
+    "level": "medium"
+  },
+  {
+    "question": "What is a monitor, and how does it simplify synchronization?",
+    "tag": "os_synchronization",
+    "level": "medium"
+  },
+  {
+    "question": "What are the requirements for a correct critical-section solution: mutual exclusion, progress, and bounded waiting?",
+    "tag": "os_synchronization",
+    "level": "medium"
+  },
+  {
+    "question": "What is a spinlock, and when is it preferable to a blocking lock?",
+    "tag": "os_synchronization",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between deadlock prevention and deadlock avoidance?",
+    "tag": "os_deadlocks",
+    "level": "medium"
+  },
+  {
+    "question": "How does the Banker's algorithm avoid deadlock?",
+    "tag": "os_deadlocks",
+    "level": "medium"
+  },
+  {
+    "question": "How can a system detect deadlocks using a resource allocation graph?",
+    "tag": "os_deadlocks",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between deadlock and starvation?",
+    "tag": "os_deadlocks",
+    "level": "medium"
+  },
+  {
+    "question": "How do first fit, best fit, and worst fit allocation differ?",
+    "tag": "os_memory_management",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between internal and external fragmentation, and how can each be reduced?",
+    "tag": "os_memory_management",
+    "level": "medium"
+  },
+  {
+    "question": "How does a page table translate a virtual address into a physical address?",
+    "tag": "os_paging",
+    "level": "medium"
+  },
+  {
+    "question": "What is a TLB, and how does it speed up address translation?",
+    "tag": "os_paging",
+    "level": "medium"
+  },
+  {
+    "question": "What are the advantages of multi-level page tables?",
+    "tag": "os_paging",
+    "level": "medium"
+  },
+  {
+    "question": "How do paging and segmentation differ?",
+    "tag": "os_paging",
+    "level": "medium"
+  },
+  {
+    "question": "How does demand paging work?",
+    "tag": "os_virtual_memory",
+    "level": "medium"
+  },
+  {
+    "question": "How do the FIFO, LRU, and Optimal page replacement algorithms compare?",
+    "tag": "os_page_replacement",
+    "level": "medium"
+  },
+  {
+    "question": "What is Belady's anomaly?",
+    "tag": "os_page_replacement",
+    "level": "medium"
+  },
+  {
+    "question": "What is thrashing, and what causes it?",
+    "tag": "os_thrashing",
+    "level": "medium"
+  },
+  {
+    "question": "How do contiguous, linked, and indexed file allocation methods differ?",
+    "tag": "os_file_systems",
+    "level": "medium"
+  },
+  {
+    "question": "What is an inode, and what information does it store?",
+    "tag": "os_file_systems",
+    "level": "medium"
+  },
+  {
+    "question": "How do FCFS, SSTF, SCAN, and C-SCAN disk scheduling differ?",
+    "tag": "os_disk_scheduling",
+    "level": "medium"
+  },
+  {
+    "question": "What are the different IPC mechanisms such as pipes, message queues, and shared memory?",
+    "tag": "os_ipc",
+    "level": "medium"
+  },
+  {
+    "question": "When would you use shared memory instead of message passing?",
+    "tag": "os_ipc",
+    "level": "medium"
+  },
+  {
+    "question": "What is copy-on-write, and how does it make fork() efficient?",
+    "tag": "os_memory_management",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a program, a process, and a thread?",
+    "tag": "os_fundamentals",
+    "level": "medium"
+  },
+  {
+    "question": "What is an interrupt, and how does the operating system handle it?",
+    "tag": "os_interrupts",
+    "level": "medium"
+  },
+  {
+    "question": "A multithreaded application hangs intermittently. How would you determine whether it is a deadlock, and how would you fix it?",
+    "tag": "os_deadlocks",
+    "level": "hard"
+  },
+  {
+    "question": "Why is the Banker's algorithm rarely used in real operating systems?",
+    "tag": "os_deadlocks",
+    "level": "hard"
+  },
+  {
+    "question": "What is priority inversion, and how do priority inheritance protocols address it?",
+    "tag": "os_synchronization",
+    "level": "hard"
+  },
+  {
+    "question": "Why are atomic hardware instructions such as test-and-set or compare-and-swap needed to implement locks?",
+    "tag": "os_synchronization",
+    "level": "hard"
+  },
+  {
+    "question": "How would you solve the dining philosophers problem while avoiding both deadlock and starvation?",
+    "tag": "os_synchronization",
+    "level": "hard"
+  },
+  {
+    "question": "What is the difference between lock-based and lock-free synchronization, and what is the ABA problem?",
+    "tag": "os_synchronization",
+    "level": "hard"
+  },
+  {
+    "question": "A server's performance collapses as more processes are started, with low CPU use and high disk activity. What is happening, and how would you fix it?",
+    "tag": "os_thrashing",
+    "level": "hard"
+  },
+  {
+    "question": "How does the working set model help control thrashing?",
+    "tag": "os_thrashing",
+    "level": "hard"
+  },
+  {
+    "question": "What happens, step by step, when a process accesses a page that is not in memory?",
+    "tag": "os_virtual_memory",
+    "level": "hard"
+  },
+  {
+    "question": "How does the OS handle memory overcommit, and what is the OOM killer?",
+    "tag": "os_virtual_memory",
+    "level": "hard"
+  },
+  {
+    "question": "Why is true LRU hard to implement, and how do approximations such as the clock algorithm work?",
+    "tag": "os_page_replacement",
+    "level": "hard"
+  },
+  {
+    "question": "How does page size affect page-table size, internal fragmentation, and TLB performance?",
+    "tag": "os_paging",
+    "level": "hard"
+  },
+  {
+    "question": "How does the Linux Completely Fair Scheduler differ conceptually from classical scheduling algorithms?",
+    "tag": "os_scheduling",
+    "level": "hard"
+  },
+  {
+    "question": "How would you choose a scheduling policy for a system running both interactive tasks and long batch jobs?",
+    "tag": "os_scheduling",
+    "level": "hard"
+  },
+  {
+    "question": "What are real-time scheduling algorithms such as Rate Monotonic and EDF, and when can deadlines be guaranteed?",
+    "tag": "os_scheduling",
+    "level": "hard"
+  },
+  {
+    "question": "How can excessive context switching degrade performance, and how would you diagnose it?",
+    "tag": "os_context_switching",
+    "level": "hard"
+  },
+  {
+    "question": "What are the trade-offs of the thread-per-request model versus an event-driven model for a server?",
+    "tag": "os_multithreading",
+    "level": "hard"
+  },
+  {
+    "question": "What is false sharing, and how can it degrade multithreaded performance?",
+    "tag": "os_multithreading",
+    "level": "hard"
+  },
+  {
+    "question": "What happens to the other threads when one thread in a process calls fork() or crashes with a segmentation fault?",
+    "tag": "os_processes_threads",
+    "level": "hard"
+  },
+  {
+    "question": "How does journaling in a file system protect against corruption after a crash?",
+    "tag": "os_file_systems",
+    "level": "hard"
+  },
+  {
+    "question": "How would you diagnose a system that reports free disk space but cannot create new files?",
+    "tag": "os_file_systems",
+    "level": "hard"
+  },
+  {
+    "question": "How do pipes, sockets, and shared memory compare in performance and safety for communication between two processes on the same machine?",
+    "tag": "os_ipc",
+    "level": "hard"
+  },
+  {
+    "question": "How do allocators such as malloc manage memory, and what causes heap fragmentation in long-running programs?",
+    "tag": "os_memory_management",
+    "level": "hard"
+  },
+  {
+    "question": "A production machine shows a high load average but low CPU utilization. What could be the cause, and how would you investigate?",
+    "tag": "os_resource_management",
+    "level": "hard"
+  },
+  {
+    "question": "How do containers differ from virtual machines in terms of OS resource isolation?",
+    "tag": "os_virtualization",
+    "level": "hard"
+  },
+  {
+    "question": "How do memory protection mechanisms such as the MMU, ASLR, and NX bits protect processes from each other?",
+    "tag": "os_security",
+    "level": "hard"
+  },
+  {
+    "question": "How does the OS implement memory-mapped files, and what are the benefits and risks compared with regular read and write system calls?",
+    "tag": "os_memory_management",
+    "level": "hard"
+  },
+  {
+    "question": "What is the difference between AI, machine learning, and deep learning?",
+    "tag": "ml_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is a feature, and what is a label in a dataset?",
+    "tag": "ml_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is supervised learning?",
+    "tag": "ml_learning_types",
+    "level": "easy"
+  },
+  {
+    "question": "What is unsupervised learning?",
+    "tag": "ml_learning_types",
+    "level": "easy"
+  },
+  {
+    "question": "What is reinforcement learning?",
+    "tag": "ml_learning_types",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between classification and regression?",
+    "tag": "ml_learning_types",
+    "level": "easy"
+  },
+  {
+    "question": "What are training, validation, and test datasets?",
+    "tag": "ml_data_splitting",
+    "level": "easy"
+  },
+  {
+    "question": "What is data preprocessing, and why is it important?",
+    "tag": "ml_data_preprocessing",
+    "level": "easy"
+  },
+  {
+    "question": "How can missing values be handled in a dataset?",
+    "tag": "ml_data_preprocessing",
+    "level": "easy"
+  },
+  {
+    "question": "What is an outlier, and how can you detect one?",
+    "tag": "ml_data_preprocessing",
+    "level": "easy"
+  },
+  {
+    "question": "What is feature engineering?",
+    "tag": "ml_feature_engineering",
+    "level": "easy"
+  },
+  {
+    "question": "What is feature scaling, and why is it needed?",
+    "tag": "ml_feature_scaling",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between normalization and standardization?",
+    "tag": "ml_feature_scaling",
+    "level": "easy"
+  },
+  {
+    "question": "How is categorical data converted to numerical form, for example by one-hot encoding?",
+    "tag": "ml_feature_engineering",
+    "level": "easy"
+  },
+  {
+    "question": "What is linear regression?",
+    "tag": "ml_linear_regression",
+    "level": "easy"
+  },
+  {
+    "question": "What is logistic regression, and is it used for regression or classification?",
+    "tag": "ml_logistic_regression",
+    "level": "easy"
+  },
+  {
+    "question": "What is a decision tree?",
+    "tag": "ml_decision_trees",
+    "level": "easy"
+  },
+  {
+    "question": "What is a random forest?",
+    "tag": "ml_random_forests",
+    "level": "easy"
+  },
+  {
+    "question": "What is a Support Vector Machine?",
+    "tag": "ml_svm",
+    "level": "easy"
+  },
+  {
+    "question": "How does the K-nearest neighbors algorithm work?",
+    "tag": "ml_knn",
+    "level": "easy"
+  },
+  {
+    "question": "What is the Naive Bayes classifier, and why is it called naive?",
+    "tag": "ml_naive_bayes",
+    "level": "easy"
+  },
+  {
+    "question": "What is clustering?",
+    "tag": "ml_clustering",
+    "level": "easy"
+  },
+  {
+    "question": "How does the K-means algorithm work?",
+    "tag": "ml_clustering",
+    "level": "easy"
+  },
+  {
+    "question": "What is dimensionality reduction?",
+    "tag": "ml_dimensionality_reduction",
+    "level": "easy"
+  },
+  {
+    "question": "What is an artificial neural network?",
+    "tag": "ml_neural_networks",
+    "level": "easy"
+  },
+  {
+    "question": "What is an activation function, and why is it needed?",
+    "tag": "ml_activation_functions",
+    "level": "easy"
+  },
+  {
+    "question": "What is a loss function?",
+    "tag": "ml_loss_functions",
+    "level": "easy"
+  },
+  {
+    "question": "What is gradient descent?",
+    "tag": "ml_gradient_descent",
+    "level": "easy"
+  },
+  {
+    "question": "What are overfitting and underfitting?",
+    "tag": "ml_overfitting",
+    "level": "easy"
+  },
+  {
+    "question": "What is regularization?",
+    "tag": "ml_regularization",
+    "level": "easy"
+  },
+  {
+    "question": "What is a confusion matrix?",
+    "tag": "ml_model_evaluation",
+    "level": "easy"
+  },
+  {
+    "question": "What are accuracy, precision, and recall?",
+    "tag": "ml_model_evaluation",
+    "level": "easy"
+  },
+  {
+    "question": "What is cross-validation?",
+    "tag": "ml_cross_validation",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between a parameter and a hyperparameter?",
+    "tag": "ml_hyperparameters",
+    "level": "easy"
+  },
+  {
+    "question": "What is the bias-variance trade-off?",
+    "tag": "ml_bias_variance",
+    "level": "medium"
+  },
+  {
+    "question": "How can you detect and reduce overfitting in a model?",
+    "tag": "ml_overfitting",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between L1 and L2 regularization?",
+    "tag": "ml_regularization",
+    "level": "medium"
+  },
+  {
+    "question": "What assumptions does linear regression make, and what happens if they are violated?",
+    "tag": "ml_linear_regression",
+    "level": "medium"
+  },
+  {
+    "question": "What do R-squared and mean squared error tell you about a regression model?",
+    "tag": "ml_linear_regression",
+    "level": "medium"
+  },
+  {
+    "question": "How does logistic regression use the sigmoid function to produce probabilities?",
+    "tag": "ml_logistic_regression",
+    "level": "medium"
+  },
+  {
+    "question": "How does a decision tree choose splits using entropy, information gain, or Gini impurity?",
+    "tag": "ml_decision_trees",
+    "level": "medium"
+  },
+  {
+    "question": "Why do decision trees overfit, and how can pruning help?",
+    "tag": "ml_decision_trees",
+    "level": "medium"
+  },
+  {
+    "question": "How does a random forest reduce variance compared to a single decision tree?",
+    "tag": "ml_random_forests",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between bagging and boosting?",
+    "tag": "ml_ensemble_methods",
+    "level": "medium"
+  },
+  {
+    "question": "What is the kernel trick in SVMs?",
+    "tag": "ml_svm",
+    "level": "medium"
+  },
+  {
+    "question": "What is the margin in an SVM, and what role does the C parameter play?",
+    "tag": "ml_svm",
+    "level": "medium"
+  },
+  {
+    "question": "How does the choice of K affect KNN, and why does it struggle in high dimensions?",
+    "tag": "ml_knn",
+    "level": "medium"
+  },
+  {
+    "question": "When does Naive Bayes work well despite its independence assumption?",
+    "tag": "ml_naive_bayes",
+    "level": "medium"
+  },
+  {
+    "question": "How do you choose the number of clusters in K-means?",
+    "tag": "ml_clustering",
+    "level": "medium"
+  },
+  {
+    "question": "What are the limitations of K-means, and when would you use hierarchical clustering or DBSCAN instead?",
+    "tag": "ml_clustering",
+    "level": "medium"
+  },
+  {
+    "question": "How does PCA work, and what do principal components represent?",
+    "tag": "ml_dimensionality_reduction",
+    "level": "medium"
+  },
+  {
+    "question": "What is the curse of dimensionality?",
+    "tag": "ml_dimensionality_reduction",
+    "level": "medium"
+  },
+  {
+    "question": "How do you handle high-cardinality categorical features?",
+    "tag": "ml_feature_engineering",
+    "level": "medium"
+  },
+  {
+    "question": "What are some methods for feature selection?",
+    "tag": "ml_feature_engineering",
+    "level": "medium"
+  },
+  {
+    "question": "What strategies exist for handling outliers, and when should you keep them?",
+    "tag": "ml_data_preprocessing",
+    "level": "medium"
+  },
+  {
+    "question": "Which algorithms are sensitive to feature scaling, and which are not?",
+    "tag": "ml_feature_scaling",
+    "level": "medium"
+  },
+  {
+    "question": "How does a neural network learn through forward and backward propagation?",
+    "tag": "ml_neural_networks",
+    "level": "medium"
+  },
+  {
+    "question": "Compare the sigmoid, tanh, and ReLU activation functions.",
+    "tag": "ml_activation_functions",
+    "level": "medium"
+  },
+  {
+    "question": "What is the vanishing gradient problem?",
+    "tag": "ml_activation_functions",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between batch, stochastic, and mini-batch gradient descent?",
+    "tag": "ml_gradient_descent",
+    "level": "medium"
+  },
+  {
+    "question": "How does the learning rate affect training?",
+    "tag": "ml_gradient_descent",
+    "level": "medium"
+  },
+  {
+    "question": "When would you use cross-entropy loss instead of mean squared error?",
+    "tag": "ml_loss_functions",
+    "level": "medium"
+  },
+  {
+    "question": "When is precision more important than recall, and vice versa? Give examples.",
+    "tag": "ml_model_evaluation",
+    "level": "medium"
+  },
+  {
+    "question": "What is the F1-score, and why is it used instead of accuracy?",
+    "tag": "ml_model_evaluation",
+    "level": "medium"
+  },
+  {
+    "question": "What does the ROC curve show, and how do you interpret AUC?",
+    "tag": "ml_model_evaluation",
+    "level": "medium"
+  },
+  {
+    "question": "How would you handle a highly imbalanced dataset?",
+    "tag": "ml_class_imbalance",
+    "level": "medium"
+  },
+  {
+    "question": "What is k-fold cross-validation, and why is it better than a single train-test split?",
+    "tag": "ml_cross_validation",
+    "level": "medium"
+  },
+  {
+    "question": "How do grid search, random search, and Bayesian optimization differ for hyperparameter tuning?",
+    "tag": "ml_hyperparameters",
+    "level": "medium"
+  },
+  {
+    "question": "What is data leakage, and how can it occur?",
+    "tag": "ml_data_leakage",
+    "level": "medium"
+  },
+  {
+    "question": "What is dropout, and how does it prevent overfitting?",
+    "tag": "ml_regularization",
+    "level": "medium"
+  },
+  {
+    "question": "How would you choose between a simple model and a complex model for a given problem?",
+    "tag": "ml_model_selection",
+    "level": "medium"
+  },
+  {
+    "question": "What is feature importance, and how can you interpret a model's predictions?",
+    "tag": "ml_interpretability",
+    "level": "medium"
+  },
+  {
+    "question": "What is semi-supervised learning, and when is it useful?",
+    "tag": "ml_learning_types",
+    "level": "medium"
+  },
+  {
+    "question": "What are CNNs and RNNs, and what kinds of data suit each?",
+    "tag": "ml_deep_learning",
+    "level": "medium"
+  },
+  {
+    "question": "Why can accuracy be misleading for fraud detection, and how would you pick the evaluation metric and the decision threshold?",
+    "tag": "ml_model_evaluation",
+    "level": "hard"
+  },
+  {
+    "question": "A model scores 99% in validation but performs poorly in production. What could have gone wrong?",
+    "tag": "ml_data_leakage",
+    "level": "hard"
+  },
+  {
+    "question": "How can scaling or imputing data before splitting it cause leakage?",
+    "tag": "ml_data_leakage",
+    "level": "hard"
+  },
+  {
+    "question": "You must predict house prices with 500 rows and 200 features. How would you approach modeling?",
+    "tag": "ml_model_selection",
+    "level": "hard"
+  },
+  {
+    "question": "How would you choose between logistic regression, random forests, and neural networks for a tabular dataset?",
+    "tag": "ml_model_selection",
+    "level": "hard"
+  },
+  {
+    "question": "How would you diagnose whether a model has high bias or high variance using learning curves, and what would you change in each case?",
+    "tag": "ml_bias_variance",
+    "level": "hard"
+  },
+  {
+    "question": "A model's training loss keeps decreasing while its validation loss rises. What steps would you take?",
+    "tag": "ml_overfitting",
+    "level": "hard"
+  },
+  {
+    "question": "Why can gradient descent get stuck, and how do momentum and Adam help?",
+    "tag": "ml_gradient_descent",
+    "level": "hard"
+  },
+  {
+    "question": "Why can initializing all weights to zero prevent a neural network from learning?",
+    "tag": "ml_neural_networks",
+    "level": "hard"
+  },
+  {
+    "question": "How do exploding and vanishing gradients occur, and what techniques mitigate them?",
+    "tag": "ml_neural_networks",
+    "level": "hard"
+  },
+  {
+    "question": "What does batch normalization do, and why does it help training?",
+    "tag": "ml_neural_networks",
+    "level": "hard"
+  },
+  {
+    "question": "Why can oversampling methods such as SMOTE give misleading validation scores if applied incorrectly?",
+    "tag": "ml_class_imbalance",
+    "level": "hard"
+  },
+  {
+    "question": "How would you evaluate a model on time-dependent data such as demand forecasting, and why does random k-fold cross-validation fail there?",
+    "tag": "ml_model_evaluation",
+    "level": "hard"
+  },
+  {
+    "question": "How would you detect and handle data drift and concept drift after deploying a model?",
+    "tag": "ml_model_deployment",
+    "level": "hard"
+  },
+  {
+    "question": "How would you monitor and retrain a recommendation model in production?",
+    "tag": "ml_model_deployment",
+    "level": "hard"
+  },
+  {
+    "question": "How would you explain a model's decision to a non-technical stakeholder or a regulator?",
+    "tag": "ml_interpretability",
+    "level": "hard"
+  },
+  {
+    "question": "How do gradient boosting algorithms such as XGBoost build models sequentially, and why are they prone to overfitting if not tuned?",
+    "tag": "ml_ensemble_methods",
+    "level": "hard"
+  },
+  {
+    "question": "Why does L1 regularization produce sparse solutions while L2 does not?",
+    "tag": "ml_regularization",
+    "level": "hard"
+  },
+  {
+    "question": "How would you decide between a linear and an RBF kernel, and how does that choice affect scaling to large datasets?",
+    "tag": "ml_svm",
+    "level": "hard"
+  },
+  {
+    "question": "When can PCA hurt model performance, and what are the alternatives?",
+    "tag": "ml_dimensionality_reduction",
+    "level": "hard"
+  },
+  {
+    "question": "How would you evaluate the quality of clusters when no ground-truth labels exist?",
+    "tag": "ml_clustering",
+    "level": "hard"
+  },
+  {
+    "question": "Why are predicted probabilities from a classifier not always well calibrated, and how can you fix this?",
+    "tag": "ml_model_calibration",
+    "level": "hard"
+  },
+  {
+    "question": "How would you handle a feature that is available during training but not at prediction time?",
+    "tag": "ml_feature_engineering",
+    "level": "hard"
+  },
+  {
+    "question": "How could a model become biased against a group of people, and how would you detect and mitigate it?",
+    "tag": "ml_fairness",
+    "level": "hard"
+  },
+  {
+    "question": "How would you tune hyperparameters efficiently when each training run takes hours?",
+    "tag": "ml_hyperparameters",
+    "level": "hard"
+  },
+  {
+    "question": "A client wants a model for medical diagnosis. How does the cost of false negatives influence your choice of model, metric, and threshold?",
+    "tag": "ml_model_selection",
+    "level": "hard"
+  },
+  {
+    "question": "What is an algorithm, and what are its key characteristics?",
+    "tag": "daa_fundamentals",
+    "level": "easy"
+  },
+  {
+    "question": "What is time complexity?",
+    "tag": "daa_time_complexity",
+    "level": "easy"
+  },
+  {
+    "question": "What is space complexity?",
+    "tag": "daa_space_complexity",
+    "level": "easy"
+  },
+  {
+    "question": "What do Big O, Big Omega, and Big Theta notations represent?",
+    "tag": "daa_asymptotic_notation",
+    "level": "easy"
+  },
+  {
+    "question": "What are the best, average, and worst-case complexities of an algorithm?",
+    "tag": "daa_time_complexity",
+    "level": "easy"
+  },
+  {
+    "question": "What is the time complexity of linear search and of binary search?",
+    "tag": "daa_asymptotic_notation",
+    "level": "easy"
+  },
+  {
+    "question": "What are the requirements for using binary search?",
+    "tag": "daa_searching",
+    "level": "easy"
+  },
+  {
+    "question": "How do bubble sort, selection sort, and insertion sort differ?",
+    "tag": "daa_sorting",
+    "level": "easy"
+  },
+  {
+    "question": "What is the time complexity of merge sort, and why?",
+    "tag": "daa_sorting",
+    "level": "easy"
+  },
+  {
+    "question": "What is the time complexity of quick sort in the best and worst cases?",
+    "tag": "daa_sorting",
+    "level": "easy"
+  },
+  {
+    "question": "What is a stable sorting algorithm?",
+    "tag": "daa_sorting",
+    "level": "easy"
+  },
+  {
+    "question": "What is an in-place sorting algorithm?",
+    "tag": "daa_sorting",
+    "level": "easy"
+  },
+  {
+    "question": "What is the divide and conquer approach?",
+    "tag": "daa_divide_conquer",
+    "level": "easy"
+  },
+  {
+    "question": "What is a greedy algorithm?",
+    "tag": "daa_greedy",
+    "level": "easy"
+  },
+  {
+    "question": "What is dynamic programming?",
+    "tag": "daa_dynamic_programming",
+    "level": "easy"
+  },
+  {
+    "question": "What is the difference between memoization and tabulation?",
+    "tag": "daa_dynamic_programming",
+    "level": "easy"
+  },
+  {
+    "question": "What is recursion, and what is a base case?",
+    "tag": "daa_recursion",
+    "level": "easy"
+  },
+  {
+    "question": "What is backtracking?",
+    "tag": "daa_backtracking",
+    "level": "easy"
+  },
+  {
+    "question": "What is hashing, and what is a hash collision?",
+    "tag": "daa_hashing",
+    "level": "easy"
+  },
+  {
+    "question": "How does a hash table provide average O(1) lookups?",
+    "tag": "daa_hashing",
+    "level": "easy"
+  },
+  {
+    "question": "What is a binary search tree?",
+    "tag": "daa_trees",
+    "level": "easy"
+  },
+  {
+    "question": "What is a heap, and what is the difference between a min-heap and a max-heap?",
+    "tag": "daa_trees",
+    "level": "easy"
+  },
+  {
+    "question": "How can a graph be represented using an adjacency matrix and an adjacency list?",
+    "tag": "daa_graphs",
+    "level": "easy"
+  },
+  {
+    "question": "What is BFS, and what data structure does it use?",
+    "tag": "daa_graph_traversal",
+    "level": "easy"
+  },
+  {
+    "question": "What is DFS, and what data structure does it use?",
+    "tag": "daa_graph_traversal",
+    "level": "easy"
+  },
+  {
+    "question": "What is the shortest path problem?",
+    "tag": "daa_shortest_path",
+    "level": "easy"
+  },
+  {
+    "question": "What is a minimum spanning tree?",
+    "tag": "daa_mst",
+    "level": "easy"
+  },
+  {
+    "question": "What is topological sorting?",
+    "tag": "daa_topological_sort",
+    "level": "easy"
+  },
+  {
+    "question": "What is a recurrence relation? Give an example.",
+    "tag": "daa_recurrence",
+    "level": "easy"
+  },
+  {
+    "question": "What are P and NP problems?",
+    "tag": "daa_np_completeness",
+    "level": "easy"
+  },
+  {
+    "question": "What is the two-pointer technique?",
+    "tag": "daa_two_pointers",
+    "level": "easy"
+  },
+  {
+    "question": "What is a prefix sum array?",
+    "tag": "daa_prefix_sums",
+    "level": "easy"
+  },
+  {
+    "question": "What is the sliding window technique?",
+    "tag": "daa_sliding_window",
+    "level": "easy"
+  },
+  {
+    "question": "What is the 0/1 knapsack problem?",
+    "tag": "daa_knapsack",
+    "level": "easy"
+  },
+  {
+    "question": "Why do we ignore constants and lower-order terms in asymptotic analysis, and when might this be misleading?",
+    "tag": "daa_asymptotic_notation",
+    "level": "medium"
+  },
+  {
+    "question": "What is amortized analysis, and why is appending to a dynamic array O(1) amortized?",
+    "tag": "daa_amortized_analysis",
+    "level": "medium"
+  },
+  {
+    "question": "How do you solve the recurrence T(n) = 2T(n/2) + n using the master theorem?",
+    "tag": "daa_recurrence",
+    "level": "medium"
+  },
+  {
+    "question": "How does the recursion tree method help solve recurrences?",
+    "tag": "daa_recurrence",
+    "level": "medium"
+  },
+  {
+    "question": "What is the recurrence for binary search, and what does it solve to?",
+    "tag": "daa_recurrence",
+    "level": "medium"
+  },
+  {
+    "question": "Why is quick sort often faster in practice than merge sort despite its worse worst case?",
+    "tag": "daa_sorting",
+    "level": "medium"
+  },
+  {
+    "question": "How can the worst case of quick sort be avoided?",
+    "tag": "daa_sorting",
+    "level": "medium"
+  },
+  {
+    "question": "When would you use counting sort or radix sort instead of a comparison sort?",
+    "tag": "daa_sorting",
+    "level": "medium"
+  },
+  {
+    "question": "Why is the lower bound for comparison-based sorting Omega(n log n)?",
+    "tag": "daa_sorting",
+    "level": "medium"
+  },
+  {
+    "question": "How does heap sort work, and what are its advantages and drawbacks?",
+    "tag": "daa_sorting",
+    "level": "medium"
+  },
+  {
+    "question": "Why is insertion sort sometimes preferred for small or nearly sorted arrays?",
+    "tag": "daa_sorting",
+    "level": "medium"
+  },
+  {
+    "question": "How would you search for an element in a rotated sorted array?",
+    "tag": "daa_searching",
+    "level": "medium"
+  },
+  {
+    "question": "What are the variants of binary search, such as finding the first occurrence or the lower bound?",
+    "tag": "daa_binary_search",
+    "level": "medium"
+  },
+  {
+    "question": "How does merge sort illustrate divide and conquer, and what is its space cost?",
+    "tag": "daa_divide_conquer",
+    "level": "medium"
+  },
+  {
+    "question": "What is the greedy choice property, and what is optimal substructure?",
+    "tag": "daa_greedy",
+    "level": "medium"
+  },
+  {
+    "question": "How is the activity selection problem solved greedily?",
+    "tag": "daa_greedy",
+    "level": "medium"
+  },
+  {
+    "question": "How does Huffman coding use a greedy strategy?",
+    "tag": "daa_greedy",
+    "level": "medium"
+  },
+  {
+    "question": "Why does the greedy approach fail for the 0/1 knapsack problem but work for the fractional knapsack problem?",
+    "tag": "daa_greedy",
+    "level": "medium"
+  },
+  {
+    "question": "What are overlapping subproblems, and how does dynamic programming exploit them?",
+    "tag": "daa_dynamic_programming",
+    "level": "medium"
+  },
+  {
+    "question": "How does the longest common subsequence algorithm work, and what is its complexity?",
+    "tag": "daa_dynamic_programming",
+    "level": "medium"
+  },
+  {
+    "question": "How would you solve the 0/1 knapsack problem using dynamic programming, and what is its time complexity?",
+    "tag": "daa_knapsack",
+    "level": "medium"
+  },
+  {
+    "question": "How is the coin change problem solved with dynamic programming?",
+    "tag": "daa_dynamic_programming",
+    "level": "medium"
+  },
+  {
+    "question": "Why is naive recursive Fibonacci exponential, and how does dynamic programming fix it?",
+    "tag": "daa_dynamic_programming",
+    "level": "medium"
+  },
+  {
+    "question": "How does the recursion call stack work, and how can deep recursion cause problems?",
+    "tag": "daa_recursion",
+    "level": "medium"
+  },
+  {
+    "question": "How does backtracking solve the N-Queens problem?",
+    "tag": "daa_backtracking",
+    "level": "medium"
+  },
+  {
+    "question": "What are the methods for resolving hash collisions, such as chaining and open addressing?",
+    "tag": "daa_hashing",
+    "level": "medium"
+  },
+  {
+    "question": "When does hashing degrade to O(n) lookups?",
+    "tag": "daa_hashing",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between a balanced BST such as an AVL tree and an unbalanced BST?",
+    "tag": "daa_trees",
+    "level": "medium"
+  },
+  {
+    "question": "Why are heap operations O(log n), and how is a heap stored in an array?",
+    "tag": "daa_trees",
+    "level": "medium"
+  },
+  {
+    "question": "How do BFS and DFS differ in use cases, such as shortest paths in unweighted graphs and cycle detection?",
+    "tag": "daa_graph_traversal",
+    "level": "medium"
+  },
+  {
+    "question": "When would you prefer an adjacency list over an adjacency matrix?",
+    "tag": "daa_graphs",
+    "level": "medium"
+  },
+  {
+    "question": "How does Dijkstra's algorithm work, and why does it fail with negative edge weights?",
+    "tag": "daa_shortest_path",
+    "level": "medium"
+  },
+  {
+    "question": "How does the Bellman-Ford algorithm work, and how does it detect negative cycles?",
+    "tag": "daa_shortest_path",
+    "level": "medium"
+  },
+  {
+    "question": "How do Kruskal's and Prim's algorithms differ?",
+    "tag": "daa_mst",
+    "level": "medium"
+  },
+  {
+    "question": "How do you perform topological sorting, and what does it imply if the graph has a cycle?",
+    "tag": "daa_topological_sort",
+    "level": "medium"
+  },
+  {
+    "question": "How can the two-pointer technique find a pair with a given sum in a sorted array?",
+    "tag": "daa_two_pointers",
+    "level": "medium"
+  },
+  {
+    "question": "When is a sliding window better than brute force for subarray problems?",
+    "tag": "daa_sliding_window",
+    "level": "medium"
+  },
+  {
+    "question": "What is the difference between NP-hard and NP-complete problems?",
+    "tag": "daa_np_completeness",
+    "level": "medium"
+  },
+  {
+    "question": "What is a polynomial-time reduction, and why is it used to prove NP-completeness?",
+    "tag": "daa_np_completeness",
+    "level": "medium"
+  },
+  {
+    "question": "How do you decide between recursion and iteration for a problem?",
+    "tag": "daa_algorithm_design",
+    "level": "medium"
+  },
+  {
+    "question": "How would you determine whether a greedy algorithm is appropriate for an optimization problem rather than dynamic programming?",
+    "tag": "daa_algorithm_selection",
+    "level": "hard"
+  },
+  {
+    "question": "You must sort 100 million integers that do not fit in memory. How would you approach it?",
+    "tag": "daa_external_sorting",
+    "level": "hard"
+  },
+  {
+    "question": "Which data structure would you use to support insert, delete, and find-minimum efficiently, and how do the trade-offs compare to a balanced BST?",
+    "tag": "daa_algorithm_selection",
+    "level": "hard"
+  },
+  {
+    "question": "How would you reduce the space complexity of a DP solution such as LCS, and what do you lose by doing so?",
+    "tag": "daa_dynamic_programming",
+    "level": "hard"
+  },
+  {
+    "question": "How do you identify the state and transition for a new DP problem?",
+    "tag": "daa_dynamic_programming",
+    "level": "hard"
+  },
+  {
+    "question": "Why is the O(nW) solution of the 0/1 knapsack problem called pseudo-polynomial?",
+    "tag": "daa_knapsack",
+    "level": "hard"
+  },
+  {
+    "question": "How would you solve a recurrence such as T(n) = 2T(n/2) + n log n, where the basic master theorem does not directly apply?",
+    "tag": "daa_recurrence",
+    "level": "hard"
+  },
+  {
+    "question": "How would you solve T(n) = T(n/3) + T(2n/3) + n, and what does the result imply?",
+    "tag": "daa_recurrence",
+    "level": "hard"
+  },
+  {
+    "question": "How does randomized quick sort achieve expected O(n log n), and how does median-of-medians pivot selection affect this?",
+    "tag": "daa_sorting",
+    "level": "hard"
+  },
+  {
+    "question": "How would you find the k-th smallest element in an unsorted array in expected linear time?",
+    "tag": "daa_selection",
+    "level": "hard"
+  },
+  {
+    "question": "When would you use Floyd-Warshall instead of running Dijkstra from every vertex, and what are the trade-offs?",
+    "tag": "daa_shortest_path",
+    "level": "hard"
+  },
+  {
+    "question": "How would you adapt shortest-path search for a very large graph such as a road network, and what is A* search?",
+    "tag": "daa_shortest_path",
+    "level": "hard"
+  },
+  {
+    "question": "Explain why the cut property guarantees the correctness of Kruskal's and Prim's algorithms.",
+    "tag": "daa_mst",
+    "level": "hard"
+  },
+  {
+    "question": "How would you detect a cycle in a directed graph versus an undirected graph?",
+    "tag": "daa_graph_traversal",
+    "level": "hard"
+  },
+  {
+    "question": "How would you find strongly connected components in a directed graph?",
+    "tag": "daa_graph_traversal",
+    "level": "hard"
+  },
+  {
+    "question": "Why would a polynomial-time algorithm for any NP-complete problem imply P = NP?",
+    "tag": "daa_np_completeness",
+    "level": "hard"
+  },
+  {
+    "question": "How would you approach solving a problem you know is NP-hard in practice using approximation or heuristics?",
+    "tag": "daa_np_completeness",
+    "level": "hard"
+  },
+  {
+    "question": "What is the Traveling Salesman Problem, and how do exact and approximation approaches compare?",
+    "tag": "daa_np_completeness",
+    "level": "hard"
+  },
+  {
+    "question": "How does amortized analysis differ from average-case analysis, and what are the aggregate, accounting, and potential methods?",
+    "tag": "daa_amortized_analysis",
+    "level": "hard"
+  },
+  {
+    "question": "How does universal hashing protect against adversarial inputs, and how does the load factor affect performance?",
+    "tag": "daa_hashing",
+    "level": "hard"
+  },
+  {
+    "question": "Why do self-balancing trees guarantee O(log n) operations, and how do rotations restore balance?",
+    "tag": "daa_trees",
+    "level": "hard"
+  },
+  {
+    "question": "How would you analyze the time complexity of nested loops where the inner loop bounds depend on the outer loop variable?",
+    "tag": "daa_time_complexity",
+    "level": "hard"
+  },
+  {
+    "question": "A nested-loop solution times out on large input. How would you systematically find a more efficient algorithm?",
+    "tag": "daa_algorithm_selection",
+    "level": "hard"
+  },
+  {
+    "question": "How would you choose between BFS, Dijkstra, and A* for a routing problem on a map?",
+    "tag": "daa_algorithm_selection",
+    "level": "hard"
+  },
+  {
+    "question": "How do divide and conquer algorithms parallelize, and what limits their speedup?",
+    "tag": "daa_divide_conquer",
+    "level": "hard"
+  },
+  {
+    "question": "How would you prune the search space of a backtracking algorithm, and how does branch and bound differ from backtracking?",
+    "tag": "daa_backtracking",
+    "level": "hard"
+  }
+]

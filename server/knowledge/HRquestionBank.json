@@ -1,0 +1,1502 @@
+[
+  {
+    "question": "Are you comfortable working in shifts or flexible hours if the role requires it?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "Are you willing to relocate for this job?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "When would you be able to join if selected?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "Are you currently attending any other interviews or do you have other offers?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "What are your salary expectations for this role?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "Do you have any questions for us?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "How did you hear about this opening?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "Are you comfortable working from the office, remotely, or in a hybrid setup?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "Are you willing to sign a service agreement if the company requires one?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "Do you have any gap in your education that you would like to explain?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "What do you know about the role you have applied for?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "What does a typical workday look like in your ideal job?",
+    "tag": "hr_general",
+    "level": "easy"
+  },
+  {
+    "question": "Why should we hire you over other candidates?",
+    "tag": "hr_general",
+    "level": "medium"
+  },
+  {
+    "question": "How do you plan to handle the transition from college to a corporate environment?",
+    "tag": "hr_general",
+    "level": "medium"
+  },
+  {
+    "question": "What do you expect from your first manager?",
+    "tag": "hr_general",
+    "level": "medium"
+  },
+  {
+    "question": "If you were offered two jobs, one with a higher salary and one with better learning opportunities, how would you choose?",
+    "tag": "hr_general",
+    "level": "medium"
+  },
+  {
+    "question": "What would make you leave a job within the first year?",
+    "tag": "hr_general",
+    "level": "medium"
+  },
+  {
+    "question": "How would you describe your ideal work culture?",
+    "tag": "hr_general",
+    "level": "medium"
+  },
+  {
+    "question": "What would you do in your first 30 days to become productive in this role?",
+    "tag": "hr_general",
+    "level": "medium"
+  },
+  {
+    "question": "Convince us in one minute why you are the right fit, even though you have less experience than other applicants.",
+    "tag": "hr_general",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about yourself.",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "Walk me through your resume.",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about your educational background.",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "What are your hobbies and interests outside of studies?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "Why did you choose your college major?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "Which subject did you enjoy most during your studies, and why?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "Who has influenced you the most in your life?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "What do you do in your free time?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "How would your friends describe you in three words?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "What are you most proud of in your academic journey?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about a project you worked on during college.",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "What languages do you speak, and how comfortable are you communicating in each?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "What is one interesting fact about you that is not on your resume?",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "Describe your college life in a few sentences.",
+    "tag": "self_introduction",
+    "level": "easy"
+  },
+  {
+    "question": "What experiences in your life have shaped who you are today?",
+    "tag": "self_introduction",
+    "level": "medium"
+  },
+  {
+    "question": "How has your academic journey prepared you for a professional role?",
+    "tag": "self_introduction",
+    "level": "medium"
+  },
+  {
+    "question": "What is the one item on your resume you are most proud of, and why?",
+    "tag": "self_introduction",
+    "level": "medium"
+  },
+  {
+    "question": "Which extracurricular activity taught you the most, and what did you learn?",
+    "tag": "self_introduction",
+    "level": "medium"
+  },
+  {
+    "question": "How would you introduce yourself differently to a client than to a recruiter?",
+    "tag": "self_introduction",
+    "level": "medium"
+  },
+  {
+    "question": "If you had to summarize your personality and potential in one sentence for a hiring committee, what would it be and why?",
+    "tag": "self_introduction",
+    "level": "hard"
+  },
+  {
+    "question": "What are your greatest strengths?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "What is your biggest weakness?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "Which skill are you most confident about?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "Which skill would you like to improve this year?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "How would you rate yourself as a team player on a scale of one to ten?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "What do you think is your best personal quality?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "Which of your habits helps you succeed?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "What is something you find difficult to do?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "What do people usually compliment you on?",
+    "tag": "strengths_weaknesses",
+    "level": "easy"
+  },
+  {
+    "question": "How are you working to overcome your biggest weakness?",
+    "tag": "strengths_weaknesses",
+    "level": "medium"
+  },
+  {
+    "question": "Give an example of how one of your strengths helped you in a real situation.",
+    "tag": "strengths_weaknesses",
+    "level": "medium"
+  },
+  {
+    "question": "What feedback have you received that surprised you about yourself?",
+    "tag": "strengths_weaknesses",
+    "level": "medium"
+  },
+  {
+    "question": "How do you identify areas where you need to improve?",
+    "tag": "strengths_weaknesses",
+    "level": "medium"
+  },
+  {
+    "question": "Can any of your strengths become a weakness in certain situations?",
+    "tag": "strengths_weaknesses",
+    "level": "medium"
+  },
+  {
+    "question": "How do you handle tasks that fall outside your comfort zone?",
+    "tag": "strengths_weaknesses",
+    "level": "medium"
+  },
+  {
+    "question": "What have you learned about yourself from your biggest academic or personal setback?",
+    "tag": "strengths_weaknesses",
+    "level": "medium"
+  },
+  {
+    "question": "If your closest friend were asked to criticize you honestly, what would they say, and would they be right?",
+    "tag": "self_awareness",
+    "level": "hard"
+  },
+  {
+    "question": "Which of your weaknesses could realistically hurt your performance in this role, and how will you prevent that?",
+    "tag": "self_awareness",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time your self-perception differed sharply from how others saw you. How did you reconcile the two?",
+    "tag": "self_awareness",
+    "level": "hard"
+  },
+  {
+    "question": "How do you know when your confidence has crossed into overconfidence?",
+    "tag": "self_awareness",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time when you learned something new quickly.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about a goal you set and achieved.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about a time you helped someone in need.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Give an example of a time you were proud of your work.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Describe a time you received positive feedback and how it made you feel.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about a time you volunteered for something.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Describe a time you had to follow instructions very carefully.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about your most memorable achievement.",
+    "tag": "behavioral",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about a time you failed and what you learned from it.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time when you had to manage multiple deadlines.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you received constructive criticism and how you responded.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you went above and beyond what was expected of you.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you had to learn a skill with little guidance.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a situation where you made a mistake and corrected it.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you had to persuade someone to see your point of view.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you had to achieve a goal with limited resources.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you took ownership of a problem nobody asked you to solve.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you had to explain something complex to someone unfamiliar with it.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you had to deliver quickly without compromising quality.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a difficult goal you set for yourself and how you tracked your progress.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you had to decide without having all the information you needed.",
+    "tag": "behavioral",
+    "level": "medium"
+  },
+  {
+    "question": "Describe the biggest failure of your life and how it changed you.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time you disagreed with a mentor or senior and how it ended.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you let someone down and how you repaired the trust.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time your best effort was still not enough.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you had to deliver bad news to someone who would react badly.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time you had to choose between two equally important commitments.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you took a significant risk and it did not pay off.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time your plan completely fell apart halfway through.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you had to rebuild your reputation after a mistake.",
+    "tag": "behavioral",
+    "level": "hard"
+  },
+  {
+    "question": "What would you do if you did not understand an instruction given by your manager?",
+    "tag": "situational",
+    "level": "easy"
+  },
+  {
+    "question": "What would you do if you finished your assigned work earlier than expected?",
+    "tag": "situational",
+    "level": "easy"
+  },
+  {
+    "question": "How would you react if you were asked to stay late during your first week?",
+    "tag": "situational",
+    "level": "easy"
+  },
+  {
+    "question": "What would you do if you fell sick right before an important deadline?",
+    "tag": "situational",
+    "level": "easy"
+  },
+  {
+    "question": "What would you do if you could not answer a question a colleague asked you?",
+    "tag": "situational",
+    "level": "easy"
+  },
+  {
+    "question": "What would you do if you were assigned to a team full of people you do not know?",
+    "tag": "situational",
+    "level": "easy"
+  },
+  {
+    "question": "What would you do if your manager gave you feedback you believed was unfair?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "Two managers give you two urgent tasks at the same time. How would you handle this?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "What would you do if you realized you made a mistake in work you had already submitted?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "If a colleague takes credit for your work, how would you respond?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "What would you do if you were asked to take on a task you have no experience in?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "A teammate keeps missing deadlines, which affects your work. What would you do?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "If you were given a vague assignment with no clear instructions, how would you proceed?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "What would you do if you noticed a coworker struggling under a heavy workload?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "How would you respond if a senior colleague repeatedly interrupted you in meetings?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "If a client is unhappy with your work, how would you handle the conversation?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "Your project requirements change drastically a day before the deadline. What do you do?",
+    "tag": "situational",
+    "level": "medium"
+  },
+  {
+    "question": "You discover a serious error in a project on the day it is being delivered to a client. What do you do?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "Your manager asks you to commit to a deadline you believe is impossible. How do you respond?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "You find out a teammate is falsifying their work hours. What would you do?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "Your team is divided on a decision, the deadline is near, and neither side will compromise. How would you act?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "You are asked to lead a project, but a more senior teammate resents it. How do you proceed?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "Halfway through a crucial project, you receive a better-paying job offer elsewhere. What do you do?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "You overhear colleagues speaking negatively about your manager. What do you do?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "You are praised for a success that was largely a teammate's work. What do you do?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "Your manager is unreachable and a critical decision must be made immediately. What do you do?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "You realize midway through a project that you are far behind and cannot finish alone. How do you handle it?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "A friend at the company asks you to share confidential information. How do you respond?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "You are asked to mentor someone who has more experience than you. How would you approach it?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "You learn that your project will be cancelled after you have spent months on it. How do you react?",
+    "tag": "situational",
+    "level": "hard"
+  },
+  {
+    "question": "What role do you usually take in a team?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "Do you prefer working alone or in a team, and why?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "How do you contribute to a positive team environment?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "What makes a team successful in your opinion?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "How do you help a new teammate settle in?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "What do you do when your teammates ask you for help?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about a group project you enjoyed working on.",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "How do you share credit when your team succeeds?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "How do you keep your teammates updated on your progress?",
+    "tag": "teamwork",
+    "level": "easy"
+  },
+  {
+    "question": "Describe a time your team faced a challenge and how you contributed to overcoming it.",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "How do you handle a teammate who is not contributing equally?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "How do you ensure everyone's ideas are heard in a group discussion?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you had to compromise for the sake of the team.",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "How do you work with team members whose working styles differ from yours?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you supported a struggling teammate.",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "How do you balance your individual goals with team goals?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time a team you were in did not meet its goal. What was your role?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "How do you give feedback to a teammate?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "How do you collaborate effectively with teammates in different time zones?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "How do you build trust with teammates you have just met?",
+    "tag": "teamwork",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you had to work with someone you strongly disliked. How did you manage?",
+    "tag": "teamwork",
+    "level": "hard"
+  },
+  {
+    "question": "What would you do if your team's approach was clearly failing but everyone resisted change?",
+    "tag": "teamwork",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time your team's success required you to sacrifice personal recognition.",
+    "tag": "teamwork",
+    "level": "hard"
+  },
+  {
+    "question": "How would you handle a team in which one dominant member overshadows everyone else?",
+    "tag": "teamwork",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you were the weakest member of a team. How did you respond?",
+    "tag": "teamwork",
+    "level": "hard"
+  },
+  {
+    "question": "Do you consider yourself a leader or a follower?",
+    "tag": "leadership",
+    "level": "easy"
+  },
+  {
+    "question": "Which leader do you admire and why?",
+    "tag": "leadership",
+    "level": "easy"
+  },
+  {
+    "question": "What qualities make a good leader?",
+    "tag": "leadership",
+    "level": "easy"
+  },
+  {
+    "question": "Have you ever held a leadership position in college?",
+    "tag": "leadership",
+    "level": "easy"
+  },
+  {
+    "question": "How do you motivate yourself and others?",
+    "tag": "leadership",
+    "level": "easy"
+  },
+  {
+    "question": "Describe a time you took initiative without being asked.",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you led a group to complete a task.",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "How do you delegate tasks when leading peers?",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "Give an example of a time you inspired others to take action.",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "How would you lead a team that is demotivated?",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you stepped up when no one else would.",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "How do you handle leading friends or peers?",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you introduced an improvement on your own.",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "How do you lead without formal authority?",
+    "tag": "leadership",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time your leadership decision led to a poor outcome. What did you learn?",
+    "tag": "leadership",
+    "level": "hard"
+  },
+  {
+    "question": "How would you lead a team through a failure that was your own fault?",
+    "tag": "leadership",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time you had to make an unpopular decision as a leader.",
+    "tag": "leadership",
+    "level": "hard"
+  },
+  {
+    "question": "How would you lead a team whose members are more experienced than you?",
+    "tag": "leadership",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you had to hold a friend accountable.",
+    "tag": "leadership",
+    "level": "hard"
+  },
+  {
+    "question": "How do you balance being liked and being respected as a leader?",
+    "tag": "leadership",
+    "level": "hard"
+  },
+  {
+    "question": "How do you usually handle disagreements?",
+    "tag": "conflict_resolution",
+    "level": "easy"
+  },
+  {
+    "question": "Have you ever disagreed with a friend or classmate? How was it resolved?",
+    "tag": "conflict_resolution",
+    "level": "easy"
+  },
+  {
+    "question": "How do you stay calm when someone is upset with you?",
+    "tag": "conflict_resolution",
+    "level": "easy"
+  },
+  {
+    "question": "Tell me about a conflict you had at college or work and how you resolved it.",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "How do you handle a coworker who is rude or dismissive?",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "What would you do if two teammates argued and both asked you to take their side?",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "How do you approach a conversation with someone who holds a different opinion?",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "How do you respond when someone criticizes you in front of others?",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you had a misunderstanding with a teammate due to poor communication.",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "How do you deal with a manager whose style conflicts with yours?",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "How do you resolve a disagreement over how to divide work?",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "How do you rebuild a relationship after an argument?",
+    "tag": "conflict_resolution",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a conflict in which you were wrong. How did you handle admitting it?",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "What would you do if a conflict between two teammates started affecting the project?",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time you had to stand your ground against a group.",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "How would you handle a colleague who spreads rumors about you?",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you mediated a dispute between two people you respected.",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "What would you do if a senior team member repeatedly belittled your ideas?",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "How would you handle a conflict with a client who refuses to accept your explanation?",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a conflict you could not resolve. What would you do differently now?",
+    "tag": "conflict_resolution",
+    "level": "hard"
+  },
+  {
+    "question": "How do you make decisions when you are unsure?",
+    "tag": "decision_making",
+    "level": "easy"
+  },
+  {
+    "question": "How do you prioritize your daily tasks?",
+    "tag": "decision_making",
+    "level": "easy"
+  },
+  {
+    "question": "Describe a difficult decision you made and how you arrived at it.",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "How do you decide between speed and quality when time is short?",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "What factors do you consider before making an important decision?",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "How do you handle decisions that affect other people?",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "When do you ask for advice rather than deciding alone?",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "How do you prioritize when everything seems urgent?",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a decision you regret and what you would do differently.",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "How do you evaluate risks before taking action?",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "If you managed a small team, how would you decide which tasks to delegate?",
+    "tag": "decision_making",
+    "level": "medium"
+  },
+  {
+    "question": "If you had to choose between meeting a deadline and delivering perfect work, which would you choose and why?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "How would you decide who to remove from a project when resources are cut?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "You must choose between two good candidates for a team role, one more skilled and one a better cultural fit. Who do you pick?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "How would you decide when your data and your gut feeling disagree?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "How would you manage a team member who consistently underperforms but is well liked?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "If your manager's decision seemed wrong, would you follow it or challenge it?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "How would you allocate a limited budget across three equally important projects?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "How would you decide whether to continue or abandon a project that is behind schedule?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "How do you make decisions under extreme time pressure with incomplete information?",
+    "tag": "decision_making",
+    "level": "hard"
+  },
+  {
+    "question": "Where do you see yourself in five years?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What are your short-term career goals?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What are your long-term career goals?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What kind of role do you want to grow into?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What skills do you want to develop in your first job?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "Why did you choose a career in software?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "Do you plan to pursue higher studies in the future?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What does success mean to you?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "Who inspires you in your chosen profession?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What do you want to achieve in your first year at work?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What kind of work makes you happiest?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "What are you currently doing to prepare for your career?",
+    "tag": "career_goals",
+    "level": "easy"
+  },
+  {
+    "question": "How does this role fit into your long-term career plan?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "What would you do if your career did not progress as quickly as you planned?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "How do you plan to keep your skills relevant in a changing industry?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "Would you prefer a specialist or a generalist career path, and why?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "How do you decide between a higher-paying job and a role with better learning?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "What steps have you taken so far toward your career goals?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "How do you plan to balance career growth and personal life?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "What would you like to be known for professionally?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "Would you consider moving into management in the future?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "What type of mentor would help you most in your early career?",
+    "tag": "career_goals",
+    "level": "medium"
+  },
+  {
+    "question": "If this job did not match your expectations after six months, what would you do?",
+    "tag": "career_goals",
+    "level": "hard"
+  },
+  {
+    "question": "If your long-term plan requires leaving this company one day, how should we view your commitment?",
+    "tag": "career_goals",
+    "level": "hard"
+  },
+  {
+    "question": "What would you do if your dream career turned out to be a poor fit for you?",
+    "tag": "career_goals",
+    "level": "hard"
+  },
+  {
+    "question": "Why do you want to work for our company?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "What do you know about our company?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "Why did you apply for this position?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "What attracted you to this job opening?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "What do you know about our products or services?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "How did you prepare for this interview?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "What do you like most about our company's work?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "Why do you want to start your career in this industry?",
+    "tag": "company_fit",
+    "level": "easy"
+  },
+  {
+    "question": "What can you contribute to our company in your first year?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "How do our company values align with yours?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "Would you prefer working at a startup, a service company, or a product company, and why?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "What would you change about our company if you could?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "What kind of work culture helps you perform best?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "How would you fit into our existing team culture?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "What do you think are the biggest challenges of this role?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "What makes you a good match for our company's mission?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "How do you feel about working in a fast-paced environment like ours?",
+    "tag": "company_fit",
+    "level": "medium"
+  },
+  {
+    "question": "What concerns do you have about joining our company, and how might we address them?",
+    "tag": "company_fit",
+    "level": "hard"
+  },
+  {
+    "question": "If a competitor offered you a better package tomorrow, what would make you stay with us?",
+    "tag": "company_fit",
+    "level": "hard"
+  },
+  {
+    "question": "How would you handle a situation where company priorities conflict with your personal interests?",
+    "tag": "company_fit",
+    "level": "hard"
+  },
+  {
+    "question": "How would you rate your communication skills?",
+    "tag": "communication",
+    "level": "easy"
+  },
+  {
+    "question": "Do you prefer written or verbal communication?",
+    "tag": "communication",
+    "level": "easy"
+  },
+  {
+    "question": "How do you make sure you are understood when giving instructions?",
+    "tag": "communication",
+    "level": "easy"
+  },
+  {
+    "question": "How do you approach writing a professional email?",
+    "tag": "communication",
+    "level": "easy"
+  },
+  {
+    "question": "How comfortable are you speaking in front of a group?",
+    "tag": "communication",
+    "level": "easy"
+  },
+  {
+    "question": "What do you do when you do not understand what someone is telling you?",
+    "tag": "communication",
+    "level": "easy"
+  },
+  {
+    "question": "How do you adapt your communication style for different audiences?",
+    "tag": "communication",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time poor communication caused a problem and how you fixed it.",
+    "tag": "communication",
+    "level": "medium"
+  },
+  {
+    "question": "How do you give a status update to a manager who is very busy?",
+    "tag": "communication",
+    "level": "medium"
+  },
+  {
+    "question": "How do you explain a complicated idea to someone unfamiliar with it?",
+    "tag": "communication",
+    "level": "medium"
+  },
+  {
+    "question": "How do you express disagreement respectfully?",
+    "tag": "communication",
+    "level": "medium"
+  },
+  {
+    "question": "How do you keep communication clear in remote work settings?",
+    "tag": "communication",
+    "level": "medium"
+  },
+  {
+    "question": "How would you communicate a missed deadline to a client who is already frustrated?",
+    "tag": "communication",
+    "level": "hard"
+  },
+  {
+    "question": "How would you deliver critical feedback to a teammate without damaging the relationship?",
+    "tag": "communication",
+    "level": "hard"
+  },
+  {
+    "question": "Describe a time you had to convey a difficult message under pressure. What did you say and what happened?",
+    "tag": "communication",
+    "level": "hard"
+  },
+  {
+    "question": "What does integrity mean to you in a workplace?",
+    "tag": "ethics",
+    "level": "easy"
+  },
+  {
+    "question": "How do you handle a mistake that no one else has noticed?",
+    "tag": "accountability",
+    "level": "medium"
+  },
+  {
+    "question": "What would you do if you saw a colleague taking office supplies for personal use?",
+    "tag": "accountability",
+    "level": "medium"
+  },
+  {
+    "question": "How do you maintain the confidentiality of sensitive information?",
+    "tag": "accountability",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a time you took responsibility for a team failure.",
+    "tag": "accountability",
+    "level": "medium"
+  },
+  {
+    "question": "How would you react if you were asked to exaggerate your work in a report?",
+    "tag": "accountability",
+    "level": "medium"
+  },
+  {
+    "question": "Why is honesty important in a professional setting?",
+    "tag": "accountability",
+    "level": "medium"
+  },
+  {
+    "question": "Describe a situation where you chose the right thing over the easy thing.",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "What would you do if your manager asked you to bend the rules to meet a deadline?",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "If you found out a teammate had plagiarized, would you report them even if they were your friend?",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "You discover that a colleague's mistake was blamed on you. How do you respond?",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "How would you handle being asked to hide a mistake from a client?",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "Would you ever lie to protect a teammate? Explain your reasoning.",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "What would you do if you accidentally received confidential data belonging to another company?",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "How do you hold yourself accountable when no one is checking your work?",
+    "tag": "ethics",
+    "level": "hard"
+  },
+  {
+    "question": "How do you handle change?",
+    "tag": "adaptability",
+    "level": "easy"
+  },
+  {
+    "question": "How do you learn new things?",
+    "tag": "adaptability",
+    "level": "easy"
+  },
+  {
+    "question": "How do you stay motivated when work becomes repetitive?",
+    "tag": "adaptability",
+    "level": "easy"
+  },
+  {
+    "question": "What do you do when you face a setback?",
+    "tag": "adaptability",
+    "level": "easy"
+  },
+  {
+    "question": "How do you handle stress?",
+    "tag": "adaptability",
+    "level": "easy"
+  },
+  {
+    "question": "Describe a time you had to adapt quickly to a new environment.",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "How do you stay updated and keep learning outside your coursework?",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "Tell me about a time you had to learn something outside your comfort zone.",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "How do you recover after receiving negative feedback?",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "How would you handle being switched to a different project suddenly?",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "How do you balance multiple responsibilities during busy periods?",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "What do you do when a plan you made stops working?",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "How do you stay productive when working with little supervision?",
+    "tag": "adaptability",
+    "level": "medium"
+  },
+  {
+    "question": "Describe the most difficult period of your studies or work and how you got through it.",
+    "tag": "resilience",
+    "level": "hard"
+  },
+  {
+    "question": "How would you cope if your first job turned out to be very different from what you expected?",
+    "tag": "resilience",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time you had to unlearn something you were sure was right.",
+    "tag": "resilience",
+    "level": "hard"
+  },
+  {
+    "question": "How do you maintain performance when you are burned out?",
+    "tag": "resilience",
+    "level": "hard"
+  },
+  {
+    "question": "Tell me about a time you were thrown into a situation you were totally unprepared for.",
+    "tag": "resilience",
+    "level": "hard"
+  },
+  {
+    "question": "How would you respond if your role was changed completely after you joined?",
+    "tag": "resilience",
+    "level": "hard"
+  },
+  {
+    "question": "How do you handle repeated rejection after giving your best effort?",
+    "tag": "resilience",
+    "level": "hard"
+  }
+]

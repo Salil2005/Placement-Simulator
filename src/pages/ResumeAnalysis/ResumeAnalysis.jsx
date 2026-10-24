@@ -22,11 +22,6 @@ export default function ResumeAnalysis() {
   const [actionSuccess, setActionSuccess] = useState(null);
   const fileRef = useRef(null);
 
-  // Quick Add Toolbar State
-  const [quickField, setQuickField] = useState("coreCsSubjects");
-  const [quickValue, setQuickValue] = useState("");
-  const [quickLoading, setQuickLoading] = useState(false);
-
   useEffect(() => {
     resumeService
       .get()
@@ -98,13 +93,96 @@ export default function ResumeAnalysis() {
     }
   };
 
-  const handleQuickAdd = async (e) => {
-    e.preventDefault();
-    if (!quickValue.trim() || quickLoading) return;
-    setQuickLoading(true);
-    const ok = await handleAddItem(quickField, quickValue);
-    setQuickLoading(false);
-    if (ok) setQuickValue("");
+  // Projects Handlers
+  const handleAddProject = async (data) => {
+    setError(null);
+    setActionSuccess(null);
+    try {
+      const { profile: updated } = await resumeService.addProject(data);
+      setProfile(updated);
+      setActionSuccess(`Added project "${data.title || "Project"}"!`);
+      setTimeout(() => setActionSuccess(null), 3000);
+      return true;
+    } catch (err) {
+      setError(err?.response?.data?.error || err.message);
+      return false;
+    }
+  };
+
+  const handleUpdateProject = async (index, data) => {
+    setError(null);
+    setActionSuccess(null);
+    try {
+      const { profile: updated } = await resumeService.updateProject(index, data);
+      setProfile(updated);
+      setActionSuccess(`Updated project "${data.title || "Project"}"!`);
+      setTimeout(() => setActionSuccess(null), 3000);
+      return true;
+    } catch (err) {
+      setError(err?.response?.data?.error || err.message);
+      return false;
+    }
+  };
+
+  const handleDeleteProject = async (index) => {
+    setError(null);
+    setActionSuccess(null);
+    try {
+      const { profile: updated } = await resumeService.deleteProject(index);
+      setProfile(updated);
+      setActionSuccess("Project removed.");
+      setTimeout(() => setActionSuccess(null), 3000);
+      return true;
+    } catch (err) {
+      setError(err?.response?.data?.error || err.message);
+      return false;
+    }
+  };
+
+  // Experience Handlers
+  const handleAddExperience = async (data) => {
+    setError(null);
+    setActionSuccess(null);
+    try {
+      const { profile: updated } = await resumeService.addExperience(data);
+      setProfile(updated);
+      setActionSuccess(`Added experience "${data.role || data.company || "Entry"}"!`);
+      setTimeout(() => setActionSuccess(null), 3000);
+      return true;
+    } catch (err) {
+      setError(err?.response?.data?.error || err.message);
+      return false;
+    }
+  };
+
+  const handleUpdateExperience = async (index, data) => {
+    setError(null);
+    setActionSuccess(null);
+    try {
+      const { profile: updated } = await resumeService.updateExperience(index, data);
+      setProfile(updated);
+      setActionSuccess("Updated experience entry!");
+      setTimeout(() => setActionSuccess(null), 3000);
+      return true;
+    } catch (err) {
+      setError(err?.response?.data?.error || err.message);
+      return false;
+    }
+  };
+
+  const handleDeleteExperience = async (index) => {
+    setError(null);
+    setActionSuccess(null);
+    try {
+      const { profile: updated } = await resumeService.deleteExperience(index);
+      setProfile(updated);
+      setActionSuccess("Experience entry removed.");
+      setTimeout(() => setActionSuccess(null), 3000);
+      return true;
+    } catch (err) {
+      setError(err?.response?.data?.error || err.message);
+      return false;
+    }
   };
 
   if (loading) return <Loader fullScreen label="Loading resume analysis..." />;
@@ -164,51 +242,6 @@ export default function ResumeAnalysis() {
         </Card>
       ) : (
         <>
-          {/* Quick Add Missing Skills Bar */}
-          <Card className="mb-8 border-brand-200/80 bg-gradient-to-r from-brand-50/40 to-indigo-50/20 dark:border-brand-900/40 dark:from-brand-950/20 dark:to-slate-900">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 className="text-sm font-bold text-brand-700 dark:text-brand-300">
-                  Missing a Skill, Language, Database, or Core Subject?
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  If any subject or skill wasn't extracted from your resume, manually add it here to include it in analysis.
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handleQuickAdd} className="flex flex-col gap-2 sm:flex-row">
-              <select
-                value={quickField}
-                onChange={(e) => setQuickField(e.target.value)}
-                className="input sm:w-56"
-              >
-                {CATEGORY_CONFIG.map((cat) => (
-                  <option key={cat.field} value={cat.field}>
-                    {cat.title}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                value={quickValue}
-                onChange={(e) => setQuickValue(e.target.value)}
-                placeholder={
-                  CATEGORY_CONFIG.find((c) => c.field === quickField)?.placeholder ||
-                  "Enter item name..."
-                }
-                className="input flex-1"
-              />
-              <button
-                type="submit"
-                disabled={!quickValue.trim() || quickLoading}
-                className="btn-primary whitespace-nowrap"
-              >
-                {quickLoading ? "Adding..." : "+ Add to Profile"}
-              </button>
-            </form>
-          </Card>
-
           {/* Extracted profile with inline additions */}
           <div className="mb-8 grid gap-6 md:grid-cols-2">
             {CATEGORY_CONFIG.map((cat) => (
@@ -225,12 +258,21 @@ export default function ResumeAnalysis() {
             ))}
           </div>
 
-          {(profile.projects?.length > 0 || profile.experience?.length > 0) && (
-            <div className="mb-8 grid gap-6 md:grid-cols-2">
-              <ListCard title="Projects" items={profile.projects} />
-              <ListCard title="Experience" items={profile.experience} />
-            </div>
-          )}
+          {/* Editable Projects and Experience Sections */}
+          <div className="mb-8 grid gap-6 lg:grid-cols-2">
+            <ProjectsCard
+              projects={profile.projects || []}
+              onAdd={handleAddProject}
+              onUpdate={handleUpdateProject}
+              onDelete={handleDeleteProject}
+            />
+            <ExperienceCard
+              experience={profile.experience || []}
+              onAdd={handleAddExperience}
+              onUpdate={handleUpdateExperience}
+              onDelete={handleDeleteExperience}
+            />
+          </div>
 
           {/* Analysis */}
           {hasAnalysis ? (
@@ -384,46 +426,787 @@ function ChipCard({
   );
 }
 
-function ListCard({ title, items }) {
-  if (!items?.length) return null;
+function ProjectsCard({ projects = [], onAdd, onUpdate, onDelete }) {
+  const [adding, setAdding] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleStartEdit = (index, project) => {
+    setEditingIndex(index);
+    setEditTitle(project?.title || "");
+    setEditDescription(project?.description || "");
+    setAdding(false);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditTitle("");
+    setEditDescription("");
+    setIsModalOpen(false);
+  };
+
+  const handleSaveEdit = async (index) => {
+    if (!editTitle.trim() && !editDescription.trim()) return;
+    setBusy(true);
+    const ok = await onUpdate(index, { title: editTitle.trim(), description: editDescription.trim() });
+    setBusy(false);
+    if (ok) {
+      setEditingIndex(null);
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!newTitle.trim() && !newDescription.trim()) return;
+    setBusy(true);
+    const ok = await onAdd({ title: newTitle.trim(), description: newDescription.trim() });
+    setBusy(false);
+    if (ok) {
+      setNewTitle("");
+      setNewDescription("");
+      setAdding(false);
+    }
+  };
+
+  const handleDelete = async (index) => {
+    if (window.confirm("Are you sure you want to delete this project?")) {
+      await onDelete(index);
+    }
+  };
 
   return (
-    <Card>
-      <h3 className="mb-3 font-bold">{title}</h3>
-      <ul className="space-y-3 text-sm">
-        {items.map((item, i) => {
-          if (item && typeof item === "object") {
-            const heading = item.title || item.role || "";
-            const sub     = item.company ? `${item.company}` : "";
-            const body    = item.description || "";
-            return (
-              <li key={i} className="border-l-2 border-brand-500 pl-3">
-                {heading && (
-                  <p className="font-semibold text-slate-800 dark:text-slate-100">
-                    {heading}
-                    {sub && (
-                      <span className="ml-2 text-xs font-normal text-slate-500 dark:text-slate-400">
-                        @ {sub}
+    <Card className="flex flex-col h-full">
+      <div className="mb-4 flex items-center justify-between gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <h3 className="font-bold text-base text-slate-800 dark:text-slate-100">Projects</h3>
+          <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-600 dark:bg-brand-950/50 dark:text-brand-300">
+            {projects.length}
+          </span>
+        </div>
+        {!adding && (
+          <button
+            type="button"
+            onClick={() => {
+              setAdding(true);
+              setEditingIndex(null);
+            }}
+            className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 hover:underline flex items-center gap-1"
+          >
+            + Add Project
+          </button>
+        )}
+      </div>
+
+      {/* Add Form */}
+      {adding && (
+        <form onSubmit={handleCreate} className="mb-4 rounded-2xl border border-brand-200/90 bg-brand-50/40 p-5 dark:border-brand-900/50 dark:bg-brand-950/30">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm font-bold text-brand-700 dark:text-brand-300">Add New Project</p>
+            <span className="text-xs text-slate-400">Context details</span>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Project Title
+              </label>
+              <input
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Project Title (e.g. AI-powered Customer Support Assistant)"
+                className="input py-2.5 px-3.5 text-sm"
+                autoFocus
+              />
+            </div>
+            <div>
+              <div className="mb-1 flex items-center justify-between">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Project Description & Key Tech
+                </label>
+                <span className="text-[11px] text-slate-400">{newDescription.length} chars</span>
+              </div>
+              <textarea
+                value={newDescription}
+                onChange={(e) => setNewDescription(e.target.value)}
+                rows={6}
+                placeholder="Describe key technologies used, core responsibilities, architecture, and impact..."
+                className="input min-h-[160px] py-3 px-3.5 text-sm leading-relaxed resize-y"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-200/60 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setAdding(false);
+                  setNewTitle("");
+                  setNewDescription("");
+                }}
+                disabled={busy}
+                className="btn-secondary py-2 px-4 text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={(!newTitle.trim() && !newDescription.trim()) || busy}
+                className="btn-primary py-2 px-5 text-sm font-semibold shadow-soft"
+              >
+                {busy ? "Saving..." : "Save Project"}
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
+      {/* Projects List */}
+      {projects.length > 0 ? (
+        <div className="space-y-4 flex-1 overflow-y-auto">
+          {projects.map((project, i) => {
+            const isEditing = editingIndex === i;
+
+            if (isEditing) {
+              return (
+                <div key={i} className="rounded-2xl border-2 border-brand-400 bg-white p-5 shadow-lg dark:border-brand-500/60 dark:bg-slate-900">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700 dark:bg-brand-900/60 dark:text-brand-300">
+                        #{i + 1}
                       </span>
+                      <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                        Edit Project #{i + 1}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsModalOpen(true)}
+                      title="Expand to Full Modal"
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <span>⤢</span>
+                      <span>Expand Modal</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        Project Title
+                      </label>
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        placeholder="Project Title"
+                        className="input py-2.5 px-3.5 text-sm font-medium"
+                        autoFocus
+                      />
+                    </div>
+
+                    <div>
+                      <div className="mb-1 flex items-center justify-between">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          Project Description & Context
+                        </label>
+                        <span className="text-[11px] text-slate-400">{editDescription.length} characters</span>
+                      </div>
+                      <textarea
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        rows={10}
+                        placeholder="Detailed description, technologies used, responsibilities, and achievements..."
+                        className="input min-h-[220px] py-3 px-3.5 text-sm leading-relaxed resize-y font-normal"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        disabled={busy}
+                        className="btn-secondary px-4 py-2 text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSaveEdit(i)}
+                        disabled={(!editTitle.trim() && !editDescription.trim()) || busy}
+                        className="btn-primary px-5 py-2 text-sm font-semibold shadow-soft"
+                      >
+                        {busy ? "Saving..." : "Save Changes"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div
+                key={i}
+                className="group relative rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-all hover:border-slate-200 hover:bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-900/40 dark:hover:border-slate-700 dark:hover:bg-slate-900/80"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 pr-2">
+                    <p className="font-semibold text-base text-slate-800 dark:text-slate-100">
+                      {project?.title || "Untitled Project"}
+                    </p>
+                    {project?.description && (
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                        {project.description}
+                      </p>
                     )}
-                  </p>
-                )}
-                {body && (
-                  <p className="mt-1 text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {body}
-                  </p>
-                )}
-              </li>
+                  </div>
+                  <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <button
+                      type="button"
+                      onClick={() => handleStartEdit(i, project)}
+                      title="Edit project"
+                      className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-200/70 hover:text-brand-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(i)}
+                      title="Delete project"
+                      className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-red-50 hover:text-red-600 dark:text-slate-300 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
             );
-          }
-          return (
-            <li key={i} className="flex gap-2">
-              <span>•</span>
-              {String(item)}
-            </li>
-          );
-        })}
-      </ul>
+          })}
+        </div>
+      ) : (
+        <div className="py-6 text-center">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
+            No projects listed yet.{" "}
+            {!adding && (
+              <button
+                type="button"
+                onClick={() => setAdding(true)}
+                className="text-brand-600 hover:underline dark:text-brand-400 font-medium"
+              >
+                Add one now
+              </button>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* Expanded Modal View for Project Editing */}
+      {isModalOpen && editingIndex !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 max-h-[90vh] flex flex-col">
+            <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50">
+                  Edit Project #{editingIndex + 1} (Expanded View)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Enjoy large, comfortable editing space for your project details.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 overflow-y-auto flex-1 pr-1">
+              <div>
+                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Project Title
+                </label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="Project Title"
+                  className="input py-2.5 px-3.5 text-sm font-medium"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <div className="mb-1 flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Project Description & Context
+                  </label>
+                  <span className="text-[11px] text-slate-400">{editDescription.length} characters</span>
+                </div>
+                <textarea
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  rows={13}
+                  placeholder="Detailed description, technologies used, responsibilities, and achievements..."
+                  className="input min-h-[300px] py-3 px-3.5 text-sm leading-relaxed resize-y font-normal"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-end gap-3 border-t border-slate-100 pt-3 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  handleCancelEdit();
+                }}
+                disabled={busy}
+                className="btn-secondary px-4 py-2 text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await handleSaveEdit(editingIndex);
+                }}
+                disabled={(!editTitle.trim() && !editDescription.trim()) || busy}
+                className="btn-primary px-6 py-2 text-sm font-semibold shadow-soft"
+              >
+                {busy ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </Card>
+  );
+}
+
+function ExperienceCard({ experience = [], onAdd, onUpdate, onDelete }) {
+  const [adding, setAdding] = useState(false);
+  const [newRole, setNewRole] = useState("");
+  const [newCompany, setNewCompany] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editRole, setEditRole] = useState("");
+  const [editCompany, setEditCompany] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleStartEdit = (index, exp) => {
+    setEditingIndex(index);
+    setEditRole(exp?.role || "");
+    setEditCompany(exp?.company || "");
+    setEditDescription(exp?.description || "");
+    setAdding(false);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditRole("");
+    setEditCompany("");
+    setEditDescription("");
+    setIsModalOpen(false);
+  };
+
+  const handleSaveEdit = async (index) => {
+    if (!editRole.trim() && !editCompany.trim() && !editDescription.trim()) return;
+    setBusy(true);
+    const ok = await onUpdate(index, {
+      role: editRole.trim(),
+      company: editCompany.trim(),
+      description: editDescription.trim(),
+    });
+    setBusy(false);
+    if (ok) {
+      setEditingIndex(null);
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!newRole.trim() && !newCompany.trim() && !newDescription.trim()) return;
+    setBusy(true);
+    const ok = await onAdd({
+      role: newRole.trim(),
+      company: newCompany.trim(),
+      description: newDescription.trim(),
+    });
+    setBusy(false);
+    if (ok) {
+      setNewRole("");
+      setNewCompany("");
+      setNewDescription("");
+      setAdding(false);
+    }
+  };
+
+  const handleDelete = async (index) => {
+    if (window.confirm("Are you sure you want to delete this experience entry?")) {
+      await onDelete(index);
+    }
+  };
+
+  return (
+    <Card className="flex flex-col h-full">
+      <div className="mb-4 flex items-center justify-between gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <h3 className="font-bold text-base text-slate-800 dark:text-slate-100">Experience</h3>
+          <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-600 dark:bg-brand-950/50 dark:text-brand-300">
+            {experience.length}
+          </span>
+        </div>
+        {!adding && (
+          <button
+            type="button"
+            onClick={() => {
+              setAdding(true);
+              setEditingIndex(null);
+            }}
+            className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 hover:underline flex items-center gap-1"
+          >
+            + Add Experience
+          </button>
+        )}
+      </div>
+
+      {/* Add Form */}
+      {adding && (
+        <form onSubmit={handleCreate} className="mb-4 rounded-2xl border border-brand-200/90 bg-brand-50/40 p-5 dark:border-brand-900/50 dark:bg-brand-950/30">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm font-bold text-brand-700 dark:text-brand-300">Add Work Experience</p>
+            <span className="text-xs text-slate-400">Role & history</span>
+          </div>
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Role / Title
+                </label>
+                <input
+                  type="text"
+                  value={newRole}
+                  onChange={(e) => setNewRole(e.target.value)}
+                  placeholder="Role / Title (e.g. SDE Intern)"
+                  className="input py-2.5 px-3.5 text-sm"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Company / Organization
+                </label>
+                <input
+                  type="text"
+                  value={newCompany}
+                  onChange={(e) => setNewCompany(e.target.value)}
+                  placeholder="Company (e.g. Google, TechCorp)"
+                  className="input py-2.5 px-3.5 text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <div className="mb-1 flex items-center justify-between">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Responsibilities & Achievements
+                </label>
+                <span className="text-[11px] text-slate-400">{newDescription.length} chars</span>
+              </div>
+              <textarea
+                value={newDescription}
+                onChange={(e) => setNewDescription(e.target.value)}
+                rows={6}
+                placeholder="Responsibilities, achievements, technologies used, impact..."
+                className="input min-h-[160px] py-3 px-3.5 text-sm leading-relaxed resize-y"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-200/60 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setAdding(false);
+                  setNewRole("");
+                  setNewCompany("");
+                  setNewDescription("");
+                }}
+                disabled={busy}
+                className="btn-secondary py-2 px-4 text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={(!newRole.trim() && !newCompany.trim() && !newDescription.trim()) || busy}
+                className="btn-primary py-2 px-5 text-sm font-semibold shadow-soft"
+              >
+                {busy ? "Saving..." : "Save Experience"}
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
+      {/* Experience List */}
+      {experience.length > 0 ? (
+        <div className="space-y-4 flex-1 overflow-y-auto">
+          {experience.map((exp, i) => {
+            const isEditing = editingIndex === i;
+
+            if (isEditing) {
+              return (
+                <div key={i} className="rounded-2xl border-2 border-brand-400 bg-white p-5 shadow-lg dark:border-brand-500/60 dark:bg-slate-900">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700 dark:bg-brand-900/60 dark:text-brand-300">
+                        #{i + 1}
+                      </span>
+                      <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                        Edit Experience #{i + 1}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsModalOpen(true)}
+                      title="Expand to Full Modal"
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <span>⤢</span>
+                      <span>Expand Modal</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          Role / Title
+                        </label>
+                        <input
+                          type="text"
+                          value={editRole}
+                          onChange={(e) => setEditRole(e.target.value)}
+                          placeholder="Role / Title"
+                          className="input py-2.5 px-3.5 text-sm font-medium"
+                          autoFocus
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          Company / Organization
+                        </label>
+                        <input
+                          type="text"
+                          value={editCompany}
+                          onChange={(e) => setEditCompany(e.target.value)}
+                          placeholder="Company"
+                          className="input py-2.5 px-3.5 text-sm font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="mb-1 flex items-center justify-between">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          Responsibilities & Achievements
+                        </label>
+                        <span className="text-[11px] text-slate-400">{editDescription.length} characters</span>
+                      </div>
+                      <textarea
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        rows={10}
+                        placeholder="Responsibilities, achievements, technologies used, impact..."
+                        className="input min-h-[220px] py-3 px-3.5 text-sm leading-relaxed resize-y font-normal"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        disabled={busy}
+                        className="btn-secondary px-4 py-2 text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSaveEdit(i)}
+                        disabled={(!editRole.trim() && !editCompany.trim() && !editDescription.trim()) || busy}
+                        className="btn-primary px-5 py-2 text-sm font-semibold shadow-soft"
+                      >
+                        {busy ? "Saving..." : "Save Changes"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div
+                key={i}
+                className="group relative rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-all hover:border-slate-200 hover:bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-900/40 dark:hover:border-slate-700 dark:hover:bg-slate-900/80"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 pr-2">
+                    <p className="font-semibold text-base text-slate-800 dark:text-slate-100">
+                      {exp?.role || "Position"}
+                      {exp?.company && (
+                        <span className="ml-2 text-xs font-medium text-brand-600 dark:text-brand-400">
+                          @ {exp.company}
+                        </span>
+                      )}
+                    </p>
+                    {exp?.description && (
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                        {exp.description}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <button
+                      type="button"
+                      onClick={() => handleStartEdit(i, exp)}
+                      title="Edit experience"
+                      className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-200/70 hover:text-brand-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-brand-400 transition-colors"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(i)}
+                      title="Delete experience"
+                      className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-red-50 hover:text-red-600 dark:text-slate-300 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="py-6 text-center">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
+            No work experience listed yet.{" "}
+            {!adding && (
+              <button
+                type="button"
+                onClick={() => setAdding(true)}
+                className="text-brand-600 hover:underline dark:text-brand-400 font-medium"
+              >
+                Add one now
+              </button>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* Expanded Modal View for Experience Editing */}
+      {isModalOpen && editingIndex !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 max-h-[90vh] flex flex-col">
+            <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50">
+                  Edit Experience #{editingIndex + 1} (Expanded View)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Comfortable, full-width editor for work and internship history.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 overflow-y-auto flex-1 pr-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Role / Title
+                  </label>
+                  <input
+                    type="text"
+                    value={editRole}
+                    onChange={(e) => setEditRole(e.target.value)}
+                    placeholder="Role / Title"
+                    className="input py-2.5 px-3.5 text-sm font-medium"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Company / Organization
+                  </label>
+                  <input
+                    type="text"
+                    value={editCompany}
+                    onChange={(e) => setEditCompany(e.target.value)}
+                    placeholder="Company"
+                    className="input py-2.5 px-3.5 text-sm font-medium"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-1 flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Responsibilities & Achievements
+                  </label>
+                  <span className="text-[11px] text-slate-400">{editDescription.length} characters</span>
+                </div>
+                <textarea
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  rows={13}
+                  placeholder="Responsibilities, achievements, technologies used, impact..."
+                  className="input min-h-[300px] py-3 px-3.5 text-sm leading-relaxed resize-y font-normal"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-end gap-3 border-t border-slate-100 pt-3 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  handleCancelEdit();
+                }}
+                disabled={busy}
+                className="btn-secondary px-4 py-2 text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await handleSaveEdit(editingIndex);
+                }}
+                disabled={(!editRole.trim() && !editCompany.trim() && !editDescription.trim()) || busy}
+                className="btn-primary px-6 py-2 text-sm font-semibold shadow-soft"
+              >
+                {busy ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
