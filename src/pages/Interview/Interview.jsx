@@ -5,6 +5,7 @@ import Conversation from "../../components/interview/Conversation.jsx";
 import PromptInput from "../../components/interview/PromptInput.jsx";
 import Timer from "../../components/interview/Timer.jsx";
 import CodeEditor from "../../components/coding/CodeEditor.jsx";
+import ResumeReviewWindow from "../../components/interview/ResumeReviewWindow.jsx";
 import Badge from "../../components/ui/Badge.jsx";
 import Loader from "../../components/common/Loader.jsx";
 
@@ -17,7 +18,11 @@ export default function Interview() {
     messages,
     pending,
     error,
+    adaptiveScore,
+    competencyLevel,
     submitAnswer,
+    startAdaptiveEarly,
+    updateReviewContext,
     endInterviewEarly,
     autoSpeak,
     setAutoSpeak,
@@ -26,14 +31,38 @@ export default function Interview() {
 
   if (!interview && pending) return <Loader fullScreen label="Preparing your interview..." />;
 
+  // Render 120-second Skill/Project Review Window if in review stage
+  if (interview?.status === "SKILL_REVIEW" || interview?.status === "RESUME_PROCESSING") {
+    return (
+      <ResumeReviewWindow
+        interview={interview}
+        onStartEarly={startAdaptiveEarly}
+        onUpdateContext={updateReviewContext}
+      />
+    );
+  }
+
   const isCoding = interview?.category === "dsa";
+  const isAdaptive = interview?.isAdaptive || interview?.category === "adaptive-web-system";
 
   return (
     <div className="mx-auto flex h-[calc(100vh-64px)] max-w-6xl flex-col px-4 py-4 md:px-8">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Badge color="brand">{interview?.category}</Badge>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge color="brand">
+            {isAdaptive ? "Adaptive Web Dev + System Design" : interview?.category}
+          </Badge>
           <Badge color="neutral">{interview?.difficulty}</Badge>
+          {isAdaptive && (
+            <>
+              <span className="rounded-full bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950/40 dark:border-indigo-800 dark:text-indigo-300">
+                Score: {Number(adaptiveScore).toFixed(2)} ({competencyLevel})
+              </span>
+              {currentQuestion?.questionCategory && (
+                <Badge color="brand">{currentQuestion.questionCategory}</Badge>
+              )}
+            </>
+          )}
           <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{interview?.role}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -79,6 +108,7 @@ export default function Interview() {
             disabled={pending}
             speech={speech}
             questionCreatedAt={currentQuestion?.createdAt}
+            minWaitSeconds={isAdaptive ? 0 : 120}
           />
         </div>
 

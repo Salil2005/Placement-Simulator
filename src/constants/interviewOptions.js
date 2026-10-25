@@ -1,4 +1,5 @@
 export const CATEGORIES = [
+  { value: "adaptive-web-system", label: "Adaptive Web Dev + System Design (Project-Based)" },
   { value: "hr", label: "HR / Behavioral" },
   { value: "dsa", label: "Data Structures & Algorithms" },
   { value: "core-cs", label: "Core Computer Science" },

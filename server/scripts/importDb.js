@@ -7,6 +7,8 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/placement-simulator';
 const DUMP_DIR = path.join(__dirname, '../data-dump');
 
+const OBJECT_ID_FIELDS = new Set(['_id', 'user', 'interview', 'question', 'bankQuestion']);
+
 // Helper to convert ISO date strings or string ObjectIds back into MongoDB types if needed
 function reviveMongoTypes(doc) {
   if (doc === null || typeof doc !== 'object') return doc;
@@ -14,7 +16,7 @@ function reviveMongoTypes(doc) {
 
   const restored = {};
   for (const [key, value] of Object.entries(doc)) {
-    if (key === '_id' && typeof value === 'string' && ObjectId.isValid(value) && value.length === 24) {
+    if (OBJECT_ID_FIELDS.has(key) && typeof value === 'string' && ObjectId.isValid(value) && value.length === 24) {
       restored[key] = new ObjectId(value);
     } else if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
       const parsedDate = new Date(value);

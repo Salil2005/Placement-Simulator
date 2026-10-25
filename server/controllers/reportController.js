@@ -3,6 +3,7 @@ const Report = require("../models/Report");
 const Interview = require("../models/Interview");
 const Response = require("../models/Response");
 const { generateReport, REPORTS_DIR } = require("../services/report/reportGenerator");
+const { finalizeAdaptiveReport } = require("../services/interview/adaptiveEngine");
 const { asyncHandler } = require("../utils/asyncHandler");
 
 // POST /api/interviews/:id/finish -> generates the final report
@@ -10,7 +11,13 @@ const finishInterview = asyncHandler(async (req, res) => {
   const interview = await Interview.findOne({ _id: req.params.id, user: req.user._id });
   if (!interview) return res.status(404).json({ error: "Interview not found" });
 
-  const report = await generateReport(interview._id);
+  let report;
+  if (interview.isAdaptive || interview.category === "adaptive-web-system") {
+    report = await finalizeAdaptiveReport(interview._id);
+  } else {
+    report = await generateReport(interview._id);
+  }
+
   res.json({ report });
 });
 

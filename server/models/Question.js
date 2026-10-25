@@ -11,6 +11,15 @@ const questionSchema = new mongoose.Schema(
     order: { type: Number, required: true },
     isCoding: { type: Boolean, default: false },
     isFollowUp: { type: Boolean, default: false },
+    // Adaptive Web Development + System Design Round metadata
+    questionCategory: {
+      type: String,
+      enum: ["Project Walkthrough", "Web Development", "System Design", "General"],
+      default: "General",
+    },
+    difficulty: { type: String, default: "medium" },
+    projectReference: { type: String, default: "" },
+    targetCompetencyLevel: { type: String, default: "" },
   },
   { timestamps: true }
 );

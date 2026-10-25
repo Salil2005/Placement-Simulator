@@ -570,11 +570,12 @@
 
 // module.exports = aiService;
 
-const { AI_PROVIDER } = require("../../config/env");
+const { AI_PROVIDER, ENABLE_MOCK_PROVIDER, AI_PROVIDER_3 } = require("../../config/env");
 
 const ollamaProvider = require("./ollamaProvider");
 const groqProvider = require("./groqProvider");
 const geminiProvider = require("./geminiProvider");
+const mockProvider = require("./mockProvider");
 
 const {
   buildEvaluationPrompt,
@@ -583,6 +584,10 @@ const {
   buildResumeSkillsPrompt,
   buildResumeContextPrompt,
   buildResumeVsInterviewPrompt,
+  buildAdaptiveResumeParsePrompt,
+  buildAdaptiveEvaluationPrompt,
+  buildAdaptiveQuestionPrompt,
+  buildAdaptiveFinalReportPrompt,
 } = require("../../prompts/promptBuilder");
 
 const { dualComplete, mergeResumeResults } = require("./dualApiClient");
@@ -595,18 +600,28 @@ const PROVIDERS = {
   ollama: ollamaProvider,
   groq: groqProvider,
   gemini: geminiProvider,
+  mock: mockProvider,
 };
 
 // ============================================================
 // GET ACTIVE PROVIDER
 // ============================================================
 
-function getProvider() {
-  const provider = PROVIDERS[AI_PROVIDER];
+function getProvider(explicitProviderName) {
+  if (explicitProviderName && PROVIDERS[explicitProviderName]) {
+    return PROVIDERS[explicitProviderName];
+  }
+
+  // If mock provider is explicitly configured via ENABLE_MOCK_PROVIDER or AI_PROVIDER_3 === "mock"
+  if (ENABLE_MOCK_PROVIDER) {
+    return PROVIDERS.mock;
+  }
+
+  const provider = PROVIDERS[AI_PROVIDER] || PROVIDERS.groq;
 
   if (!provider) {
     throw new Error(
-      `Unknown AI_PROVIDER "${AI_PROVIDER}". Use ollama | groq | gemini.`
+      `Unknown AI_PROVIDER "${AI_PROVIDER}". Use ollama | groq | gemini | mock.`
     );
   }
 
@@ -945,6 +960,209 @@ Do not provide a long explanation.
       summary:
         "AI analysis could not be generated.",
     });
+  },
+
+  // ==========================================================
+  // ADAPTIVE INTERVIEW OPERATIONS
+  // ==========================================================
+
+  /** Expose provider retrieval for testing or routing */
+  getProvider,
+
+  /**
+   * Parse resume text specifically into rich projects & architecture for adaptive round.
+   * Leverages centralized provider with fallback.
+   */
+  async parseResumeStructured({ resumeText, providerOverride }) {
+    const prompt = buildAdaptiveResumeParsePrompt({ resumeText });
+    const provider = getProvider(providerOverride);
+    const text = await provider.complete([{ role: "user", content: prompt }]);
+
+    return safeParseJSON(text, {
+      projects: [],
+      skills: [],
+      technologies: [],
+    });
+  },
+
+  /**
+   * Evaluates candidate response across 7 dimensions + normalized answerScore.
+   */
+  async evaluateAdaptiveAnswer({
+    projectContext,
+    question,
+    questionCategory,
+    difficulty,
+    answer,
+    currentAdaptiveScore,
+    providerOverride,
+  }) {
+    const prompt = buildAdaptiveEvaluationPrompt({
+      projectContext,
+      question,
+      questionCategory,
+      difficulty,
+      answer,
+      currentAdaptiveScore,
+    });
+
+    const provider = getProvider(providerOverride);
+    const text = await provider.complete([{ role: "user", content: prompt }]);
+
+    const parsed = safeParseJSON(text, null);
+
+    if (!parsed || typeof parsed !== "object") {
+      // Deterministic fallback if API fails or malformed JSON
+      return {
+        answerScore: 0.5,
+        dimensionScores: {
+          technicalCorrectness: 50,
+          conceptualUnderstanding: 50,
+          projectRelevance: 50,
+          depthOfExplanation: 50,
+          architecturalReasoning: 50,
+          practicalImplementation: 50,
+          tradeoffAnalysis: 50,
+        },
+        strengths: ["Submitted an answer addressing the problem."],
+        missingConcepts: ["Automated evaluation could not extract granular details."],
+        technicalInaccuracies: [],
+        rationale: "Automated evaluation fallback applied.",
+        recommendedFollowUps: ["Clarify implementation details in the subsequent question."],
+      };
+    }
+
+    // Ensure normalized answerScore is clamped between 0 and 1
+    const rawScore = Number(parsed.answerScore);
+    const normalizedScore = Number.isFinite(rawScore)
+      ? Math.max(0, Math.min(1, rawScore > 1 ? rawScore / 100 : rawScore))
+      : 0.5;
+
+    return {
+      answerScore: normalizedScore,
+      dimensionScores: {
+        technicalCorrectness: score(parsed.dimensionScores?.technicalCorrectness, 50),
+        conceptualUnderstanding: score(parsed.dimensionScores?.conceptualUnderstanding, 50),
+        projectRelevance: score(parsed.dimensionScores?.projectRelevance, 50),
+        depthOfExplanation: score(parsed.dimensionScores?.depthOfExplanation, 50),
+        architecturalReasoning: score(parsed.dimensionScores?.architecturalReasoning, 50),
+        practicalImplementation: score(parsed.dimensionScores?.practicalImplementation, 50),
+        tradeoffAnalysis: score(parsed.dimensionScores?.tradeoffAnalysis, 50),
+      },
+      strengths: Array.isArray(parsed.strengths) ? parsed.strengths.filter((s) => typeof s === "string") : [],
+      missingConcepts: Array.isArray(parsed.missingConcepts) ? parsed.missingConcepts.filter((s) => typeof s === "string") : [],
+      technicalInaccuracies: Array.isArray(parsed.technicalInaccuracies) ? parsed.technicalInaccuracies.filter((s) => typeof s === "string") : [],
+      rationale: typeof parsed.rationale === "string" ? parsed.rationale : "",
+      recommendedFollowUps: Array.isArray(parsed.recommendedFollowUps) ? parsed.recommendedFollowUps.filter((s) => typeof s === "string") : [],
+    };
+  },
+
+  /**
+   * Generates next project-specific question based on latest evaluation & adaptive score.
+   */
+  async generateAdaptiveQuestion({
+    projectContext,
+    previousQuestions,
+    latestAnswer,
+    latestEvaluation,
+    adaptiveScore,
+    remainingSeconds,
+    targetCategory,
+    competencyLevel,
+    providerOverride,
+  }) {
+    const prompt = buildAdaptiveQuestionPrompt({
+      projectContext,
+      previousQuestions,
+      latestAnswer,
+      latestEvaluation,
+      adaptiveScore,
+      remainingSeconds,
+      targetCategory,
+      competencyLevel,
+    });
+
+    const provider = getProvider(providerOverride);
+    const text = await provider.complete([{ role: "user", content: prompt }]);
+
+    const parsed = safeParseJSON(text, null);
+
+    const selectedProj = projectContext?.projects?.find(
+      (p) => p.title === projectContext.selectedProject
+    ) || projectContext?.projects?.[0] || { title: "Candidate Project" };
+
+    if (!parsed || !parsed.questionText) {
+      // Deterministic fallback question
+      return {
+        questionCategory: targetCategory,
+        difficulty: competencyLevel.toLowerCase(),
+        questionText: `In your project ${selectedProj.title}, how did you design the interaction between the frontend client and your backend APIs, and what error recovery mechanisms did you implement?`,
+        targetCompetencyLevel: competencyLevel,
+        projectReference: selectedProj.title,
+        rationale: "Follow-up on project implementation and API communication.",
+      };
+    }
+
+    return {
+      questionCategory: parsed.questionCategory || targetCategory,
+      difficulty: parsed.difficulty || competencyLevel.toLowerCase(),
+      questionText: parsed.questionText,
+      targetCompetencyLevel: parsed.targetCompetencyLevel || competencyLevel,
+      projectReference: parsed.projectReference || selectedProj.title,
+      rationale: parsed.rationale || "",
+    };
+  },
+
+  /**
+   * Compiles comprehensive final report for adaptive round.
+   */
+  async generateAdaptiveFinalReport({ interview, projectContext, responses, providerOverride }) {
+    const prompt = buildAdaptiveFinalReportPrompt({
+      interview,
+      projectContext,
+      responses,
+    });
+
+    const provider = getProvider(providerOverride);
+    const text = await provider.complete([{ role: "user", content: prompt }]);
+
+    const parsed = safeParseJSON(text, null);
+
+    // Compute deterministic averages from evaluated answers as ground truth
+    const validScores = responses
+      .filter((r) => typeof r.answerScore === "number")
+      .map((r) => r.answerScore * 100);
+
+    const calculatedAvg = validScores.length > 0
+      ? Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length)
+      : 50;
+
+    return {
+      overall: score(parsed?.overall, calculatedAvg),
+      technical: score(parsed?.technical, calculatedAvg),
+      communication: score(parsed?.communication, calculatedAvg),
+      confidence: score(parsed?.confidence, calculatedAvg),
+      problemSolving: score(parsed?.problemSolving, calculatedAvg),
+      coding: 0,
+      webDevelopment: score(parsed?.webDevelopment, calculatedAvg),
+      systemDesign: score(parsed?.systemDesign, calculatedAvg),
+      conceptualUnderstanding: score(parsed?.conceptualUnderstanding, calculatedAvg),
+      technicalCorrectness: score(parsed?.technicalCorrectness, calculatedAvg),
+      projectOwnership: score(parsed?.projectOwnership, calculatedAvg),
+      architecturalReasoning: score(parsed?.architecturalReasoning, calculatedAvg),
+      strengths: Array.isArray(parsed?.strengths) && parsed.strengths.length > 0
+        ? parsed.strengths
+        : ["Provided technical explanations grounded in project context."],
+      weaknesses: Array.isArray(parsed?.weaknesses) ? parsed.weaknesses : [],
+      knowledgeGaps: Array.isArray(parsed?.knowledgeGaps) ? parsed.knowledgeGaps : [],
+      misconceptions: Array.isArray(parsed?.misconceptions) ? parsed.misconceptions : [],
+      areasForImprovement: Array.isArray(parsed?.areasForImprovement) ? parsed.areasForImprovement : [],
+      suggestions: Array.isArray(parsed?.suggestions) && parsed.suggestions.length > 0
+        ? parsed.suggestions
+        : ["Continue practicing structured architecture trade-off discussions."],
+      summary: typeof parsed?.summary === "string" ? parsed.summary : "Adaptive interview round completed.",
+      interviewerSummary: typeof parsed?.interviewerSummary === "string" ? parsed.interviewerSummary : "Solid performance demonstrating project understanding.",
+    };
   },
 };
 

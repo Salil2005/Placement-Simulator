@@ -74,6 +74,82 @@ export default function Report() {
         <p className="text-5xl font-extrabold text-brand-600">{report.scores.overall}</p>
       </Card>
 
+      {/* Adaptive Web Dev & System Design Dimension Breakdown */}
+      {report.scores && (report.scores.webDevelopment > 0 || report.scores.systemDesign > 0 || report.adaptiveDetails) && (
+        <div className="mb-6 space-y-4">
+          <Card>
+            <h3 className="mb-3 text-base font-bold text-slate-900 dark:text-white">
+              Adaptive Dimension Evaluation Breakdown
+            </h3>
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6 text-center">
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+                <p className="text-xs text-slate-500 dark:text-slate-400">Web Dev</p>
+                <p className="text-xl font-bold text-brand-600">{report.scores.webDevelopment ?? report.scores.technical}/100</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+                <p className="text-xs text-slate-500 dark:text-slate-400">System Design</p>
+                <p className="text-xl font-bold text-indigo-600">{report.scores.systemDesign ?? report.scores.problemSolving}/100</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+                <p className="text-xs text-slate-500 dark:text-slate-400">Correctness</p>
+                <p className="text-xl font-bold text-emerald-600">{report.scores.technicalCorrectness ?? report.scores.technical}/100</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+                <p className="text-xs text-slate-500 dark:text-slate-400">Conceptual</p>
+                <p className="text-xl font-bold text-blue-600">{report.scores.conceptualUnderstanding ?? report.scores.technical}/100</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+                <p className="text-xs text-slate-500 dark:text-slate-400">Ownership</p>
+                <p className="text-xl font-bold text-amber-600">{report.scores.projectOwnership ?? report.scores.confidence}/100</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+                <p className="text-xs text-slate-500 dark:text-slate-400">Architectural</p>
+                <p className="text-xl font-bold text-purple-600">{report.scores.architecturalReasoning ?? report.scores.problemSolving}/100</p>
+              </div>
+            </div>
+
+            {report.adaptiveDetails && (
+              <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <span>
+                  <strong>Projects Discussed:</strong> {(report.adaptiveDetails.projectsDiscussed || []).join(", ") || "Main Project"}
+                </span>
+                <span>
+                  <strong>Adaptive Score:</strong> {report.adaptiveDetails.initialAdaptiveScore?.toFixed(2)} → {report.adaptiveDetails.finalAdaptiveScore?.toFixed(2)}
+                </span>
+                <span>
+                  <strong>Questions Evaluated:</strong> {report.adaptiveDetails.evaluatedAnswersCount} / {report.adaptiveDetails.totalQuestionsAsked}
+                </span>
+              </div>
+            )}
+          </Card>
+
+          {(report.adaptiveDetails?.knowledgeGaps?.length > 0 || report.adaptiveDetails?.misconceptions?.length > 0) && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {report.adaptiveDetails.knowledgeGaps?.length > 0 && (
+                <Card>
+                  <h4 className="mb-2 text-sm font-bold text-amber-600">Knowledge Gaps</h4>
+                  <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                    {report.adaptiveDetails.knowledgeGaps.map((gap, i) => (
+                      <li key={i} className="flex gap-1.5"><span>•</span>{gap}</li>
+                    ))}
+                  </ul>
+                </Card>
+              )}
+              {report.adaptiveDetails.misconceptions?.length > 0 && (
+                <Card>
+                  <h4 className="mb-2 text-sm font-bold text-red-600">Identified Misconceptions</h4>
+                  <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                    {report.adaptiveDetails.misconceptions.map((misc, i) => (
+                      <li key={i} className="flex gap-1.5"><span>•</span>{misc}</li>
+                    ))}
+                  </ul>
+                </Card>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="mb-6 grid gap-6 md:grid-cols-3">
         <Card>
           <h3 className="mb-3 font-bold text-emerald-600">Strengths</h3>

@@ -50,12 +50,23 @@ function registerInterviewSocket(io) {
           throw new Error("Not authorized for this interview");
         }
 
-        const result = await interviewEngine.submitAnswer(interview, {
-          questionId,
-          answerText,
-          code,
-          language,
-        });
+        let result;
+        if (interview.isAdaptive || interview.category === "adaptive-web-system") {
+          const adaptiveEngine = require("../services/interview/adaptiveEngine");
+          result = await adaptiveEngine.submitAdaptiveAnswer(interview, {
+            questionId,
+            answerText,
+            code,
+            language,
+          });
+        } else {
+          result = await interviewEngine.submitAnswer(interview, {
+            questionId,
+            answerText,
+            code,
+            language,
+          });
+        }
 
         io.to(`interview:${interviewId}`).emit("interview:response", result);
         callback?.({ ok: true, ...result });

@@ -214,4 +214,19 @@ module.exports = {
   GEMINI_MODEL:
     process.env.GEMINI_MODEL ||
     "gemini-1.5-flash",
+
+  // ==========================================================
+  // THIRD PROVIDER (Optional / Mock Provider)
+  // ==========================================================
+  AI_PROVIDER_3:
+    process.env.AI_PROVIDER_3 || "mock",
+
+  ENABLE_MOCK_PROVIDER:
+    process.env.ENABLE_MOCK_PROVIDER === "true",
+
+  MOCK_PROVIDER_LATENCY_MS:
+    Number(process.env.MOCK_PROVIDER_LATENCY_MS || 100),
+
+  MOCK_PROVIDER_SIMULATE_ERROR:
+    process.env.MOCK_PROVIDER_SIMULATE_ERROR === "true",
 };

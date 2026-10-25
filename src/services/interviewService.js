@@ -32,4 +32,6 @@ export const interviewService = {
   history: () => api.get("/history").then((r) => r.data),
 
   dashboard: () => api.get("/dashboard").then((r) => r.data),
+
+  updateReview: (id, payload) => api.patch(`/interviews/${id}/review`, payload).then((r) => r.data),
 };

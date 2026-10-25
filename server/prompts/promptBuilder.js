@@ -610,6 +610,287 @@ IMPORTANT OUTPUT RULES:
 
 
 // ==========================================================
+// ADAPTIVE WEB DEVELOPMENT + SYSTEM DESIGN ROUND PROMPTS
+// ==========================================================
+
+function buildAdaptiveResumeParsePrompt({ resumeText }) {
+  return `
+You are a senior technical screener and systems architect analyzing a candidate's resume for an Adaptive Web Development + System Design Interview.
+
+Extract and structure the projects, skills, and architectural decisions present in the resume.
+CRITICAL RULES:
+1. Do not invent or fabricate details not present in the resume.
+2. If certain architectural details are missing, leave them empty rather than guessing.
+3. Clearly distinguish technologies actually used from tangential mentions.
+
+Resume Text:
+"""
+${resumeText}
+"""
+
+Return ONLY a valid JSON object with the following schema:
+{
+  "projects": [
+    {
+      "title": "Project Name",
+      "description": "Clear 2-3 sentence overview of what the project does and its purpose",
+      "technologies": ["React", "Node.js", "MongoDB"],
+      "frontendArchitecture": "e.g. React SPA with Redux, component hierarchy, client routing",
+      "backendArchitecture": "e.g. Express REST API with MVC pattern and service layer",
+      "databases": ["MongoDB", "Redis"],
+      "apisAndIntegrations": ["Stripe", "OAuth"],
+      "auth": "e.g. JWT with HTTP-only cookies",
+      "keyDecisions": "Architectural choices, data flow patterns, or notable trade-offs mentioned",
+      "scalabilityAndPerformance": "Caching, indexing, or load handling details if mentioned"
+    }
+  ],
+  "skills": ["REST APIs", "State Management", "System Design"],
+  "technologies": ["JavaScript", "TypeScript", "React", "Node.js", "Express", "MongoDB", "PostgreSQL", "Docker"]
+}
+`.trim();
+}
+
+function buildAdaptiveEvaluationPrompt({
+  projectContext,
+  question,
+  questionCategory,
+  difficulty,
+  answer,
+  currentAdaptiveScore,
+}) {
+  const selectedProj = projectContext?.projects?.find(
+    (p) => p.title === projectContext.selectedProject
+  ) || projectContext?.projects?.[0] || { title: "Candidate Project", description: "Project under discussion" };
+
+  return `
+You are an expert technical interviewer and systems architect evaluating a candidate's response in an Adaptive Web Development + System Design interview.
+
+ROUND CONTEXT:
+- Category: ${questionCategory || "Web Development / System Design"}
+- Target Difficulty: ${difficulty || "medium"}
+- Current Candidate Adaptive Score: ${currentAdaptiveScore} (0.00-1.00 normalized)
+- Selected Project: ${selectedProj.title}
+- Verified Project Description: ${selectedProj.description || "N/A"}
+- Project Tech Stack: ${(selectedProj.technologies || []).join(", ") || "N/A"}
+- Frontend Architecture: ${selectedProj.frontendArchitecture || "N/A"}
+- Backend Architecture: ${selectedProj.backendArchitecture || "N/A"}
+- Databases: ${(selectedProj.databases || []).join(", ") || "N/A"}
+- Key Decisions: ${selectedProj.keyDecisions || "N/A"}
+
+QUESTION ASKED:
+"""
+${question}
+"""
+
+CANDIDATE'S ANSWER:
+"""
+${answer}
+"""
+
+EVALUATION SPECIFICATION:
+1. Evaluate against the actual question and candidate's verified project context.
+2. Do not reward answers solely for length, buzzwords, or superficial keyword matching.
+3. Penalize technical inaccuracies, hand-waving, misconceptions, or claims contradicted by project realities.
+4. If the candidate answers "I don't know", reflect this accurately without inventing knowledge.
+5. Score across these 7 dimensions (each 0 to 100):
+   - technicalCorrectness (0-100)
+   - conceptualUnderstanding (0-100)
+   - projectRelevance (0-100)
+   - depthOfExplanation (0-100)
+   - architecturalReasoning (0-100)
+   - practicalImplementation (0-100)
+   - tradeoffAnalysis (0-100)
+6. Calculate an overall normalized answerScore between 0.00 and 1.00 (e.g., 0.78).
+
+Return ONLY a valid JSON object matching this exact schema:
+{
+  "answerScore": 0.75,
+  "dimensionScores": {
+    "technicalCorrectness": 75,
+    "conceptualUnderstanding": 80,
+    "projectRelevance": 80,
+    "depthOfExplanation": 70,
+    "architecturalReasoning": 75,
+    "practicalImplementation": 75,
+    "tradeoffAnalysis": 70
+  },
+  "strengths": [
+    "Specific strong point in their explanation"
+  ],
+  "missingConcepts": [
+    "Important architectural or implementation concept omitted"
+  ],
+  "technicalInaccuracies": [
+    "Any incorrect claims made, or empty array if none"
+  ],
+  "rationale": "Concise 2-3 sentence evaluation rationale summarizing demonstrated competence.",
+  "recommendedFollowUps": [
+    "Specific follow-up topic or concept that should be explored next"
+  ]
+}
+`.trim();
+}
+
+function buildAdaptiveQuestionPrompt({
+  projectContext,
+  previousQuestions,
+  latestAnswer,
+  latestEvaluation,
+  adaptiveScore,
+  remainingSeconds,
+  targetCategory,
+  competencyLevel,
+}) {
+  const selectedProj = projectContext?.projects?.find(
+    (p) => p.title === projectContext.selectedProject
+  ) || projectContext?.projects?.[0] || { title: "Candidate Project", description: "Project under discussion" };
+
+  const historySummary = (previousQuestions || [])
+    .map(
+      (pq, i) =>
+        `Q${i + 1} [${pq.questionCategory || "General"}]: "${pq.text}"\nAnswer snippet: "${(pq.answerText || "").slice(0, 150)}..."`
+    )
+    .join("\n\n");
+
+  return `
+You are a senior principal engineer conducting an Adaptive Web Development + System Design interview.
+
+PROJECT CONTEXT:
+- Project Name: ${selectedProj.title}
+- Description: ${selectedProj.description}
+- Technologies: ${(selectedProj.technologies || []).join(", ")}
+- Frontend Architecture: ${selectedProj.frontendArchitecture || "N/A"}
+- Backend Architecture: ${selectedProj.backendArchitecture || "N/A"}
+- Databases: ${(selectedProj.databases || []).join(", ") || "N/A"}
+- Key Decisions: ${selectedProj.keyDecisions || "N/A"}
+
+CANDIDATE ADAPTIVE STATE:
+- Current Adaptive Score: ${adaptiveScore.toFixed(3)} (0.00-1.00)
+- Candidate Competency Level: ${competencyLevel}
+- Target Next Category: ${targetCategory} (Web Development or System Design)
+- Remaining Interview Time: ${Math.round(remainingSeconds)} seconds
+
+LATEST EVALUATION SUMMARY:
+- Last Answer Score: ${latestEvaluation?.answerScore ?? "N/A"}
+- Strengths: ${(latestEvaluation?.strengths || []).join("; ") || "None"}
+- Missing Concepts: ${(latestEvaluation?.missingConcepts || []).join("; ") || "None"}
+- Technical Inaccuracies: ${(latestEvaluation?.technicalInaccuracies || []).join("; ") || "None"}
+- Recommended Follow-ups: ${(latestEvaluation?.recommendedFollowUps || []).join("; ") || "None"}
+
+PREVIOUS QUESTIONS ASKED:
+${historySummary || "None"}
+
+ADAPTIVE QUESTION RULES:
+1. Question MUST be strictly relevant to the verified project (${selectedProj.title}).
+2. Do NOT repeat or rephrase previously asked questions.
+3. Do NOT ask generic DSA, HR, or general trivia questions.
+4. Do NOT assume unverified technologies (e.g. do not assume Redis exists unless in project stack, though you may ask if caching could be introduced as a proposed improvement).
+5. If the candidate had missing concepts or technical inaccuracies in the previous answer, prefer a targeted follow-up or clarification before advancing difficulty.
+6. Match difficulty to competency level (${competencyLevel}):
+   - Foundational (0.00-0.24): Basic project understanding, simple component responsibilities, simple data flow.
+   - Developing (0.25-0.44): Implementation details, API contracts, state management, database interactions.
+   - Intermediate (0.45-0.64): Architecture trade-offs, request lifecycle, error handling, data consistency.
+   - Advanced (0.65-0.79): Scalability bottlenecks, caching strategies, resilience, security boundaries.
+   - Expert (0.80-1.00): Complex trade-offs, failure modes, distributed system constraints, scaling bottlenecks.
+
+Return ONLY a valid JSON object matching this schema:
+{
+  "questionCategory": "${targetCategory}",
+  "difficulty": "${competencyLevel.toLowerCase()}",
+  "questionText": "The exact question text to ask the candidate.",
+  "targetCompetencyLevel": "${competencyLevel}",
+  "projectReference": "${selectedProj.title}",
+  "rationale": "Why this question was chosen based on the candidate's previous response and adaptive score."
+}
+`.trim();
+}
+
+function buildAdaptiveFinalReportPrompt({
+  interview,
+  projectContext,
+  responses,
+}) {
+  const selectedProj = projectContext?.projects?.find(
+    (p) => p.title === projectContext.selectedProject
+  ) || projectContext?.projects?.[0] || { title: "Candidate Project" };
+
+  const qaHistory = responses
+    .map((r, i) => {
+      const q = r.question || {};
+      const evalData = r.evaluation || {};
+      return `Q${i + 1} [${q.questionCategory || "General"}]: "${q.text || ""}"
+Answer: "${r.answerText || ""}"
+Score: ${r.answerScore ?? (r.score ? r.score / 100 : 0)}
+Strengths: ${(evalData.strengths || []).join("; ")}
+Missing: ${(evalData.missingConcepts || []).join("; ")}
+Inaccuracies: ${(evalData.technicalInaccuracies || []).join("; ")}
+Rationale: ${evalData.rationale || evalData.notes || ""}`;
+    })
+    .join("\n\n---\n\n");
+
+  return `
+You are the Lead Technical Interviewer and Hiring Committee Chair compiling the Final Comprehensive Evaluation Report for an Adaptive Web Development + System Design Interview.
+
+INTERVIEW OVERVIEW:
+- Role: ${interview.role || "Software Engineer"}
+- Project(s) Discussed: ${selectedProj.title}
+- Initial Adaptive Score: ${interview.initialAdaptiveScore ?? 0.5}
+- Final Adaptive Score: ${interview.currentAdaptiveScore ?? 0.5}
+- Total Questions Evaluated: ${responses.length}
+
+COMPLETE INTERVIEW TRANSCRIPT & EVALUATIONS:
+${qaHistory}
+
+REPORT REQUIREMENTS:
+Generate a rigorous, evidence-based assessment. Every score must be between 0 and 100 based strictly on demonstrated performance.
+Include:
+1. Overall score and category scores: webDevelopment, systemDesign, conceptualUnderstanding, technicalCorrectness, projectOwnership, architecturalReasoning.
+2. Concrete key strengths directly observed from answers.
+3. Specific weaknesses and knowledge gaps.
+4. Explicit technical misconceptions or incorrect assumptions identified during the session.
+5. Actionable improvement recommendations.
+6. Professional interviewer summary for hiring committees.
+
+Return ONLY a valid JSON object matching this schema:
+{
+  "overall": 80,
+  "technical": 82,
+  "communication": 78,
+  "confidence": 80,
+  "problemSolving": 82,
+  "coding": 0,
+  "webDevelopment": 82,
+  "systemDesign": 80,
+  "conceptualUnderstanding": 84,
+  "technicalCorrectness": 82,
+  "projectOwnership": 85,
+  "architecturalReasoning": 78,
+  "strengths": [
+    "Observed strength 1",
+    "Observed strength 2"
+  ],
+  "weaknesses": [
+    "Observed weakness 1"
+  ],
+  "knowledgeGaps": [
+    "Specific missing concept 1"
+  ],
+  "misconceptions": [
+    "Specific misconception identified, or empty array if none"
+  ],
+  "areasForImprovement": [
+    "Actionable area to improve 1"
+  ],
+  "suggestions": [
+    "Actionable suggestion 1"
+  ],
+  "summary": "2-3 sentence executive summary of performance.",
+  "interviewerSummary": "Hiring committee recommendation and holistic technical summary."
+}
+`.trim();
+}
+
+// ==========================================================
 // EXPORT
 // ==========================================================
 
@@ -620,4 +901,8 @@ module.exports = {
   buildResumeSkillsPrompt,
   buildResumeContextPrompt,
   buildResumeVsInterviewPrompt,
+  buildAdaptiveResumeParsePrompt,
+  buildAdaptiveEvaluationPrompt,
+  buildAdaptiveQuestionPrompt,
+  buildAdaptiveFinalReportPrompt,
 };

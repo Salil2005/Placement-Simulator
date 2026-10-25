@@ -201,8 +201,11 @@ export function useInterview(interviewId) {
   const [messages, setMessages] = useState([]);
   const [pending, setPending] = useState(true);
   const [error, setError] = useState(null);
+  const [adaptiveScore, setAdaptiveScore] = useState(0.5);
+  const [competencyLevel, setCompetencyLevel] = useState("Intermediate");
+  const [isProcessingAnswer, setIsProcessingAnswer] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
-  
+
   // Refs to prevent concurrent initialization or duplicate submissions across re-renders
   const initialized = useRef(false);
   const isSubmitting = useRef(false);
@@ -222,11 +225,20 @@ export function useInterview(interviewId) {
 
     (async () => {
       try {
-        const { interview: iv, session, currentQuestion } = await interviewService.get(interviewId);
+        const data = await interviewService.get(interviewId);
+        const { interview: iv, session, currentQuestion, adaptiveScore: aScore, competencyLevel: cLevel } = data;
         setInterview(iv);
+        if (typeof aScore === "number") setAdaptiveScore(aScore);
+        if (cLevel) setCompetencyLevel(cLevel);
 
-        if (iv.status === "not_started") {
-          // Guard: Only start if status is strictly not_started to avoid duplicate calls
+        if (iv.status === "SKILL_REVIEW" || iv.status === "RESUME_PROCESSING") {
+          // Candidate is reviewing extracted projects/skills
+          setPending(false);
+          return;
+        }
+
+        if (iv.status === "not_started" || iv.status === "READY_TO_START") {
+          // Guard: Start interview session
           const { question, interview: startedIv } = await interviewService.start(interviewId);
           if (startedIv) setInterview(startedIv);
           setCurrentQuestion(question);
@@ -248,6 +260,34 @@ export function useInterview(interviewId) {
       }
     })();
   }, [interviewId, navigate]);
+
+  const startAdaptiveEarly = useCallback(async () => {
+    setPending(true);
+    try {
+      const { question, interview: startedIv } = await interviewService.start(interviewId);
+      if (startedIv) setInterview(startedIv);
+      setCurrentQuestion(question);
+      setMessages([{ role: "ai", content: question.text }]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPending(false);
+    }
+  }, [interviewId]);
+
+  const updateReviewContext = useCallback(
+    async (corrections) => {
+      try {
+        const { interview: updated } = await interviewService.updateReview(interviewId, corrections);
+        setInterview(updated);
+        return updated;
+      } catch (err) {
+        setError(err.message);
+        throw err;
+      }
+    },
+    [interviewId]
+  );
 
   const submitAnswer = useCallback(
     async ({ answerText, code, language }) => {
@@ -280,13 +320,16 @@ export function useInterview(interviewId) {
           });
         }
 
-        const { nextQuestion, isFinalQuestion, response } = result;
+        const { nextQuestion, isFinalQuestion, response, adaptiveScore: newScore } = result;
+        if (typeof newScore === "number") {
+          setAdaptiveScore(newScore);
+        }
 
         if (isFinalQuestion) {
           setCurrentQuestion(null);
           setMessages((prev) => [
             ...prev,
-            { role: "ai", content: "That's a wrap on the questions - generating your report now." },
+            { role: "ai", content: "That's a wrap on the questions - generating your comprehensive report now." },
           ]);
           await interviewService.finish(interviewId);
           navigate(`/report/${interviewId}`);
@@ -339,7 +382,12 @@ export function useInterview(interviewId) {
     messages,
     pending,
     error,
+    adaptiveScore,
+    competencyLevel,
+    isProcessingAnswer,
     submitAnswer,
+    startAdaptiveEarly,
+    updateReviewContext,
     endInterviewEarly,
     autoSpeak,
     setAutoSpeak,
