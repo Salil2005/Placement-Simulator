@@ -6,7 +6,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "db:export": "node scripts/exportDb.js",
+    "db:import": "node scripts/importDb.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

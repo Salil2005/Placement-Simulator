@@ -1,0 +1,236 @@
+[
+  {
+    "_id": "6adca976b1dfa7bc115d0f5c",
+    "interview": "6adca93eb1dfa7bc115d0f38",
+    "question": "6adca93eb1dfa7bc115d0f4f",
+    "answerText": "The simplest approach is to iterate through every number from `a` to `b` and check whether all its digits are unique.\n\n### Java solution\n\n```\n\nclass Solution {\n    public int countNumbersWithUniqueDigits(int a, int b) {\n        int count = 0;\n\n        for (int i = a; i <= b; i++) {\n            if (hasUniqueDigits(i)) {\n                count++;\n            }\n        }\n\n        return count;\n    }\n\n    private boolean hasUniqueDigits(int n) {\n        boolean[] seen = new boolean[10];\n\n        while (n > 0) {\n            int digit = n % 10;\n\n            if (seen[digit]) {\n                return false;\n            }\n\n            seen[digit] = true;\n            n /= 10;\n        }\n\n        return true;\n    }\n}\n\n```\n\n### How it works\n\nFor each number:\n\n1. Extract the last digit using `n % 10`.\n2. If that digit has already appeared, return `false`.\n3. Otherwise, mark it as seen and remove it using `n /= 10`.\n4. If all digits are unique, increment the count.\n\nFor example, `121` contains a repeated digit `1`, so it is rejected. The number `123` is accepted.\n\n### Complexity analysis\n\nLet \\\\(N=b-a+1\\\\) be the number of integers in the range, and \\\\(D\\\\) be the maximum number of digits.\n\n- Time: \\\\(O(ND)\\\\)\n- Space: \\\\(O(1)\\\\), since the `seen` array always contains 10 elements.\n\nGiven \\\\(b\\leq1000\\\\), this solution is easily efficient enough.\n\n### Example walkthrough\n\nFor `a = 1, b = 20`, the only number with repeated digits is `11`.\n\n\\\\[ \\text{Answer}=20-1+1-1=\\boxed{19} \\\\]\n\nInterview tip: This is a good brute-force solution because the constraints are small. If the interviewer increases the upper bound substantially, you could discuss digit DP or counting numbers with unique digits mathematically.",
+    "code": "",
+    "language": "",
+    "score": 94,
+    "evaluation": {
+      "correctness": 95,
+      "clarity": 92,
+      "confidence": 95,
+      "notes": "Consider using a bitmask instead of allocating a new boolean[10] for each number to reduce constant‑time overhead and avoid unnecessary object creation."
+    },
+    "createdAt": "2026-10-24T12:49:58.692Z",
+    "updatedAt": "2026-10-24T12:49:58.692Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adca97cb1dfa7bc115d0f6c",
+    "interview": "6adca93eb1dfa7bc115d0f38",
+    "question": "6adca976b1dfa7bc115d0f5e",
+    "answerText": "",
+    "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+    "language": "cpp",
+    "score": 7,
+    "evaluation": {
+      "correctness": 0,
+      "clarity": 10,
+      "confidence": 10,
+      "notes": "Provide a complete implementation of the BST search (e.g., iterative or recursive traversal) that returns the subtree rooted at the node with the given value, handling the case where the value is not found."
+    },
+    "createdAt": "2026-10-24T12:50:04.589Z",
+    "updatedAt": "2026-10-24T12:50:04.589Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adca97eb1dfa7bc115d0f7c",
+    "interview": "6adca93eb1dfa7bc115d0f38",
+    "question": "6adca97cb1dfa7bc115d0f6e",
+    "answerText": "",
+    "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+    "language": "cpp",
+    "score": 7,
+    "evaluation": {
+      "correctness": 0,
+      "clarity": 10,
+      "confidence": 10,
+      "notes": "Provide a complete solution: sort the scores, slide a window of size k, compute the difference between the first and last element in each window, and return the minimum difference."
+    },
+    "createdAt": "2026-10-24T12:50:06.517Z",
+    "updatedAt": "2026-10-24T12:50:06.517Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adca97fb1dfa7bc115d0f8c",
+    "interview": "6adca93eb1dfa7bc115d0f38",
+    "question": "6adca97eb1dfa7bc115d0f7e",
+    "answerText": "",
+    "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+    "language": "cpp",
+    "score": 10,
+    "evaluation": {
+      "correctness": 0,
+      "clarity": 20,
+      "confidence": 10,
+      "notes": "Provide a complete implementation that extracts each digit, raises it to the k-th power (where k is the number of digits), sums these values, and returns the correct boolean result."
+    },
+    "createdAt": "2026-10-24T12:50:07.970Z",
+    "updatedAt": "2026-10-24T12:50:07.970Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adca981b1dfa7bc115d0f9c",
+    "interview": "6adca93eb1dfa7bc115d0f38",
+    "question": "6adca97fb1dfa7bc115d0f8e",
+    "answerText": "",
+    "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+    "language": "cpp",
+    "score": 7,
+    "evaluation": {
+      "correctness": 0,
+      "clarity": 10,
+      "confidence": 10,
+      "notes": "Implement the full solution: iterate through nums, maintain the current value modulo 5 (cur = (cur * 2 + nums[i]) % 5), and store true if cur == 0 for each prefix."
+    },
+    "createdAt": "2026-10-24T12:50:09.406Z",
+    "updatedAt": "2026-10-24T12:50:09.406Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adca982b1dfa7bc115d0fac",
+    "interview": "6adca93eb1dfa7bc115d0f38",
+    "question": "6adca981b1dfa7bc115d0f9e",
+    "answerText": "",
+    "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+    "language": "cpp",
+    "score": 7,
+    "evaluation": {
+      "correctness": 0,
+      "clarity": 10,
+      "confidence": 10,
+      "notes": "You need to implement the algorithm: compute the maximum value for each column (ignoring -1), then create a copy of the matrix and replace every -1 with the corresponding column maximum; currently the solution is empty."
+    },
+    "createdAt": "2026-10-24T12:50:10.414Z",
+    "updatedAt": "2026-10-24T12:50:10.414Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adcacbcce732594e8627e7f",
+    "interview": "6adcabbdce732594e8627e5b",
+    "question": "6adcabbdce732594e8627e72",
+    "answerText": "The best approach is recursion. Compare the corresponding nodes of both trees, checking their values and structure.\n\n### Java solution\n\n```\n\nclass Solution {\n    public boolean isSameTree(TreeNode p, TreeNode q) {\n        // Both trees are empty\n        if (p == null && q == null) {\n            return true;\n        }\n\n        // Only one tree is empty\n        if (p == null || q == null) {\n            return false;\n        }\n\n        // Values must match, and both subtrees must match\n        return p.val == q.val\n            && isSameTree(p.left, q.left)\n            && isSameTree(p.right, q.right);\n    }\n}\n\n```\n\n### How it works\n\nThere are three cases:\n\n1. Both nodes are `null`: Return `true` because both trees have the same structure at this position.\n2. Only one node is `null`: Return `false` because the structures differ.\n3. Both nodes exist: Their values must match, and their left and right subtrees must also be identical.\n\nFor example, consider:\n\nTree P\n\nTree Q\n\nBoth roots have value `1`, both left children have value `2`, and both right children have value `3`. Their structures and values match, so the answer is `true`.\n\n### Complexity analysis\n\n- Time: \\\\(O(n)\\\\), where \\\\(n\\\\) is the number of nodes examined. Each corresponding node is visited at most once.\n- Space: \\\\(O(h)\\\\) auxiliary space for the recursion stack, where \\\\(h\\\\) is the maximum tree height. In the worst case, this is \\\\(O(n)\\\\).\n\nInterview tip: Don't compare only the node values. Example 2 shows that even when the values are `1` and `2` in both trees, different left/right child positions make the trees different.",
+    "code": "",
+    "language": "",
+    "score": 94,
+    "evaluation": {
+      "correctness": 96,
+      "clarity": 94,
+      "confidence": 93,
+      "notes": "Mention the recursion depth limitation and suggest an iterative stack‑based solution for very deep trees to avoid potential stack overflow."
+    },
+    "createdAt": "2026-10-24T13:03:56.611Z",
+    "updatedAt": "2026-10-24T13:03:56.611Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adcafef9ca84c112e70190f",
+    "interview": "6adcaef99ca84c112e7018eb",
+    "question": "6adcaef99ca84c112e701902",
+    "answerText": "The simplest approach is to build the string character by character. For each character in `target`, first append `'a'`, then keep incrementing the last character until it matches the target character, adding every intermediate string to the answer.\n\n### Java Solution\n\n```\n\nimport java.util.*;\n\nclass Solution {\n    public List<String> stringSequence(String target) {\n        List<String> ans = new ArrayList<>();\n        StringBuilder sb = new StringBuilder();\n\n        for (int i = 0; i < target.length(); i++) {\n            sb.append('a');\n            ans.add(sb.toString());\n\n            while (sb.charAt(i) != target.charAt(i)) {\n                sb.setCharAt(i, (char)(sb.charAt(i) + 1));\n                ans.add(sb.toString());\n            }\n        }\n\n        return ans;\n    }\n}\n\n```\n\n### How it works\n\nFor `target = \"abc\"`:\n\n| Operation                | Screen | Added to answer |\n| ------------------------ | ------ | --------------- |\n| Append `'a'`             | `a`    | `a`             |\n| Append `'a'`             | `aa`   | `aa`            |\n| Increment last character | `ab`   | `ab`            |\n| Append `'a'`             | `aba`  | `aba`           |\n| Increment last character | `abb`  | `abb`           |\n| Increment last character | `abc`  | `abc`           |\n\nResult: `[\"a\", \"aa\", \"ab\", \"aba\", \"abb\", \"abc\"]`\n\n### Complexity analysis\n\nLet \\\\(n\\\\) be the length of `target` and \\\\(k\\\\) be the number of strings returned.\n\n- Time complexity: \\\\(O(nk)\\\\) — each generated string requires copying up to \\\\(n\\\\) characters.\n- Auxiliary space: \\\\(O(n)\\\\) for the `StringBuilder`, excluding the output list.\n\nWhy is this minimum? Each target character must be typed separately using Key 1, and then incremented from `'a'` to its required character using Key 2. This uses the minimum possible key presses.",
+    "code": "",
+    "language": "",
+    "score": 93,
+    "evaluation": {
+      "correctness": 95,
+      "clarity": 92,
+      "confidence": 93,
+      "notes": "Refine the complexity analysis: each added string requires copying the current StringBuilder, so total time is proportional to the sum of lengths of all generated strings rather than O(n × k). Mention this explicitly to demonstrate deeper understanding."
+    },
+    "createdAt": "2026-10-24T13:17:35.200Z",
+    "updatedAt": "2026-10-24T13:17:35.200Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adcb06e9ca84c112e70191d",
+    "interview": "6adcaef99ca84c112e7018eb",
+    "question": "6adcafef9ca84c112e701911",
+    "answerText": "A cleaner way to solve this problem is to maintain the effective index of the elements after deletions, without actually modifying the array.\n\n## Java solution (Greedy)\n\n```\n\nclass Solution {\n    public int minDeletion(int[] nums) {\n        int deletions = 0;\n        int count = 0;\n\n        for (int num : nums) {\n            if (count % 2 == 1 && nums[count - 1] == num) {\n                deletions++;\n            } else {\n                count++;\n            }\n        }\n\n        if (count % 2 == 1) {\n            deletions++;\n        }\n\n        return deletions;\n    }\n}\n\n```\n\n## How it works\n\n- `count` represents the length of the array after accounting for deletions.\n- If `count` is odd, the current element would form a pair with the previous kept element.\n- If those two elements are equal, delete the current element.\n- Otherwise, keep it and increment `count`.\n- At the end, if `count` is odd, delete one more element to make the length even.\n\n### Dry run\n\nInput: `nums = [1, 1, 2, 2, 3, 3]`\n\n| Current element | `count` before | Action                  | `count` after | Deletions |\n| --------------- | -------------- | ----------------------- | ------------- | --------- |\n| 1               | 0              | Keep                    | 1             | 0         |\n| 1               | 1              | Delete (duplicate pair) | 1             | 1         |\n| 2               | 1              | Keep                    | 2             | 1         |\n| 2               | 2              | Keep                    | 3             | 1         |\n| 3               | 3              | Delete (duplicate pair) | 3             | 2         |\n| 3               | 3              | Delete (duplicate pair) | 3             | 3         |\n\nThe above approach has a flaw: it compares against `nums[count - 1]`, which does not reliably represent the last kept element after deletions. A safer and simpler solution is to use the index-based greedy approach below.\n\n## Recommended solution\n\n```\n\nclass Solution {\n    public int minDeletion(int[] nums) {\n        int deletions = 0;\n        int i = 0;\n\n        while (i < nums.length - 1) {\n            if (nums[i] == nums[i + 1]) {\n                deletions++;\n                i++;\n            } else {\n                i += 2;\n            }\n        }\n\n        if ((nums.length - deletions) % 2 != 0) {\n            deletions++;\n        }\n\n        return deletions;\n    }\n}\n\n```\n\nComplexity: \\\\(O(n)\\\\) time and \\\\(O(1)\\\\) extra space.",
+    "code": "",
+    "language": "",
+    "score": 85,
+    "evaluation": {
+      "correctness": 88,
+      "clarity": 78,
+      "confidence": 90,
+      "notes": "Separate the flawed initial attempt from the final solution more clearly, and provide a brief justification of why the final greedy loop correctly handles deletions without modifying the array."
+    },
+    "createdAt": "2026-10-24T13:19:42.297Z",
+    "updatedAt": "2026-10-24T13:19:42.297Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adcb4aab843d89a423b516b",
+    "interview": "6adcb3faa1fb0bfb2205f2f3",
+    "question": "6adcb3fba1fb0bfb2205f30a",
+    "answerText": "### Java Solution\n\n```\nclass Solution {\n    public int sumOfSquares(int[] nums) {\n        int n = nums.length;\n        int sum = 0;\n\n        for (int i = 1; i <= n; i++) {\n            if (n % i == 0) {\n                sum += nums[i - 1] * nums[i - 1];\n            }\n        }\n\n        return sum;\n    }\n}\n```\n\n### Explanation\n\n- `n = nums.length` stores the array length.\n- Iterate from `i = 1` to `n` because the problem uses 1-based indexing.\n- If `n % i == 0`, the element at index `i - 1` is special.\n- Add its square to `sum`.\n- Return the final sum.\n\n### Dry Run\n\nInput: `nums = [1, 2, 3, 4]`\n\n| `i` | `4 % i == 0`? | Square added   | Sum |\n| --- | ------------- | -------------- | --- |\n| 1   | Yes           | \\\\(1^2 = 1\\\\)  | 1   |\n| 2   | Yes           | \\\\(2^2 = 4\\\\)  | 5   |\n| 3   | No            | 0              | 5   |\n| 4   | Yes           | \\\\(4^2 = 16\\\\) | 21  |\n\nOutput: `21`\n\n### Complexity Analysis\n\n- Time Complexity: \\\\(O(n)\\\\) — we iterate through the array indices once.\n- Space Complexity: \\\\(O(1)\\\\) — we use only a few extra variables.",
+    "code": "",
+    "language": "",
+    "score": 95,
+    "evaluation": {
+      "correctness": 95,
+      "clarity": 95,
+      "confidence": 95,
+      "notes": "Mention the possibility of integer overflow for larger inputs and consider using a larger numeric type (e.g., long) for the sum to make the solution robust."
+    },
+    "createdAt": "2026-10-24T13:37:46.014Z",
+    "updatedAt": "2026-10-24T13:37:46.014Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adcb530b843d89a423b9347",
+    "interview": "6adcb3faa1fb0bfb2205f2f3",
+    "question": "6adcb4aab843d89a423b516d",
+    "answerText": "### Java Solution\n\n```\nclass Solution {\n    public int[] findErrorNums(int[] nums) {\n        int n = nums.length;\n        int[] count = new int[n + 1];\n\n        for (int num : nums) {\n            count[num]++;\n        }\n\n        int duplicate = 0;\n        int missing = 0;\n\n        for (int i = 1; i <= n; i++) {\n            if (count[i] == 2) {\n                duplicate = i;\n            } else if (count[i] == 0) {\n                missing = i;\n            }\n        }\n\n        return new int[]{duplicate, missing};\n    }\n}\n```\n\n### Explanation\n\n1. Create a `count` array to track how many times each number occurs.\n2. Traverse `nums` and increment `count[num]`.\n3. Iterate from `1` to `n`:\n   - If `count[i] == 2`, the number is duplicated.\n   - If `count[i] == 0`, the number is missing.\n4. Return `{duplicate, missing}` in that order.\n\n### Dry Run\n\nInput: `nums = [1, 2, 2, 4]`\n\n| Number | Frequency | Result        |\n| ------ | --------- | ------------- |\n| 1      | 1         | —             |\n| 2      | 2         | Duplicate = 2 |\n| 3      | 0         | Missing = 3   |\n| 4      | 1         | —             |\n\nOutput: `[2, 3]`\n\n### Complexity Analysis\n\n- Time Complexity: \\\\(O(n)\\\\) — two traversals.\n- Space Complexity: \\\\(O(n)\\\\) — the frequency array.\n\nInterview tip: This frequency-array approach is easy to understand and efficient. You can also solve this problem in \\\\(O(n)\\\\) time using \\\\(O(1)\\\\) extra space by modifying the input array or using mathematical equations.",
+    "code": "",
+    "language": "",
+    "score": 95,
+    "evaluation": {
+      "correctness": 95,
+      "clarity": 95,
+      "confidence": 95,
+      "notes": "Add a brief discussion of an O(1) extra‑space solution (e.g., marking visited indices or using sum/xor formulas) to show deeper insight into space optimization."
+    },
+    "createdAt": "2026-10-24T13:40:00.964Z",
+    "updatedAt": "2026-10-24T13:40:00.964Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adcb5faf3b4cae06a3d1429",
+    "interview": "6adcb26e3db9dca557224a24",
+    "question": "6adcb26e3db9dca557224a3b",
+    "answerText": "[Not Answered - Time Expired]",
+    "code": "",
+    "language": "",
+    "score": 0,
+    "evaluation": {
+      "correctness": 0,
+      "clarity": 0,
+      "confidence": 0,
+      "notes": "Candidate did not submit an answer before the interview and grace period concluded."
+    },
+    "createdAt": "2026-10-24T13:43:22.372Z",
+    "updatedAt": "2026-10-24T13:43:22.372Z",
+    "__v": 0
+  },
+  {
+    "_id": "6adcb85af3b4cae06a3d1484",
+    "interview": "6adcb723f3b4cae06a3d1461",
+    "question": "6adcb723f3b4cae06a3d1478",
+    "answerText": "The easiest approach is to traverse the array and keep track of the minimum distance whenever we find the target.\n\n### Java Solution\n\n```\n\nclass Solution {\n    public int getMinDistance(int[] nums, int target, int start) {\n        int minDistance = Integer.MAX_VALUE;\n\n        for (int i = 0; i < nums.length; i++) {\n            if (nums[i] == target) {\n                int distance = Math.abs(i - start);\n                minDistance = Math.min(minDistance, distance);\n            }\n        }\n\n        return minDistance;\n    }\n}\n\n```\n\n### Example walkthrough\n\nInput: `nums = [1, 2, 3, 4, 5]`, `target = 5`, `start = 3`\n\n\\\\(|x|\\\\)\n\n\\\\(\\lvert \\text{1} \\rvert = \\text{1}\\\\)\n\n|x| = xDistance from 0-6-5-4-3-2-10123456xDrag the point left or right\n\nGive feedback\n\n- Start index is `3`.\n- The target `5` occurs at index `4`.\n- Distance = `Math.abs(4 - 3) = 1`.\n- Minimum distance = `1`.\n\nOutput: `1`\n\n### Complexity analysis\n\n- Time: \\\\(O(n)\\\\), since we traverse the array once.\n- Space: \\\\(O(1)\\\\), since we use only a few variables.\n\nInterview tip: Since the target is guaranteed to exist, you can also return immediately when you find a target at distance `0`, because no smaller distance is possible.",
+    "code": "",
+    "language": "",
+    "score": 93,
+    "evaluation": {
+      "correctness": 96,
+      "clarity": 88,
+      "confidence": 94,
+      "notes": "Clean up the extraneous garbled markup in the example walkthrough and optionally add an early‑exit when distance 0 is found to demonstrate the optimization."
+    },
+    "createdAt": "2026-10-24T13:53:30.091Z",
+    "updatedAt": "2026-10-24T13:53:30.091Z",
+    "__v": 0
+  }
+]

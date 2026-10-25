@@ -1,0 +1,96 @@
+[
+  {
+    "_id": "6adca670722322871fc433f8",
+    "user": "6adc8ab61c6e47b0b30e8510",
+    "__v": 0,
+    "analysis": {
+      "generatedAt": null,
+      "improvementSkills": [],
+      "matchScore": 0,
+      "missingAreas": [],
+      "suggestions": [],
+      "summary": "",
+      "unverifiedSkills": [],
+      "verifiedSkills": []
+    },
+    "certifications": [],
+    "coreCsSubjects": [
+      "Data Structures",
+      "Object Oriented Programming",
+      "Computer Networks",
+      "Database Management Systems",
+      "Operating Systems",
+      "Computer Architecture",
+      "Design And Analysis of Algorithm",
+      "Machine Learning",
+      "Mobile Application Development",
+      "Discrete Mathematics",
+      "Digital Communication",
+      "Microprocessor And Microcontroller"
+    ],
+    "createdAt": "2026-10-24T12:37:04.484Z",
+    "databases": [
+      "PostgreSQL",
+      "MongoDB"
+    ],
+    "experience": [
+      {
+        "role": "UI/UX Design Intern",
+        "company": "Prime Pack India",
+        "description": "Designed user-centric interfaces using wireframes and high-fidelity mockups Conducted user research and usability analysis to improve user experience Created design assets and design systems ensuring consistency and accessibility"
+      },
+      {
+        "role": "Web Developemet Intern",
+        "company": "Nuance Infotech",
+        "description": "Developed and maintained responsive web applications using HTML, CSS, and JavaScript. Implemented frontend features and integrated them with backend APIs. Collaborated with team members to debug issues and improve application performance."
+      }
+    ],
+    "frameworks": [
+      "Node.js",
+      "Express.js",
+      "TensorFlow",
+      "PyTorch",
+      "Keras",
+      "Tailwind CSS"
+    ],
+    "programmingLanguages": [
+      "C++",
+      "Java",
+      "Python",
+      "SQL",
+      "JavaScript",
+      "TypeScript"
+    ],
+    "projects": [
+      {
+        "title": "Song Genre Classification using CNN",
+        "description": "Tech Stack:  TensorFlow, Keras, NumPy, Librosa, Matplotlib Implemented a CNN architecture for multi-class audio genre classification from scratch. Performed signal preprocessing and feature engineering using MFCCs and spectrograms. Trained and validated the model using standard performance metrics."
+      },
+      {
+        "title": "Personal Finance Management System",
+        "description": "Tech Stack :  HTML, CSS, JavaScript, TypeScript, Node.js, Express.js, PostgreSQL. Developed a full-stack application for managing income and expenses Designed normalized PostgreSQL schemas supporting secure CRUD operations Built backend APIs using Node.js and Express.js with structured routing"
+      },
+      {
+        "title": "Airbnb Clone",
+        "description": "Tech Stack :  HTML, CSS, JavaScript, Node.js, Express.js, MongoDB Developed a full-stack rental marketplace clone with dynamic listings Implemented server-side logic and API routes using Express.js"
+      }
+    ],
+    "rawText": "Vinamra Sharma\nUG 3rd Year\nSGSITS, Indore\nD.O.B : 2004-01-21\nEmail ID :\nvinamrasharma421@gmail.com\nEnrollment No.:  0801CS231158\nDepartment :  Computer Science\nGender :  Male\nSpecialization :  None\nMobile # :  +91 7000987384\nEducation\nDegree /\nCertificate\nUniversity /\nBoard\nInstitute / SchoolYear of\nPassing\nCGPA /\nPercentage\nGraduationRGPV,BhopalSGSITS, Indore20278.81\n12thCBSESRCS, Indore202293.00\n10thCBSEColumbia Convent202084.83\nScholastic Achievements\n•  Secured 99 percentile in JEE Main, among top 1% of - 1 million candidates.\n•  Achieved All India Rank (AIR) 15,000 in JEE Advanced.\n•  Solved 450+ coding problems on LeetCode, strengthening DSA and problem-solving skills.\n•  Completed Pre Security and Cyber Security 101 paths on TryHackMe\n•  Secured All India Rank 11 in NPTEL – Artificial Intelligence:  Search Methods for Problem Solving, IIT Madras\nWork Experience\nUI/UX Design Intern - Prime Pack IndiaJuly 2025 – August 2025\n•  Designed user-centric interfaces using wireframes and high-fidelity mockups\n•  Conducted user research and usability analysis to improve user experience\n•  Created design assets and design systems ensuring consistency and accessibility\nWeb Developemet Intern - Nuance InfotechMay 2025 – June 2025\n•  Developed and maintained responsive web applications using HTML, CSS, and JavaScript.\n•  Implemented frontend features and integrated them with backend APIs.\n•  Collaborated with team members to debug issues and improve application performance.\nProjects\nSong Genre Classification using CNNSept 2025 - Dec 2025\n•  Tech Stack:  TensorFlow, Keras, NumPy, Librosa, Matplotlib\n•  Implemented a CNN architecture for multi-class audio genre classification from\nscratch.\n•  Performed signal preprocessing and feature engineering using MFCCs and\nspectrograms.\n•  Trained and validated the model using standard performance metrics.\nPersonal Finance Management SystemSept 2025 – Dec 2025\n•  Tech Stack :  HTML, CSS, JavaScript, TypeScript, Node.js, Express.js, PostgreSQL.\n•  Developed a full-stack application for managing income and expenses\n•  Designed normalized PostgreSQL schemas supporting secure CRUD operations\n•  Built backend APIs using Node.js and Express.js with structured routing\nAirbnb CloneJan 2025 – May 2025\n•  Tech Stack :  HTML, CSS, JavaScript, Node.js, Express.js, MongoDB\n•  Developed a full-stack rental marketplace clone with dynamic listings\n•  Implemented server-side logic and API routes using Express.js\n1\nPlatforms Worked\n•  Operating Systems :  Windows, Linux, macOS\n•  Programming Skills :  C++, Java, Python, SQL, JavaScript, TensorFlow,PyTorch\n•  Web Designing :  HTML, CSS, Tailwind CSS, JavaScript, TypeScript, Node.js, Express.js, MongoDB\n•  Software Skills :  Git, VS Code, Jupyter Notebook, Google Colab, Android Studio, MS Office\nCourses Undertaken\nCoreBreadth\n•  Data Structures\n•  Object Oriented Programming\n•  Computer Networks\n•  Database Management Systems\n•  Operating Systems\n•  Computer Architecture\n•  Agile Software Methodology\n•  Design Thinking\n•  Discrete Mathematics\n•  Mobile Application Development\n•  Machine Learning\n•  Design And Analysis of Algorithm\n•  Digital Communication\n•  Microprocessor And Microcontroller\n•  Mathematics I, II, III, IV\n•  Economics for Engineers\nPositions of Responsibility\nTeam Lead - Agile Based Project DevelopementJan 2025 – April 2025\n•  Headed a team of 5 during an academic project under the Agile Software Methodology Course.\n•  Managed  sprint  planning  and  coordinated  the  creation  of  a  full  website  wireframe  for  a  platform  to  connact\nstudents and teachers.\nExtracurricular Activities\nState-Level Shooter2018\n•  Participated in 10m Air Rifle Shooting at the State-Level Championship, demonstrating focus, discipline, and\ncompetitive sportsmanship.\nSchool-Level Swimmer2015-2020\n•  Participated in inter-school swimming competitions, highlighting stamina, consistency, and team spirit.\n2",
+    "resumeFile": "/uploads/1792845420998-616733476.pdf",
+    "skills": [
+      "Windows",
+      "Linux",
+      "macOS",
+      "Git",
+      "VS Code",
+      "Jupyter Notebook",
+      "Google Colab",
+      "Android Studio",
+      "MS Office",
+      "Agile Software Methodology",
+      "Design Thinking",
+      "Tailwind CSS"
+    ],
+    "updatedAt": "2026-10-24T12:37:04.484Z"
+  }
+]

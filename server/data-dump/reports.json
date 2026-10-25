@@ -1,0 +1,184 @@
+[
+  {
+    "_id": "6adcacec722322871fc433f9",
+    "interview": "6adcabbdce732594e8627e5b",
+    "__v": 0,
+    "createdAt": "2026-10-24T13:04:44.463Z",
+    "pdfPath": "/reports/report-6adcabbdce732594e8627e5b.pdf",
+    "quotedMoments": [
+      {
+        "speaker": "user",
+        "quote": "The best approach is recursion. Compare the corresponding nodes of both trees, checking their values and structure.",
+        "why": "Shows the candidate's confidence in choosing an appropriate algorithm."
+      },
+      {
+        "speaker": "user",
+        "quote": "return p.val == q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);",
+        "why": "Demonstrates correct implementation of the recursive check."
+      },
+      {
+        "speaker": "user",
+        "quote": "Time: O(n), Space: O(h) auxiliary space for the recursion stack.",
+        "why": "Provides accurate complexity analysis, indicating solid technical understanding."
+      },
+      {
+        "speaker": "user",
+        "quote": "Interview tip: Don't compare only the node values.",
+        "why": "Shows awareness of common mistakes and adds value beyond the core solution."
+      }
+    ],
+    "scores": {
+      "overall": 90,
+      "technical": 92,
+      "communication": 90,
+      "confidence": 88,
+      "problemSolving": 90,
+      "coding": 90
+    },
+    "strengths": [
+      "Provided a correct and concise recursive solution for the Same Tree problem.",
+      "Explained the three base cases clearly and linked them to the algorithm.",
+      "Included time and space complexity analysis.",
+      "Added an interview tip that shows awareness of common pitfalls."
+    ],
+    "suggestions": [
+      "Practice writing iterative versions of tree traversals to handle very deep trees.",
+      "Include simple unit tests or example runs to demonstrate correctness.",
+      "When time permits, attempt all presented questions to showcase breadth of problem‑solving."
+    ],
+    "summary": "The candidate delivered a correct, well‑explained recursive solution for the Same Tree problem, demonstrating solid technical knowledge, clear communication, and reasonable confidence. While the answer is strong, it lacks discussion of alternative approaches, testing, and coverage of the second problem, indicating areas for improvement in breadth and depth of problem‑solving.",
+    "updatedAt": "2026-10-24T13:04:44.486Z",
+    "user": "6adc8ab61c6e47b0b30e8510",
+    "weaknesses": [
+      "Did not discuss alternative iterative approaches or potential stack‑overflow issues for deep trees.",
+      "No test cases or validation code were shown.",
+      "Did not address the second problem (Max Consecutive Ones), leaving a gap in the assessment."
+    ]
+  },
+  {
+    "_id": "6adcb5fc722322871fc433fa",
+    "interview": "6adcb26e3db9dca557224a24",
+    "__v": 0,
+    "createdAt": "2026-10-24T13:43:24.093Z",
+    "pdfPath": "/reports/report-6adcb26e3db9dca557224a24.pdf",
+    "quotedMoments": [],
+    "scores": {
+      "overall": 20,
+      "technical": 0,
+      "communication": 0,
+      "confidence": 0,
+      "problemSolving": 0,
+      "coding": 0
+    },
+    "strengths": [],
+    "suggestions": [
+      "Practice solving algorithmic problems and articulate the solution step‑by‑step.",
+      "When answering, clearly explain the approach, edge cases, and complexity analysis.",
+      "Provide actual code or pseudocode to demonstrate implementation skills."
+    ],
+    "summary": "The candidate did not attempt to answer the problem, leaving no evidence of technical ability, communication, confidence, or problem‑solving skills. Consequently, all evaluated dimensions receive minimal scores.",
+    "updatedAt": "2026-10-24T13:43:24.110Z",
+    "user": "6adc8ab61c6e47b0b30e8510",
+    "weaknesses": [
+      "Did not provide any solution or reasoning for the given problem.",
+      "No demonstration of technical knowledge, problem‑solving approach, or coding ability.",
+      "Absence of communication makes it impossible to assess clarity or confidence."
+    ]
+  },
+  {
+    "_id": "6adcb667722322871fc433fb",
+    "interview": "6adcb3faa1fb0bfb2205f2f3",
+    "__v": 0,
+    "createdAt": "2026-10-24T13:45:11.434Z",
+    "pdfPath": "/reports/report-6adcb3faa1fb0bfb2205f2f3.pdf",
+    "quotedMoments": [
+      {
+        "speaker": "user",
+        "quote": "Iterate from i = 1 to n because the problem uses 1-based indexing.",
+        "why": "Demonstrates clear understanding of the problem indexing and conveys confidence in the chosen loop bounds."
+      },
+      {
+        "speaker": "user",
+        "quote": "Create a count array to track how many times each number occurs.",
+        "why": "Shows a straightforward, correct approach and communicates it concisely."
+      }
+    ],
+    "scores": {
+      "overall": 90,
+      "technical": 92,
+      "communication": 90,
+      "confidence": 90,
+      "problemSolving": 88,
+      "coding": 90
+    },
+    "strengths": [
+      "Provides correct and efficient algorithms for both problems.",
+      "Includes clear, step‑by‑step explanations and dry‑run tables.",
+      "Analyzes time and space complexity accurately.",
+      "Writes clean, readable Java code that follows the problem constraints."
+    ],
+    "suggestions": [
+      "Practice in‑place techniques (e.g., negation marking) to achieve O(1) extra space for frequency‑based problems.",
+      "Consider edge‑case analysis such as very large inputs or overflow when constraints change.",
+      "When possible, explain trade‑offs between different approaches to show deeper algorithmic insight."
+    ],
+    "summary": "The candidate delivered two fully correct Java solutions with solid explanations, appropriate complexity analysis, and clear communication. Their confidence is evident, and the code meets the problem requirements. Minor gaps include not exploring more space‑optimal alternatives and limited discussion of edge cases. Overall, the performance is strong and suitable for an SDE 1 role.",
+    "updatedAt": "2026-10-24T13:45:11.448Z",
+    "user": "6adc8ab61c6e47b0b30e8510",
+    "weaknesses": [
+      "Does not discuss alternative O(1)‑space solutions for the Set Mismatch problem.",
+      "No mention of potential integer overflow for the sum of squares (though constraints make it unlikely)."
+    ]
+  },
+  {
+    "_id": "6adcb85c722322871fc433fc",
+    "interview": "6adcb723f3b4cae06a3d1461",
+    "__v": 0,
+    "createdAt": "2026-10-24T13:53:32.420Z",
+    "pdfPath": "/reports/report-6adcb723f3b4cae06a3d1461.pdf",
+    "quotedMoments": [
+      {
+        "speaker": "user",
+        "quote": "The easiest approach is to traverse the array and keep track of the minimum distance whenever we find the target.",
+        "why": "Shows the candidate identified the optimal linear‑scan strategy."
+      },
+      {
+        "speaker": "user",
+        "quote": "Since the target is guaranteed to exist, you can also return immediately when you find a target at distance 0, because no smaller distance is possible.",
+        "why": "Demonstrates awareness of an optimization and confidence in reasoning."
+      },
+      {
+        "speaker": "user",
+        "quote": "int minDistance = Integer.MAX_VALUE; ... return minDistance;",
+        "why": "Core part of the correct implementation; reflects coding ability."
+      }
+    ],
+    "scores": {
+      "overall": 90,
+      "technical": 95,
+      "communication": 88,
+      "confidence": 94,
+      "problemSolving": 90,
+      "coding": 92
+    },
+    "strengths": [
+      "Provides a correct O(n) solution that meets all constraints.",
+      "Writes clean, readable Java code with proper variable naming.",
+      "Explains time and space complexity clearly.",
+      "Mentions an early‑exit optimization when distance 0 is found."
+    ],
+    "suggestions": [
+      "Remove extraneous or malformed markup to keep the answer focused.",
+      "Incorporate the early‑exit optimization directly into the code to demonstrate it works.",
+      "Practice delivering explanations in a tighter, more structured manner."
+    ],
+    "summary": "The candidate delivered a correct and efficient solution with clear reasoning and good coding style. Minor presentation issues and a missed opportunity to embed the suggested early‑exit optimization in the code are the only notable weaknesses.",
+    "updatedAt": "2026-10-24T13:53:32.433Z",
+    "user": "6adc8ab61c6e47b0b30e8510",
+    "weaknesses": [
+      "Includes some garbled, unrelated text (e.g., \"|x| = xDistance from 0-6-5-4-3-2-10123456xDrag the point left or right\").",
+      "The early‑exit tip is not reflected in the actual code implementation.",
+      "Explanation could be more concise; occasional redundancy."
+    ]
+  }
+]

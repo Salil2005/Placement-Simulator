@@ -1,0 +1,233 @@
+[
+  {
+    "_id": "6adc8c651c6e47b0b30e854c",
+    "interview": "6adc8c651c6e47b0b30e8537",
+    "transcript": [
+      {
+        "role": "ai",
+        "content": "How would you determine whether a string is a palindrome while ignoring case and non-alphanumeric characters?",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T10:45:57.689Z"
+      }
+    ],
+    "createdAt": "2026-10-24T10:45:57.687Z",
+    "updatedAt": "2026-10-24T10:45:57.690Z",
+    "__v": 1
+  },
+  {
+    "_id": "6adca93eb1dfa7bc115d0f4d",
+    "interview": "6adca93eb1dfa7bc115d0f38",
+    "transcript": [
+      {
+        "role": "ai",
+        "content": "**Problem: Count Numbers With Unique Digits II**\n\nGiven two positive integers a and b, return the count of numbers having unique digits in the range [a, b] (inclusive).\n \nExample 1:\n\nInput: a = 1, b = 20\nOutput: 19\nExplanation: All the numbers in the range [1, 20] have unique digits except 11. Hence, the answer is 19.\n\nExample 2:\n\nInput: a = 9, b = 19\nOutput: 10\nExplanation: All the numbers in the range [9, 19] have unique digits except 11. Hence, the answer is 10. \n\nExample 3:\n\nInput: a = 80, b = 120\nOutput: 27\nExplanation: There are 41 numbers in the range [80, 120], 27 of which have unique digits.\n\n \nConstraints:\n\n1 <= a <= b <= 1000",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T12:49:02.965Z"
+      },
+      {
+        "role": "user",
+        "content": "The simplest approach is to iterate through every number from `a` to `b` and check whether all its digits are unique.\n\n### Java solution\n\n```\n\nclass Solution {\n    public int countNumbersWithUniqueDigits(int a, int b) {\n        int count = 0;\n\n        for (int i = a; i <= b; i++) {\n            if (hasUniqueDigits(i)) {\n                count++;\n            }\n        }\n\n        return count;\n    }\n\n    private boolean hasUniqueDigits(int n) {\n        boolean[] seen = new boolean[10];\n\n        while (n > 0) {\n            int digit = n % 10;\n\n            if (seen[digit]) {\n                return false;\n            }\n\n            seen[digit] = true;\n            n /= 10;\n        }\n\n        return true;\n    }\n}\n\n```\n\n### How it works\n\nFor each number:\n\n1. Extract the last digit using `n % 10`.\n2. If that digit has already appeared, return `false`.\n3. Otherwise, mark it as seen and remove it using `n /= 10`.\n4. If all digits are unique, increment the count.\n\nFor example, `121` contains a repeated digit `1`, so it is rejected. The number `123` is accepted.\n\n### Complexity analysis\n\nLet \\\\(N=b-a+1\\\\) be the number of integers in the range, and \\\\(D\\\\) be the maximum number of digits.\n\n- Time: \\\\(O(ND)\\\\)\n- Space: \\\\(O(1)\\\\), since the `seen` array always contains 10 elements.\n\nGiven \\\\(b\\leq1000\\\\), this solution is easily efficient enough.\n\n### Example walkthrough\n\nFor `a = 1, b = 20`, the only number with repeated digits is `11`.\n\n\\\\[ \\text{Answer}=20-1+1-1=\\boxed{19} \\\\]\n\nInterview tip: This is a good brute-force solution because the constraints are small. If the interviewer increases the upper bound substantially, you could discuss digit DP or counting numbers with unique digits mathematically.",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T12:49:57.432Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Search In A Binary Search Tree**\n\nYou are given the root of a binary search tree (BST) and an integer val.\nFind the node in the BST that the node's value equals val and return the subtree rooted with that node. If such a node does not exist, return null.\n \nExample 1:\n\n\nInput: root = [4,2,7,1,3], val = 2\nOutput: [2,1,3]\n\nExample 2:\n\n\nInput: root = [4,2,7,1,3], val = 5\nOutput: []\n\n \nConstraints:\n\nThe number of nodes in the tree is in the range [1, 5000].\n1 <= Node.val <= 107\nroot is a binary search tree.\n1 <= val <= 107",
+        "questionIndex": 1,
+        "createdAt": "2026-10-24T12:49:58.695Z"
+      },
+      {
+        "role": "user",
+        "content": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+        "questionIndex": 1,
+        "createdAt": "2026-10-24T12:50:03.654Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Minimum Difference Between Highest And Lowest Of K Scores**\n\nYou are given a 0-indexed integer array nums, where nums[i] represents the score of the ith student. You are also given an integer k.\nPick the scores of any k students from the array so that the difference between the highest and the lowest of the k scores is minimized.\nReturn the minimum possible difference.\n \nExample 1:\n\nInput: nums = [90], k = 1\nOutput: 0\nExplanation: There is one way to pick score(s) of one student:\n- [90]. The difference between the highest and lowest score is 90 - 90 = 0.\nThe minimum possible difference is 0.\n\nExample 2:\n\nInput: nums = [9,4,1,7], k = 2\nOutput: 2\nExplanation: There are six ways to pick score(s) of two students:\n- [9,4,1,7]. The difference between the highest and lowest score is 9 - 4 = 5.\n- [9,4,1,7]. The difference between the highest and lowest score is 9 - 1 = 8.\n- [9,4,1,7]. The difference between the highest and lowest score is 9 - 7 = 2.\n- [9,4,1,7]. The difference between the highest and lowest score is 4 - 1 = 3.\n- [9,4,1,7]. The difference between the highest and lowest score is 7 - 4 = 3.\n- [9,4,1,7]. The difference between the highest and lowest score is 7 - 1 = 6.\nThe minimum possible difference is 2.\n \nConstraints:\n\n1 <= k <= nums.length <= 1000\n0 <= nums[i] <= 105",
+        "questionIndex": 2,
+        "createdAt": "2026-10-24T12:50:04.592Z"
+      },
+      {
+        "role": "user",
+        "content": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+        "questionIndex": 2,
+        "createdAt": "2026-10-24T12:50:05.479Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Armstrong Number**\n\nGiven an integer n, return true if and only if it is an Armstrong number.\nThe k-digit number n is an Armstrong number if and only if the kth power of each digit sums to n.\n \nExample 1:\n\nInput: n = 153\nOutput: true\nExplanation: 153 is a 3-digit number, and 153 = 13 + 53 + 33.\n\nExample 2:\n\nInput: n = 123\nOutput: false\nExplanation: 123 is a 3-digit number, and 123 != 13 + 23 + 33 = 36.\n\n \nConstraints:\n\n1 <= n <= 108",
+        "questionIndex": 3,
+        "createdAt": "2026-10-24T12:50:06.520Z"
+      },
+      {
+        "role": "user",
+        "content": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+        "questionIndex": 3,
+        "createdAt": "2026-10-24T12:50:07.145Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Binary Prefix Divisible By 5**\n\nYou are given a binary array nums (0-indexed).\nWe define xi as the number whose binary representation is the subarray nums[0..i] (from most-significant-bit to least-significant-bit).\n\nFor example, if nums = [1,0,1], then x0 = 1, x1 = 2, and x2 = 5.\n\nReturn an array of booleans answer where answer[i] is true if xi is divisible by 5.\n \nExample 1:\n\nInput: nums = [0,1,1]\nOutput: [true,false,false]\nExplanation: The input numbers in binary are 0, 01, 011; which are 0, 1, and 3 in base-10.\nOnly the first number is divisible by 5, so answer[0] is true.\n\nExample 2:\n\nInput: nums = [1,1,1]\nOutput: [false,false,false]\n\n \nConstraints:\n\n1 <= nums.length <= 105\nnums[i] is either 0 or 1.",
+        "questionIndex": 4,
+        "createdAt": "2026-10-24T12:50:07.973Z"
+      },
+      {
+        "role": "user",
+        "content": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+        "questionIndex": 4,
+        "createdAt": "2026-10-24T12:50:08.416Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Modify The Matrix**\n\nGiven a 0-indexed m x n integer matrix matrix, create a new 0-indexed matrix called answer. Make answer equal to matrix, then replace each element with the value -1 with the maximum element in its respective column.\nReturn the matrix answer.\n \nExample 1:\n\n\nInput: matrix = [[1,2,-1],[4,-1,6],[7,8,9]]\nOutput: [[1,2,9],[4,8,6],[7,8,9]]\nExplanation: The diagram above shows the elements that are changed (in blue).\n- We replace the value in the cell [1][1] with the maximum value in the column 1, that is 8.\n- We replace the value in the cell [0][2] with the maximum value in the column 2, that is 9.\n\nExample 2:\n\n\nInput: matrix = [[3,-1],[5,2]]\nOutput: [[3,2],[5,2]]\nExplanation: The diagram above shows the elements that are changed (in blue).\n\n \nConstraints:\n\nm == matrix.length\nn == matrix[i].length\n2 <= m, n <= 50\n-1 <= matrix[i][j] <= 100\nThe input is generated such that each column contains at least one non-negative integer.",
+        "questionIndex": 5,
+        "createdAt": "2026-10-24T12:50:09.409Z"
+      },
+      {
+        "role": "user",
+        "content": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    // your code here\n}\n",
+        "questionIndex": 5,
+        "createdAt": "2026-10-24T12:50:09.499Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Sort Array By Parity**\n\nGiven an integer array nums, move all the even integers at the beginning of the array followed by all the odd integers.\nReturn any array that satisfies this condition.\n \nExample 1:\n\nInput: nums = [3,1,2,4]\nOutput: [2,4,3,1]\nExplanation: The outputs [4,2,3,1], [2,4,1,3], and [4,2,1,3] would also be accepted.\n\nExample 2:\n\nInput: nums = [0]\nOutput: [0]\n\n \nConstraints:\n\n1 <= nums.length <= 5000\n0 <= nums[i] <= 5000",
+        "questionIndex": 6,
+        "createdAt": "2026-10-24T12:50:10.415Z"
+      }
+    ],
+    "createdAt": "2026-10-24T12:49:02.962Z",
+    "updatedAt": "2026-10-24T12:50:10.417Z",
+    "__v": 7
+  },
+  {
+    "_id": "6adcabbdce732594e8627e70",
+    "interview": "6adcabbdce732594e8627e5b",
+    "transcript": [
+      {
+        "role": "ai",
+        "content": "**Problem: Same Tree**\n\nGiven the roots of two binary trees p and q, write a function to check if they are the same or not.\nTwo binary trees are considered the same if they are structurally identical, and the nodes have the same value.\n \nExample 1:\n\n\nInput: p = [1,2,3], q = [1,2,3]\nOutput: true\n\nExample 2:\n\n\nInput: p = [1,2], q = [1,null,2]\nOutput: false\n\nExample 3:\n\n\nInput: p = [1,2,1], q = [1,1,2]\nOutput: false\n\n \nConstraints:\n\nThe number of nodes in both trees is in the range [0, 100].\n-104 <= Node.val <= 104",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T12:59:41.750Z"
+      },
+      {
+        "role": "user",
+        "content": "The best approach is recursion. Compare the corresponding nodes of both trees, checking their values and structure.\n\n### Java solution\n\n```\n\nclass Solution {\n    public boolean isSameTree(TreeNode p, TreeNode q) {\n        // Both trees are empty\n        if (p == null && q == null) {\n            return true;\n        }\n\n        // Only one tree is empty\n        if (p == null || q == null) {\n            return false;\n        }\n\n        // Values must match, and both subtrees must match\n        return p.val == q.val\n            && isSameTree(p.left, q.left)\n            && isSameTree(p.right, q.right);\n    }\n}\n\n```\n\n### How it works\n\nThere are three cases:\n\n1. Both nodes are `null`: Return `true` because both trees have the same structure at this position.\n2. Only one node is `null`: Return `false` because the structures differ.\n3. Both nodes exist: Their values must match, and their left and right subtrees must also be identical.\n\nFor example, consider:\n\nTree P\n\nTree Q\n\nBoth roots have value `1`, both left children have value `2`, and both right children have value `3`. Their structures and values match, so the answer is `true`.\n\n### Complexity analysis\n\n- Time: \\\\(O(n)\\\\), where \\\\(n\\\\) is the number of nodes examined. Each corresponding node is visited at most once.\n- Space: \\\\(O(h)\\\\) auxiliary space for the recursion stack, where \\\\(h\\\\) is the maximum tree height. In the worst case, this is \\\\(O(n)\\\\).\n\nInterview tip: Don't compare only the node values. Example 2 shows that even when the values are `1` and `2` in both trees, different left/right child positions make the trees different.",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:03:55.852Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Max Consecutive Ones**\n\nGiven a binary array nums, return the maximum number of consecutive 1's in the array.\n \nExample 1:\n\nInput: nums = [1,1,0,1,1,1]\nOutput: 3\nExplanation: The first two digits or the last three digits are consecutive 1s. The maximum number of consecutive 1s is 3.\n\nExample 2:\n\nInput: nums = [1,0,1,1,0,1]\nOutput: 2\n\n \nConstraints:\n\n1 <= nums.length <= 105\nnums[i] is either 0 or 1.",
+        "questionIndex": 1,
+        "createdAt": "2026-10-24T13:03:56.614Z"
+      }
+    ],
+    "createdAt": "2026-10-24T12:59:41.747Z",
+    "updatedAt": "2026-10-24T13:03:56.616Z",
+    "__v": 2
+  },
+  {
+    "_id": "6adcaef99ca84c112e701900",
+    "interview": "6adcaef99ca84c112e7018eb",
+    "transcript": [
+      {
+        "role": "ai",
+        "content": "**Problem: Find The Sequence Of Strings Appeared On The Screen**\n\nYou are given a string target.\nAlice is going to type target on her computer using a special keyboard that has only two keys:\n\nKey 1 appends the character \"a\" to the string on the screen.\nKey 2 changes the last character of the string on the screen to its next character in the English alphabet. For example, \"c\" changes to \"d\" and \"z\" changes to \"a\".\n\nNote that initially there is an empty string \"\" on the screen, so she can only press key 1.\nReturn a list of all strings that appear on the screen as Alice types target, in the order they appear, using the minimum key presses.\n \nExample 1:\n\nInput: target = \"abc\"\nOutput: [\"a\",\"aa\",\"ab\",\"aba\",\"abb\",\"abc\"]\nExplanation:\nThe sequence of key presses done by Alice are:\n\nPress key 1, and the string on the screen becomes \"a\".\nPress key 1, and the string on the screen becomes \"aa\".\nPress key 2, and the string on the screen becomes \"ab\".\nPress key 1, and the string on the screen becomes \"aba\".\nPress key 2, and the string on the screen becomes \"abb\".\nPress key 2, and the string on the screen becomes \"abc\".\n\n\nExample 2:\n\nInput: target = \"he\"\nOutput: [\"a\",\"b\",\"c\",\"d\",\"e\",\"f\",\"g\",\"h\",\"ha\",\"hb\",\"hc\",\"hd\",\"he\"]\n\n \nConstraints:\n\n1 <= target.length <= 400\ntarget consists only of lowercase English letters.",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:13:29.600Z"
+      },
+      {
+        "role": "user",
+        "content": "The simplest approach is to build the string character by character. For each character in `target`, first append `'a'`, then keep incrementing the last character until it matches the target character, adding every intermediate string to the answer.\n\n### Java Solution\n\n```\n\nimport java.util.*;\n\nclass Solution {\n    public List<String> stringSequence(String target) {\n        List<String> ans = new ArrayList<>();\n        StringBuilder sb = new StringBuilder();\n\n        for (int i = 0; i < target.length(); i++) {\n            sb.append('a');\n            ans.add(sb.toString());\n\n            while (sb.charAt(i) != target.charAt(i)) {\n                sb.setCharAt(i, (char)(sb.charAt(i) + 1));\n                ans.add(sb.toString());\n            }\n        }\n\n        return ans;\n    }\n}\n\n```\n\n### How it works\n\nFor `target = \"abc\"`:\n\n| Operation                | Screen | Added to answer |\n| ------------------------ | ------ | --------------- |\n| Append `'a'`             | `a`    | `a`             |\n| Append `'a'`             | `aa`   | `aa`            |\n| Increment last character | `ab`   | `ab`            |\n| Append `'a'`             | `aba`  | `aba`           |\n| Increment last character | `abb`  | `abb`           |\n| Increment last character | `abc`  | `abc`           |\n\nResult: `[\"a\", \"aa\", \"ab\", \"aba\", \"abb\", \"abc\"]`\n\n### Complexity analysis\n\nLet \\\\(n\\\\) be the length of `target` and \\\\(k\\\\) be the number of strings returned.\n\n- Time complexity: \\\\(O(nk)\\\\) — each generated string requires copying up to \\\\(n\\\\) characters.\n- Auxiliary space: \\\\(O(n)\\\\) for the `StringBuilder`, excluding the output list.\n\nWhy is this minimum? Each target character must be typed separately using Key 1, and then incremented from `'a'` to its required character using Key 2. This uses the minimum possible key presses.",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:17:33.661Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Minimum Deletions To Make Array Beautiful**\n\nYou are given a 0-indexed integer array nums. The array nums is beautiful if:\n\nnums.length is even.\nnums[i] != nums[i + 1] for all i % 2 == 0.\n\nNote that an empty array is considered beautiful.\nYou can delete any number of elements from nums. When you delete an element, all the elements to the right of the deleted element will be shifted one unit to the left to fill the gap created and all the elements to the left of the deleted element will remain unchanged.\nReturn the minimum number of elements to delete from nums to make it beautiful.\n \nExample 1:\n\nInput: nums = [1,1,2,3,5]\nOutput: 1\nExplanation: You can delete either nums[0] or nums[1] to make nums = [1,2,3,5] which is beautiful. It can be proven you need at least 1 deletion to make nums beautiful.\n\nExample 2:\n\nInput: nums = [1,1,2,2,3,3]\nOutput: 2\nExplanation: You can delete nums[0] and nums[5] to make nums = [1,2,2,3] which is beautiful. It can be proven you need at least 2 deletions to make nums beautiful.\n\n \nConstraints:\n\n1 <= nums.length <= 105\n0 <= nums[i] <= 105",
+        "questionIndex": 1,
+        "createdAt": "2026-10-24T13:17:35.202Z"
+      },
+      {
+        "role": "user",
+        "content": "A cleaner way to solve this problem is to maintain the effective index of the elements after deletions, without actually modifying the array.\n\n## Java solution (Greedy)\n\n```\n\nclass Solution {\n    public int minDeletion(int[] nums) {\n        int deletions = 0;\n        int count = 0;\n\n        for (int num : nums) {\n            if (count % 2 == 1 && nums[count - 1] == num) {\n                deletions++;\n            } else {\n                count++;\n            }\n        }\n\n        if (count % 2 == 1) {\n            deletions++;\n        }\n\n        return deletions;\n    }\n}\n\n```\n\n## How it works\n\n- `count` represents the length of the array after accounting for deletions.\n- If `count` is odd, the current element would form a pair with the previous kept element.\n- If those two elements are equal, delete the current element.\n- Otherwise, keep it and increment `count`.\n- At the end, if `count` is odd, delete one more element to make the length even.\n\n### Dry run\n\nInput: `nums = [1, 1, 2, 2, 3, 3]`\n\n| Current element | `count` before | Action                  | `count` after | Deletions |\n| --------------- | -------------- | ----------------------- | ------------- | --------- |\n| 1               | 0              | Keep                    | 1             | 0         |\n| 1               | 1              | Delete (duplicate pair) | 1             | 1         |\n| 2               | 1              | Keep                    | 2             | 1         |\n| 2               | 2              | Keep                    | 3             | 1         |\n| 3               | 3              | Delete (duplicate pair) | 3             | 2         |\n| 3               | 3              | Delete (duplicate pair) | 3             | 3         |\n\nThe above approach has a flaw: it compares against `nums[count - 1]`, which does not reliably represent the last kept element after deletions. A safer and simpler solution is to use the index-based greedy approach below.\n\n## Recommended solution\n\n```\n\nclass Solution {\n    public int minDeletion(int[] nums) {\n        int deletions = 0;\n        int i = 0;\n\n        while (i < nums.length - 1) {\n            if (nums[i] == nums[i + 1]) {\n                deletions++;\n                i++;\n            } else {\n                i += 2;\n            }\n        }\n\n        if ((nums.length - deletions) % 2 != 0) {\n            deletions++;\n        }\n\n        return deletions;\n    }\n}\n\n```\n\nComplexity: \\\\(O(n)\\\\) time and \\\\(O(1)\\\\) extra space.",
+        "questionIndex": 1,
+        "createdAt": "2026-10-24T13:19:39.065Z"
+      }
+    ],
+    "createdAt": "2026-10-24T13:13:29.597Z",
+    "updatedAt": "2026-10-24T13:19:42.300Z",
+    "__v": 3
+  },
+  {
+    "_id": "6adcb26e3db9dca557224a39",
+    "interview": "6adcb26e3db9dca557224a24",
+    "transcript": [
+      {
+        "role": "ai",
+        "content": "**Problem: Determine The Winner Of A Bowling Game**\n\nYou are given two 0-indexed integer arrays player1 and player2, representing the number of pins that player 1 and player 2 hit in a bowling game, respectively.\nThe bowling game consists of n turns, and the number of pins in each turn is exactly 10.\nAssume a player hits xi pins in the ith turn. The value of the ith turn for the player is:\n\n2xi if the player hits 10 pins in either (i - 1)th or (i - 2)th turn.\nOtherwise, it is xi.\n\nThe score of the player is the sum of the values of their n turns.\nReturn\n\n1 if the score of player 1 is more than the score of player 2,\n2 if the score of player 2 is more than the score of player 1, and\n0 in case of a draw.\n\n \nExample 1:\n\nInput: player1 = [5,10,3,2], player2 = [6,5,7,3]\nOutput: 1\nExplanation:\nThe score of player 1 is 5 + 10 + 2*3 + 2*2 = 25.\nThe score of player 2 is 6 + 5 + 7 + 3 = 21.\n\nExample 2:\n\nInput: player1 = [3,5,7,6], player2 = [8,10,10,2]\nOutput: 2\nExplanation:\nThe score of player 1 is 3 + 5 + 7 + 6 = 21.\nThe score of player 2 is 8 + 10 + 2*10 + 2*2 = 42.\n\nExample 3:\n\nInput: player1 = [2,3], player2 = [4,1]\nOutput: 0\nExplanation:\nThe score of player1 is 2 + 3 = 5.\nThe score of player2 is 4 + 1 = 5.\n\nExample 4:\n\nInput: player1 = [1,1,1,10,10,10,10], player2 = [10,10,10,10,1,1,1]\nOutput: 2\nExplanation:\nThe score of player1 is 1 + 1 + 1 + 10 + 2*10 + 2*10 + 2*10 = 73.\nThe score of player2 is 10 + 2*10 + 2*10 + 2*10 + 2*1 + 2*1 + 1 = 75.\n\n \nConstraints:\n\nn == player1.length == player2.length\n1 <= n <= 1000\n0 <= player1[i], player2[i] <= 10",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:28:14.819Z"
+      }
+    ],
+    "createdAt": "2026-10-24T13:28:14.816Z",
+    "updatedAt": "2026-10-24T13:28:14.819Z",
+    "__v": 1
+  },
+  {
+    "_id": "6adcb3fba1fb0bfb2205f308",
+    "interview": "6adcb3faa1fb0bfb2205f2f3",
+    "transcript": [
+      {
+        "role": "ai",
+        "content": "**Problem: Sum Of Squares Of Special Elements**\n\nYou are given a 1-indexed integer array nums of length n.\nAn element nums[i] of nums is called special if i divides n, i.e. n % i == 0.\nReturn the sum of the squares of all special elements of nums.\n \nExample 1:\n\nInput: nums = [1,2,3,4]\nOutput: 21\nExplanation: There are exactly 3 special elements in nums: nums[1] since 1 divides 4, nums[2] since 2 divides 4, and nums[4] since 4 divides 4. \nHence, the sum of the squares of all special elements of nums is nums[1] * nums[1] + nums[2] * nums[2] + nums[4] * nums[4] = 1 * 1 + 2 * 2 + 4 * 4 = 21.  \n\nExample 2:\n\nInput: nums = [2,7,1,19,18,3]\nOutput: 63\nExplanation: There are exactly 4 special elements in nums: nums[1] since 1 divides 6, nums[2] since 2 divides 6, nums[3] since 3 divides 6, and nums[6] since 6 divides 6. \nHence, the sum of the squares of all special elements of nums is nums[1] * nums[1] + nums[2] * nums[2] + nums[3] * nums[3] + nums[6] * nums[6] = 2 * 2 + 7 * 7 + 1 * 1 + 3 * 3 = 63. \n\n \nConstraints:\n\n1 <= nums.length == n <= 50\n1 <= nums[i] <= 50",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:34:51.014Z"
+      },
+      {
+        "role": "user",
+        "content": "### Java Solution\n\n```\nclass Solution {\n    public int sumOfSquares(int[] nums) {\n        int n = nums.length;\n        int sum = 0;\n\n        for (int i = 1; i <= n; i++) {\n            if (n % i == 0) {\n                sum += nums[i - 1] * nums[i - 1];\n            }\n        }\n\n        return sum;\n    }\n}\n```\n\n### Explanation\n\n- `n = nums.length` stores the array length.\n- Iterate from `i = 1` to `n` because the problem uses 1-based indexing.\n- If `n % i == 0`, the element at index `i - 1` is special.\n- Add its square to `sum`.\n- Return the final sum.\n\n### Dry Run\n\nInput: `nums = [1, 2, 3, 4]`\n\n| `i` | `4 % i == 0`? | Square added   | Sum |\n| --- | ------------- | -------------- | --- |\n| 1   | Yes           | \\\\(1^2 = 1\\\\)  | 1   |\n| 2   | Yes           | \\\\(2^2 = 4\\\\)  | 5   |\n| 3   | No            | 0              | 5   |\n| 4   | Yes           | \\\\(4^2 = 16\\\\) | 21  |\n\nOutput: `21`\n\n### Complexity Analysis\n\n- Time Complexity: \\\\(O(n)\\\\) — we iterate through the array indices once.\n- Space Complexity: \\\\(O(1)\\\\) — we use only a few extra variables.",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:37:44.728Z"
+      },
+      {
+        "role": "ai",
+        "content": "**Problem: Set Mismatch**\n\nYou have a set of integers s, which originally contains all the numbers from 1 to n. Unfortunately, due to some error, one of the numbers in s got duplicated to another number in the set, which results in repetition of one number and loss of another number.\nYou are given an integer array nums representing the data status of this set after the error.\nFind the number that occurs twice and the number that is missing and return them in the form of an array.\n \nExample 1:\nInput: nums = [1,2,2,4]\nOutput: [2,3]\nExample 2:\nInput: nums = [1,1]\nOutput: [1,2]\n\n \nConstraints:\n\n2 <= nums.length <= 104\n1 <= nums[i] <= 104",
+        "questionIndex": 1,
+        "createdAt": "2026-10-24T13:37:46.019Z"
+      },
+      {
+        "role": "user",
+        "content": "### Java Solution\n\n```\nclass Solution {\n    public int[] findErrorNums(int[] nums) {\n        int n = nums.length;\n        int[] count = new int[n + 1];\n\n        for (int num : nums) {\n            count[num]++;\n        }\n\n        int duplicate = 0;\n        int missing = 0;\n\n        for (int i = 1; i <= n; i++) {\n            if (count[i] == 2) {\n                duplicate = i;\n            } else if (count[i] == 0) {\n                missing = i;\n            }\n        }\n\n        return new int[]{duplicate, missing};\n    }\n}\n```\n\n### Explanation\n\n1. Create a `count` array to track how many times each number occurs.\n2. Traverse `nums` and increment `count[num]`.\n3. Iterate from `1` to `n`:\n   - If `count[i] == 2`, the number is duplicated.\n   - If `count[i] == 0`, the number is missing.\n4. Return `{duplicate, missing}` in that order.\n\n### Dry Run\n\nInput: `nums = [1, 2, 2, 4]`\n\n| Number | Frequency | Result        |\n| ------ | --------- | ------------- |\n| 1      | 1         | —             |\n| 2      | 2         | Duplicate = 2 |\n| 3      | 0         | Missing = 3   |\n| 4      | 1         | —             |\n\nOutput: `[2, 3]`\n\n### Complexity Analysis\n\n- Time Complexity: \\\\(O(n)\\\\) — two traversals.\n- Space Complexity: \\\\(O(n)\\\\) — the frequency array.\n\nInterview tip: This frequency-array approach is easy to understand and efficient. You can also solve this problem in \\\\(O(n)\\\\) time using \\\\(O(1)\\\\) extra space by modifying the input array or using mathematical equations.",
+        "questionIndex": 1,
+        "createdAt": "2026-10-24T13:39:59.801Z"
+      }
+    ],
+    "createdAt": "2026-10-24T13:34:51.010Z",
+    "updatedAt": "2026-10-24T13:40:00.966Z",
+    "__v": 3
+  },
+  {
+    "_id": "6adcb723f3b4cae06a3d1476",
+    "interview": "6adcb723f3b4cae06a3d1461",
+    "transcript": [
+      {
+        "role": "ai",
+        "content": "**Problem: Minimum Distance To The Target Element**\n\nGiven an integer array nums (0-indexed) and two integers target and start, find an index i such that nums[i] == target and abs(i - start) is minimized. Note that abs(x) is the absolute value of x.\nReturn abs(i - start).\nIt is guaranteed that target exists in nums.\n \nExample 1:\n\nInput: nums = [1,2,3,4,5], target = 5, start = 3\nOutput: 1\nExplanation: nums[4] = 5 is the only value equal to target, so the answer is abs(4 - 3) = 1.\n\nExample 2:\n\nInput: nums = [1], target = 1, start = 0\nOutput: 0\nExplanation: nums[0] = 1 is the only value equal to target, so the answer is abs(0 - 0) = 0.\n\nExample 3:\n\nInput: nums = [1,1,1,1,1,1,1,1,1,1], target = 1, start = 0\nOutput: 0\nExplanation: Every value of nums is 1, but nums[0] minimizes abs(i - start), which is abs(0 - 0) = 0.\n\n \nConstraints:\n\n1 <= nums.length <= 1000\n1 <= nums[i] <= 104\n0 <= start < nums.length\ntarget is in nums.",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:48:19.096Z"
+      },
+      {
+        "role": "user",
+        "content": "The easiest approach is to traverse the array and keep track of the minimum distance whenever we find the target.\n\n### Java Solution\n\n```\n\nclass Solution {\n    public int getMinDistance(int[] nums, int target, int start) {\n        int minDistance = Integer.MAX_VALUE;\n\n        for (int i = 0; i < nums.length; i++) {\n            if (nums[i] == target) {\n                int distance = Math.abs(i - start);\n                minDistance = Math.min(minDistance, distance);\n            }\n        }\n\n        return minDistance;\n    }\n}\n\n```\n\n### Example walkthrough\n\nInput: `nums = [1, 2, 3, 4, 5]`, `target = 5`, `start = 3`\n\n\\\\(|x|\\\\)\n\n\\\\(\\lvert \\text{1} \\rvert = \\text{1}\\\\)\n\n|x| = xDistance from 0-6-5-4-3-2-10123456xDrag the point left or right\n\nGive feedback\n\n- Start index is `3`.\n- The target `5` occurs at index `4`.\n- Distance = `Math.abs(4 - 3) = 1`.\n- Minimum distance = `1`.\n\nOutput: `1`\n\n### Complexity analysis\n\n- Time: \\\\(O(n)\\\\), since we traverse the array once.\n- Space: \\\\(O(1)\\\\), since we use only a few variables.\n\nInterview tip: Since the target is guaranteed to exist, you can also return immediately when you find a target at distance `0`, because no smaller distance is possible.",
+        "questionIndex": 0,
+        "createdAt": "2026-10-24T13:53:28.910Z"
+      }
+    ],
+    "createdAt": "2026-10-24T13:48:19.094Z",
+    "updatedAt": "2026-10-24T13:53:30.093Z",
+    "__v": 2
+  }
+]

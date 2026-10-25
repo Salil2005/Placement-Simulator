@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "6adc8ab61c6e47b0b30e8510",
+    "name": "test1",
+    "email": "test1@gmail.com",
+    "password": "$2a$10$sB7I/lGJKBbYl.8PgCUWaeVsffNNiLU92eDBGSOW2z4jGwOq8d482",
+    "avatarUrl": "",
+    "theme": "light",
+    "stats": {
+      "totalInterviews": 4,
+      "averageScore": 73,
+      "bestScore": 90
+    },
+    "isEmailVerified": false,
+    "emailVerificationTokenHash": "91c861f5a4254c1189d34e6b868addf3138dcab4d93fc7bccdcce44ccca5db23",
+    "emailVerificationExpires": "2026-10-25T10:38:47.052Z",
+    "refreshTokenHashes": [
+      "da5ffa4c1dfa30da73e989188fa0c2f9672deebcf6ffeba4e28b3a7827ffa9e0",
+      "a90f7e2d8fb4c4342f7019e5e5585451ff788d569733341f6719c4868daa9a9b",
+      "1cd5c13298aa6daa2e3945174423fc1140096d98cd593d67d0c1c6f299990883"
+    ],
+    "createdAt": "2026-10-24T10:38:47.000Z",
+    "updatedAt": "2026-10-24T13:53:32.435Z",
+    "__v": 8
+  },
+  {
+    "_id": "6adcb6f4f3b4cae06a3d144e",
+    "name": "test2",
+    "email": "test2@gmail.com",
+    "password": "$2a$10$.fOL3aHSUcNFROvBt71M5.6qxFy0BYmmKaru/gZzLrvQjEG/nO162",
+    "avatarUrl": "",
+    "theme": "light",
+    "stats": {
+      "totalInterviews": 0,
+      "averageScore": 0,
+      "bestScore": 0
+    },
+    "isEmailVerified": false,
+    "emailVerificationTokenHash": "31aeb32c1b822384f07f6e4fd97cd01c877bebf58ebeb129f1ac71e362be6ddb",
+    "emailVerificationExpires": "2026-10-25T13:47:32.290Z",
+    "refreshTokenHashes": [],
+    "createdAt": "2026-10-24T13:47:32.231Z",
+    "updatedAt": "2026-10-24T13:47:50.502Z",
+    "__v": 2
+  }
+]
