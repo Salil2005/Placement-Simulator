@@ -20,4 +20,11 @@ export const PROGRAMMING_LANGUAGES = [
   { value: "typescript", label: "TypeScript" },
 ];
 
+export const DURATION_OPTIONS = [
+  { value: 5, label: "5 minutes (Express assessment)" },
+  { value: 15, label: "15 minutes (Quick practice)" },
+  { value: 30, label: "30 minutes (Standard interview)" },
+  { value: 60, label: "1 hour (In-depth session)" },
+];
+
 export const QUESTION_COUNTS = [3, 5, 7, 10];

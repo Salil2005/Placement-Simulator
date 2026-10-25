@@ -227,10 +227,11 @@ export function useInterview(interviewId) {
 
         if (iv.status === "not_started") {
           // Guard: Only start if status is strictly not_started to avoid duplicate calls
-          const { question } = await interviewService.start(interviewId);
+          const { question, interview: startedIv } = await interviewService.start(interviewId);
+          if (startedIv) setInterview(startedIv);
           setCurrentQuestion(question);
           setMessages([{ role: "ai", content: question.text }]);
-        } else if (iv.status === "in_progress") {
+        } else if (iv.status === "in_progress" || iv.status === "grace_period") {
           const transcriptMsgs = (session?.transcript || []).map((t) => ({
             role: t.role,
             content: t.content,
@@ -282,6 +283,7 @@ export function useInterview(interviewId) {
         const { nextQuestion, isFinalQuestion, response } = result;
 
         if (isFinalQuestion) {
+          setCurrentQuestion(null);
           setMessages((prev) => [
             ...prev,
             { role: "ai", content: "That's a wrap on the questions - generating your report now." },
@@ -314,12 +316,17 @@ export function useInterview(interviewId) {
     [interviewId, currentQuestion, pending, autoSpeak, speak, navigate]
   );
 
+  const isFinalizing = useRef(false);
+
   const endInterviewEarly = useCallback(async () => {
+    if (isFinalizing.current) return;
+    isFinalizing.current = true;
     setPending(true);
     try {
       await interviewService.finish(interviewId);
       navigate(`/report/${interviewId}`);
     } catch (err) {
+      isFinalizing.current = false;
       setError(err.message);
     } finally {
       setPending(false);

@@ -35,7 +35,7 @@ async function startInterview(interview) {
   interview.startedAt = new Date();
   await interview.save();
 
-  return { question, session };
+  return { interview, question, session };
 }
 
 /**
@@ -43,7 +43,7 @@ async function startInterview(interview) {
  * and selects the next bank question (or marks the interview ready to finish).
  */
 async function submitAnswer(interview, { questionId, answerText, code, language }) {
-  if (interview.status !== "in_progress") {
+  if (interview.status !== "in_progress" && interview.status !== "grace_period") {
     const err = new Error("This interview is not accepting answers");
     err.statusCode = 409;
     throw err;
@@ -61,6 +61,18 @@ async function submitAnswer(interview, { questionId, answerText, code, language 
     throw err;
   }
 
+  // Enforce 2-minute reflection time before answering
+  const questionCreated = question.createdAt ? new Date(question.createdAt).getTime() : Date.now();
+  const elapsedSecSinceQuestion = (Date.now() - questionCreated) / 1000;
+  if (elapsedSecSinceQuestion < 120) {
+    const waitRemaining = Math.ceil(120 - elapsedSecSinceQuestion);
+    const err = new Error(
+      `Please take time to think. You can submit your answer in ${waitRemaining} second${waitRemaining === 1 ? "" : "s"}.`
+    );
+    err.statusCode = 400;
+    throw err;
+  }
+
   const alreadyAnswered = await Response.exists({ interview: interview._id, question: question._id });
   if (alreadyAnswered) {
     const err = new Error("This question has already been answered");
@@ -69,11 +81,25 @@ async function submitAnswer(interview, { questionId, answerText, code, language 
   }
 
   const nextIndex = question.order + 1;
-  const isFinalQuestion = nextIndex >= interview.questionCount;
-  // Resolve the next database record before persisting the response. If an
-  // administrator has emptied the bank mid-session, the candidate can retry
-  // safely after it is repaired instead of being left with an answered
-  // question and no next question.
+
+  // Time-based check: standard interview duration + 5 minutes grace period
+  const startTime = interview.startedAt ? new Date(interview.startedAt).getTime() : Date.now();
+  const elapsedMinutes = (Date.now() - startTime) / (1000 * 60);
+  const durationLimit = Number(interview.durationMinutes) || 15;
+  const GRACE_PERIOD_MIN = 5;
+
+  // If even grace period has elapsed, reject late answer submission
+  if (elapsedMinutes > durationLimit + GRACE_PERIOD_MIN) {
+    const err = new Error("Interview and 5-minute grace period have both expired. Concluding interview.");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Once regular duration is reached (or interview is in grace_period), this answered question is the final one
+  const isTimeUp = elapsedMinutes >= durationLimit || interview.status === "grace_period";
+  const isFinalQuestion = isTimeUp || nextIndex >= (interview.questionCount || 20);
+
+  // Resolve the next database record ONLY if not the final question
   const nextBankQuestion = isFinalQuestion ? null : await selectQuestion(interview);
 
   const session = await Session.findOne({ interview: interview._id });
@@ -148,6 +174,15 @@ async function getSessionState(interviewId) {
     Session.findOne({ interview: interviewId }),
     Response.find({ interview: interviewId }).populate("question"),
   ]);
+
+  if (interview && interview.status === "in_progress" && interview.startedAt) {
+    const elapsedMinutes = (Date.now() - new Date(interview.startedAt).getTime()) / (1000 * 60);
+    const durationLimit = Number(interview.durationMinutes) || 15;
+    if (elapsedMinutes >= durationLimit) {
+      interview.status = "grace_period";
+      await interview.save();
+    }
+  }
 
   const currentQuestion = interview ? await getPendingQuestion(interviewId, responses) : null;
 

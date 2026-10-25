@@ -48,7 +48,8 @@
 // };
 
 
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 module.exports = {
   // ==========================================================
@@ -58,7 +59,7 @@ module.exports = {
   PORT: process.env.PORT || 7000,
 
   CLIENT_URL:
-    process.env.CLIENT_URL || "http://localhost:5002",
+    process.env.CLIENT_URL || "http://localhost:21000",
 
   // ==========================================================
   // DATABASE

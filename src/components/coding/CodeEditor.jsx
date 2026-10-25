@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import { useTheme } from "../../context/ThemeContext.jsx";
 
@@ -18,16 +18,41 @@ const STARTER = {
   typescript: "function solve(): void {\n  // your code here\n}\n",
 };
 
-export default function CodeEditor({ defaultLanguage = "javascript", onSubmit, disabled }) {
+export default function CodeEditor({
+  defaultLanguage = "javascript",
+  onSubmit,
+  disabled,
+  questionCreatedAt,
+  minWaitSeconds = 120,
+}) {
   const { theme } = useTheme();
   const [language, setLanguage] = useState(defaultLanguage);
   const [code, setCode] = useState(STARTER[defaultLanguage]);
+  const [lockRemaining, setLockRemaining] = useState(0);
+
+  useEffect(() => {
+    const start = questionCreatedAt ? new Date(questionCreatedAt).getTime() : Date.now();
+
+    const updateWait = () => {
+      const elapsedSec = Math.floor((Date.now() - start) / 1000);
+      const remainingSec = Math.max(0, minWaitSeconds - elapsedSec);
+      setLockRemaining(remainingSec);
+    };
+
+    updateWait();
+    const interval = setInterval(updateWait, 1000);
+    return () => clearInterval(interval);
+  }, [questionCreatedAt, minWaitSeconds]);
 
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setLanguage(lang);
     setCode(STARTER[lang] || "");
   };
+
+  const isLocked = lockRemaining > 0;
+  const lockMins = String(Math.floor(lockRemaining / 60)).padStart(2, "0");
+  const lockSecs = String(lockRemaining % 60).padStart(2, "0");
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
@@ -37,13 +62,24 @@ export default function CodeEditor({ defaultLanguage = "javascript", onSubmit, d
             <option key={l.value} value={l.value}>{l.label}</option>
           ))}
         </select>
-        <button
-          className="btn-primary !py-1 !px-3 text-xs"
-          disabled={disabled}
-          onClick={() => onSubmit({ code, language })}
-        >
-          Submit Code
-        </button>
+
+        <div className="flex items-center gap-2">
+          {isLocked && (
+            <span className="text-xs font-medium text-amber-600 dark:text-amber-400 flex items-center gap-1">
+              <span>⏳ Unlocks in {lockMins}:{lockSecs}</span>
+            </span>
+          )}
+          <button
+            className={`btn-primary !py-1 !px-3 text-xs flex items-center gap-1 ${
+              isLocked ? "opacity-60 cursor-not-allowed" : ""
+            }`}
+            disabled={disabled || isLocked}
+            onClick={() => onSubmit({ code, language })}
+            title={isLocked ? `Submit unlocks in ${lockMins}:${lockSecs}` : "Submit Code"}
+          >
+            {isLocked ? `Wait ${lockMins}:${lockSecs}` : "Submit Code"}
+          </button>
+        </div>
       </div>
       <div className="flex-1">
         <Editor

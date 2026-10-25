@@ -5,14 +5,12 @@ const { asyncHandler } = require("../utils/asyncHandler");
 
 // POST /api/interviews
 const createInterview = asyncHandler(async (req, res) => {
-  const { category, role, experience, difficulty, questionCount, programmingLanguage } = req.body;
-  const count = Number(questionCount || 5);
+  const { category, role, experience, difficulty, durationMinutes, questionCount, programmingLanguage } = req.body;
+  const duration = Number(durationMinutes || 15);
+  const count = Number(questionCount || 20);
 
   if (!category || !role?.trim()) {
     return res.status(400).json({ error: "category and role are required" });
-  }
-  if (!Number.isInteger(count) || count < 1 || count > 20) {
-    return res.status(400).json({ error: "questionCount must be a whole number between 1 and 20" });
   }
 
   const interview = await Interview.create({
@@ -21,6 +19,7 @@ const createInterview = asyncHandler(async (req, res) => {
     role,
     experience,
     difficulty,
+    durationMinutes: duration,
     questionCount: count,
     programmingLanguage: programmingLanguage || "javascript",
     resumeFile: req.file ? `/uploads/${req.file.filename}` : null,
@@ -38,16 +37,17 @@ const startInterview = asyncHandler(async (req, res) => {
   // Check if a question already exists for this interview to prevent duplicate creation crashes
   let existingQuestion = await Question.findOne({ interview: interview._id }).sort({ createdAt: 1 });
   if (existingQuestion) {
-    if (interview.status === "not_started") {
+    if (interview.status === "not_started" || !interview.startedAt) {
       interview.status = "in_progress";
+      interview.startedAt = interview.startedAt || new Date();
       await interview.save();
     }
     return res.json({ interview, question: existingQuestion });
   }
 
   try {
-    const { question } = await interviewEngine.startInterview(interview);
-    res.json({ interview, question });
+    const { question, interview: startedInterview } = await interviewEngine.startInterview(interview);
+    res.json({ interview: startedInterview || interview, question });
   } catch (err) {
     // Fallback safeguard if a race condition slips past the initial lookup
     if (err.code === 11000) {

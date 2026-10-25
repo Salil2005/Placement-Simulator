@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useInterview } from "../../hooks/useInterview.js";
 import Conversation from "../../components/interview/Conversation.jsx";
@@ -9,8 +10,10 @@ import Loader from "../../components/common/Loader.jsx";
 
 export default function Interview() {
   const { id } = useParams();
+  const [inGracePeriod, setInGracePeriod] = useState(false);
   const {
     interview,
+    currentQuestion,
     messages,
     pending,
     error,
@@ -34,7 +37,13 @@ export default function Interview() {
           <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{interview?.role}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Timer startedAt={interview?.startedAt} />
+          <Timer
+            startedAt={interview?.startedAt}
+            durationMinutes={interview?.durationMinutes || 15}
+            graceMinutes={5}
+            onGracePeriodStart={() => setInGracePeriod(true)}
+            onGracePeriodEnd={endInterviewEarly}
+          />
           <label className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
             <input type="checkbox" checked={autoSpeak} onChange={(e) => setAutoSpeak(e.target.checked)} />
             Auto-speak
@@ -45,6 +54,17 @@ export default function Interview() {
         </div>
       </div>
 
+      {(inGracePeriod || interview?.status === "grace_period") && (
+        <div className="mb-3 rounded-xl bg-amber-500/10 border border-amber-500/30 px-3.5 py-2.5 text-xs sm:text-sm text-amber-700 dark:text-amber-300 flex items-center justify-between gap-2 animate-fadeIn">
+          <div className="flex items-center gap-2">
+            <span className="text-base">⏳</span>
+            <span>
+              <strong>Your interview time is over. You have 5 minutes to finish answering your current question. No new questions will be provided.</strong>
+            </span>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="mb-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-300">
           {error}
@@ -54,7 +74,12 @@ export default function Interview() {
       <div className={`grid flex-1 gap-4 overflow-hidden ${isCoding ? "md:grid-cols-2" : "grid-cols-1"}`}>
         <div className="card flex flex-1 flex-col overflow-hidden">
           <Conversation messages={messages} pending={pending} />
-          <PromptInput onSubmit={(text) => submitAnswer({ answerText: text })} disabled={pending} speech={speech} />
+          <PromptInput
+            onSubmit={(text) => submitAnswer({ answerText: text })}
+            disabled={pending}
+            speech={speech}
+            questionCreatedAt={currentQuestion?.createdAt}
+          />
         </div>
 
         {isCoding && (
@@ -63,6 +88,7 @@ export default function Interview() {
               defaultLanguage={interview?.programmingLanguage}
               onSubmit={({ code, language }) => submitAnswer({ code, language })}
               disabled={pending}
+              questionCreatedAt={currentQuestion?.createdAt}
             />
           </div>
         )}

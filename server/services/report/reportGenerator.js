@@ -4,6 +4,7 @@ const PDFDocument = require("pdfkit");
 
 const Interview = require("../../models/Interview");
 const Response = require("../../models/Response");
+const Question = require("../../models/Question");
 const Session = require("../../models/Session");
 const Report = require("../../models/Report");
 const User = require("../../models/User");
@@ -21,14 +22,36 @@ async function generateReport(interviewId) {
   const existingReport = await Report.findOne({ interview: interviewId });
   if (existingReport) return existingReport;
 
-  const [session, responses] = await Promise.all([
+  const [session, responses, allQuestions] = await Promise.all([
     Session.findOne({ interview: interviewId }),
     Response.find({ interview: interviewId }).populate("question"),
+    Question.find({ interview: interviewId }).sort({ order: 1 }),
   ]);
   if (!session) {
     const err = new Error("Start the interview before generating a report");
     err.statusCode = 409;
     throw err;
+  }
+
+  // Identify questions asked that received no candidate response
+  const answeredQuestionIds = new Set(responses.map((r) => String(r.question?._id || r.question)));
+  const unansweredQuestions = allQuestions.filter((q) => !answeredQuestionIds.has(String(q._id)));
+
+  // If there are unanswered questions (e.g. time expired or grace period passed), record them with score 0
+  for (const unans of unansweredQuestions) {
+    const unansResponse = await Response.create({
+      interview: interviewId,
+      question: unans._id,
+      answerText: "[Not Answered - Time Expired]",
+      score: 0,
+      evaluation: {
+        correctness: 0,
+        clarity: 0,
+        confidence: 0,
+        notes: "Candidate did not submit an answer before the interview and grace period concluded.",
+      },
+    });
+    responses.push(unansResponse);
   }
 
   const result = await aiService.generateFinalReport({

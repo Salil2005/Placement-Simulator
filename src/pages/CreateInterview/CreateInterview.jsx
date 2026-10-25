@@ -106,7 +106,7 @@ import {
   CATEGORIES,
   DIFFICULTIES,
   PROGRAMMING_LANGUAGES,
-  QUESTION_COUNTS,
+  DURATION_OPTIONS,
 } from "../../constants/interviewOptions.js";
 
 export default function CreateInterview() {
@@ -116,7 +116,7 @@ export default function CreateInterview() {
       role: "",
       experience: "0-1 years",
       difficulty: "medium",
-      questionCount: 5,
+      durationMinutes: 15,
       programmingLanguage: "javascript",
     },
   });
@@ -192,18 +192,18 @@ export default function CreateInterview() {
             </select>
           </div>
 
-          {/* Number of Questions */}
+          {/* Interview Duration */}
           <div className="mb-4">
             <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
-              Number of Questions
+              Interview Duration
             </label>
             <select
               className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-              {...register("questionCount")}
+              {...register("durationMinutes")}
             >
-              {QUESTION_COUNTS.map((n) => (
-                <option key={n} value={n}>
-                  {n} questions
+              {DURATION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
                 </option>
               ))}
             </select>

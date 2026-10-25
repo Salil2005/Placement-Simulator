@@ -10,8 +10,23 @@ class QuestionBankError extends Error {
   }
 }
 
+const fs = require("fs");
+const path = require("path");
+
 async function ensureQuestionBankSeeded() {
-  const operations = questionBankSeed.map((question) => ({
+  const allSeeds = [...questionBankSeed];
+
+  const leetcodePath = path.join(__dirname, "../../knowledge/leetcodeQuestions.json");
+  if (fs.existsSync(leetcodePath)) {
+    try {
+      const leetcodeData = JSON.parse(fs.readFileSync(leetcodePath, "utf-8"));
+      allSeeds.push(...leetcodeData);
+    } catch (err) {
+      console.warn("[db] Failed to load leetcodeQuestions.json:", err.message);
+    }
+  }
+
+  const operations = allSeeds.map((question) => ({
     updateOne: {
       filter: { category: question.category, text: question.text },
       update: { $setOnInsert: question },
