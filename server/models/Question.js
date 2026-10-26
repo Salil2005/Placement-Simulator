@@ -11,6 +11,7 @@ const questionSchema = new mongoose.Schema(
     order: { type: Number, required: true },
     isCoding: { type: Boolean, default: false },
     isFollowUp: { type: Boolean, default: false },
+
     // Adaptive Web Development + System Design Round metadata
     questionCategory: {
       type: String,
@@ -20,6 +21,24 @@ const questionSchema = new mongoose.Schema(
     difficulty: { type: String, default: "medium" },
     projectReference: { type: String, default: "" },
     targetCompetencyLevel: { type: String, default: "" },
+
+    // Follow-up chain tracking
+    // How deep is this question in a follow-up chain on the same concept?
+    // 0 = original question, 1 = first follow-up, 2 = second follow-up, etc.
+    followUpDepth: { type: Number, default: 0 },
+
+    // Reference to the question this is a follow-up to (if applicable)
+    parentQuestionId: { type: mongoose.Schema.Types.ObjectId, ref: "Question", default: null },
+
+    // True if this question is a retry of the same concept (after a gibberish answer)
+    isRetryQuestion: { type: Boolean, default: false },
+
+    // The next action the AI decided when generating this question
+    nextAction: {
+      type: String,
+      enum: ["FOLLOW_UP", "PROBE", "DEEPEN", "SWITCH_PROJECT", "CLOSE", "RETRY_SAME_CONCEPT", "NEW_TOPIC"],
+      default: "NEW_TOPIC",
+    },
   },
   { timestamps: true }
 );

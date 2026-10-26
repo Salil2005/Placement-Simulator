@@ -41,6 +41,16 @@ export default function ResumeReviewWindow({
   const mins = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
   const secs = String(remainingSeconds % 60).padStart(2, "0");
 
+  const handleSelectProject = (title) => {
+    setSelectedProject(title);
+    onUpdateContext({
+      projects,
+      skills,
+      technologies,
+      selectedProject: title,
+    });
+  };
+
   const handleSaveCorrections = async () => {
     setSaving(true);
     try {
@@ -56,6 +66,22 @@ export default function ResumeReviewWindow({
       console.error("Save error:", err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleConfirmAndStart = async () => {
+    try {
+      await onUpdateContext({
+        projects,
+        skills,
+        technologies,
+        selectedProject,
+      });
+    } catch (err) {
+      console.warn("Could not sync context before start:", err.message);
+    }
+    if (onStartEarly) {
+      onStartEarly();
     }
   };
 
@@ -91,8 +117,12 @@ export default function ResumeReviewWindow({
 
   const handleProjectFieldChange = (index, field, value) => {
     const updated = [...projects];
+    const oldTitle = updated[index]?.title;
     updated[index] = { ...updated[index], [field]: value, source: "user_edit" };
     setProjects(updated);
+    if (field === "title" && selectedProject === oldTitle) {
+      setSelectedProject(value);
+    }
   };
 
   const handleAddProject = () => {
@@ -139,7 +169,7 @@ export default function ResumeReviewWindow({
               </div>
             </div>
             <Button
-              onClick={onStartEarly}
+              onClick={handleConfirmAndStart}
               className="!bg-emerald-500 hover:!bg-emerald-600 text-white font-bold shadow-md w-full sm:w-auto"
             >
               Start Interview Now 🚀
@@ -167,31 +197,63 @@ export default function ResumeReviewWindow({
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          {projects.map((proj, idx) => (
-            <div
-              key={idx}
-              onClick={() => setSelectedProject(proj.title)}
-              className={`cursor-pointer rounded-xl border p-3.5 transition ${
-                selectedProject === proj.title
-                  ? "border-brand-500 bg-brand-50/60 dark:bg-brand-950/40 dark:border-brand-500 ring-2 ring-brand-400"
-                  : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800/60"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="font-semibold text-sm text-slate-900 dark:text-white">{proj.title}</div>
-                <span className="text-xs">
-                  {proj.source === "resume" ? (
-                    <Badge color="neutral">From Resume</Badge>
-                  ) : (
-                    <Badge color="warning">User Edited</Badge>
-                  )}
-                </span>
+          {projects.map((proj, idx) => {
+            const isSelected = selectedProject === proj.title;
+            return (
+              <div
+                key={idx}
+                role="button"
+                tabIndex={0}
+                onClick={() => handleSelectProject(proj.title)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleSelectProject(proj.title);
+                  }
+                }}
+                className={`group relative cursor-pointer rounded-xl border p-4 transition-all duration-200 outline-none ${
+                  isSelected
+                    ? "border-brand-500 bg-brand-50/80 shadow-sm ring-2 ring-brand-500 dark:border-brand-400 dark:bg-slate-800/90 dark:ring-brand-400"
+                    : "border-slate-200 bg-white hover:border-brand-300 hover:shadow-xs dark:border-slate-700/80 dark:bg-slate-900/60 dark:hover:border-slate-600"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition ${
+                        isSelected
+                          ? "border-brand-600 bg-brand-600 dark:border-brand-400 dark:bg-brand-500"
+                          : "border-slate-300 bg-transparent group-hover:border-slate-400 dark:border-slate-600"
+                      }`}
+                    >
+                      {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
+                    </div>
+                    <div className="font-semibold text-sm text-slate-900 dark:text-white">
+                      {proj.title}
+                    </div>
+                  </div>
+
+                  <span className="shrink-0 text-xs">
+                    {proj.source === "resume" ? (
+                      <Badge color="neutral">From Resume</Badge>
+                    ) : (
+                      <Badge color="warning">User Edited</Badge>
+                    )}
+                  </span>
+                </div>
+
+                <p className="mt-2 pl-6 text-xs text-slate-600 line-clamp-2 dark:text-slate-300">
+                  {proj.description || "No description provided."}
+                </p>
+
+                {isSelected && (
+                  <div className="mt-2.5 pl-6 flex items-center gap-1.5 text-[11px] font-semibold text-brand-700 dark:text-brand-300">
+                    <span>✓</span> Primary Walkthrough Focus
+                  </div>
+                )}
               </div>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
-                {proj.description || "No description provided."}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Card>
 
@@ -387,7 +449,7 @@ export default function ResumeReviewWindow({
 
         <div className="flex items-center gap-3">
           <span className="text-xs text-slate-500">Auto-starts in {remainingSeconds}s</span>
-          <Button onClick={onStartEarly} className="btn-primary">
+          <Button onClick={handleConfirmAndStart} className="btn-primary">
             Confirm & Start Interview →
           </Button>
         </div>

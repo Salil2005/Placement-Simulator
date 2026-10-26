@@ -100,7 +100,18 @@ const respond = asyncHandler(async (req, res) => {
         code,
         language,
       });
-      return res.json(result);
+      // Expose all new fields including termination info and warning messages
+      return res.json({
+        response: result.response,
+        nextQuestion: result.nextQuestion,
+        isFinalQuestion: result.isFinalQuestion,
+        adaptiveScore: result.adaptiveScore,
+        warningMessage: result.warningMessage || null,
+        terminationMessage: result.terminationMessage || null,
+        terminationReason: result.terminationReason || null,
+        projectTransitionMessage: result.projectTransitionMessage || null,
+        nextAction: result.nextAction || null,
+      });
     } catch (err) {
       if (err.code === 11000) {
         const sessionState = await adaptiveEngine.getAdaptiveSessionState(interview._id);
@@ -108,6 +119,8 @@ const respond = asyncHandler(async (req, res) => {
           response: { evaluation: "Response already recorded." },
           nextQuestion: sessionState.currentQuestion,
           isFinalQuestion: !sessionState.currentQuestion,
+          warningMessage: null,
+          terminationMessage: null,
         });
       }
       throw err;

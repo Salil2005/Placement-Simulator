@@ -7,20 +7,30 @@ const Report = require("../../models/Report");
 const ResumeProfile = require("../../models/ResumeProfile");
 const aiService = require("../ai/aiService");
 const { extractResumeText } = require("../report/resumeExtractor");
-const { generateReport } = require("../report/reportGenerator");
 
 const UPLOADS_DIR = path.join(__dirname, "..", "..", "uploads");
 
-// Adaptive Scoring Constants
+// ============================================================
+// CONSTANTS (all configurable via Interview fields)
+// ============================================================
+
 const DEFAULT_INITIAL_SCORE = 0.5;
 const DEFAULT_ALPHA = 0.35;
 const REVIEW_WINDOW_SECONDS = 120;
 const ANSWER_TIME_LIMIT_SECONDS = 120;
 const BACKEND_PROCESSING_ALLOWANCE_SECONDS = 60;
+const REPORT_FINALIZATION_DEADLINE_SECONDS = 60;
+const MAX_CONSECUTIVE_INVALID = 2;
+const MAX_FOLLOW_UP_DEPTH = 3;
+const DEFAULT_QUESTIONS_PER_PROJECT = 5; // guideline, not a hard limit
 
-/**
- * Competency level thresholds mapping
- */
+// Classification values that trigger the invalid-answer policy
+const INVALID_CLASSIFICATIONS = new Set(["GIBBERISH", "NON_RESPONSIVE", "ABUSIVE_OR_INAPPROPRIATE"]);
+
+// ============================================================
+// HELPERS
+// ============================================================
+
 function getCompetencyLevel(score) {
   if (score < 0.25) return "Foundational";
   if (score < 0.45) return "Developing";
@@ -29,10 +39,6 @@ function getCompetencyLevel(score) {
   return "Expert";
 }
 
-/**
- * Update adaptive score using controlled weighted update:
- * newAdaptiveScore = clamp((1 - alpha) * previousAdaptiveScore + alpha * answerScore, 0, 1)
- */
 function computeUpdatedAdaptiveScore(previousScore, answerScore, alpha = DEFAULT_ALPHA) {
   const pScore = Number.isFinite(previousScore) ? previousScore : DEFAULT_INITIAL_SCORE;
   const aScore = Number.isFinite(answerScore) ? answerScore : 0.5;
@@ -40,9 +46,6 @@ function computeUpdatedAdaptiveScore(previousScore, answerScore, alpha = DEFAULT
   return Math.max(0, Math.min(1, Math.round(raw * 1000) / 1000));
 }
 
-/**
- * Select the most suitable project deterministically
- */
 function selectBestProject(projects, preferredTitle) {
   if (!Array.isArray(projects) || projects.length === 0) {
     return {
@@ -58,7 +61,6 @@ function selectBestProject(projects, preferredTitle) {
     if (found) return found;
   }
 
-  // Pick project with highest detail score
   const sorted = [...projects].sort((a, b) => {
     const scoreA =
       (a.title?.length || 0) +
@@ -76,17 +78,68 @@ function selectBestProject(projects, preferredTitle) {
   return sorted[0];
 }
 
-/**
- * Formulate the dedicated first project walkthrough question from template:
- * "Please explain your project, [PROJECT_NAME], in detail. What problem does it solve, what was your role, and what technologies did you use? Walk me through its overall architecture, the responsibilities of its major components, and the complete data flow from the initial user action to the final output. Also explain the important technical decisions you made while developing it."
- */
 function buildFirstQuestionText(projectName) {
   return `Please explain your project, ${projectName}, in detail. What problem does it solve, what was your role, and what technologies did you use? Walk me through its overall architecture, the responsibilities of its major components, and the complete data flow from the initial user action to the final output. Also explain the important technical decisions you made while developing it.`;
 }
 
 /**
- * Stage 1: Ingest resume and initialize candidate review window
+ * Compute how many questions have been asked about a specific project
+ * in the current interview session.
  */
+function countQuestionsForProject(allQuestions, projectTitle) {
+  return allQuestions.filter(
+    (q) => q.projectReference && q.projectReference.toLowerCase() === projectTitle.toLowerCase()
+  ).length;
+}
+
+/**
+ * Compute the current follow-up depth for the ongoing topic chain.
+ * Follow-up depth resets when a NEW_TOPIC, SWITCH_PROJECT, or a question
+ * with followUpDepth=0 appears.
+ */
+function computeCurrentFollowUpDepth(allQuestions) {
+  if (!allQuestions.length) return 0;
+  const last = allQuestions[allQuestions.length - 1];
+  return last.followUpDepth || 0;
+}
+
+/**
+ * Determine the next follow-up depth given the AI's chosen nextAction.
+ */
+function computeNextFollowUpDepth(currentDepth, nextAction) {
+  if (nextAction === "FOLLOW_UP" || nextAction === "PROBE" || nextAction === "DEEPEN" || nextAction === "RETRY_SAME_CONCEPT") {
+    return currentDepth + 1;
+  }
+  return 0; // Reset on topic/project change
+}
+
+/**
+ * Select the next project to switch to, avoiding the current one.
+ * Prefers projects with fewer questions already asked.
+ */
+function selectNextProject(allProjects, currentProjectTitle, switchToProjectHint) {
+  if (!allProjects || allProjects.length <= 1) return null;
+
+  // If the AI suggested a specific project, try to honor it
+  if (switchToProjectHint) {
+    const hinted = allProjects.find(
+      (p) => p.title.toLowerCase() === switchToProjectHint.toLowerCase() &&
+             p.title.toLowerCase() !== currentProjectTitle.toLowerCase()
+    );
+    if (hinted) return hinted;
+  }
+
+  // Otherwise pick the next project by order, skipping the current one
+  const others = allProjects.filter(
+    (p) => p.title.toLowerCase() !== currentProjectTitle.toLowerCase()
+  );
+  return others[0] || null;
+}
+
+// ============================================================
+// STAGE 1: RESUME INGESTION + REVIEW WINDOW
+// ============================================================
+
 async function initializeAdaptiveReview(interview, options = {}) {
   interview.status = "RESUME_PROCESSING";
   await interview.save();
@@ -101,7 +154,6 @@ async function initializeAdaptiveReview(interview, options = {}) {
     }
   }
 
-  // Fallback to user's saved ResumeProfile if interview upload is empty
   if (!resumeText) {
     const existingProfile = await ResumeProfile.findOne({ user: interview.user });
     if (existingProfile?.rawText) {
@@ -121,7 +173,6 @@ async function initializeAdaptiveReview(interview, options = {}) {
     }
   }
 
-  // If no projects parsed from text, check if existing ResumeProfile has projects
   if (!structuredData.projects || structuredData.projects.length === 0) {
     const existingProfile = await ResumeProfile.findOne({ user: interview.user });
     if (existingProfile?.projects?.length > 0) {
@@ -135,7 +186,6 @@ async function initializeAdaptiveReview(interview, options = {}) {
     }
   }
 
-  // Ensure at least one fallback project if resume was empty or malformed
   if (!structuredData.projects || structuredData.projects.length === 0) {
     structuredData.projects = [
       {
@@ -153,7 +203,6 @@ async function initializeAdaptiveReview(interview, options = {}) {
     ];
   }
 
-  // Default selected project
   const primaryProject = selectBestProject(structuredData.projects);
   structuredData.selectedProject = primaryProject.title;
 
@@ -161,18 +210,21 @@ async function initializeAdaptiveReview(interview, options = {}) {
   const reviewDeadline = new Date(now.getTime() + REVIEW_WINDOW_SECONDS * 1000);
 
   interview.projectContext = structuredData;
+  interview.activeProjectId = primaryProject.title;
   interview.reviewStatus = "in_review";
   interview.reviewStartedAt = now;
   interview.reviewDeadline = reviewDeadline;
   interview.status = "SKILL_REVIEW";
+  interview.consecutiveInvalidAnswers = 0;
   await interview.save();
 
   return interview;
 }
 
-/**
- * Update candidate corrections during the 120s review window
- */
+// ============================================================
+// UPDATE REVIEW CONTEXT (120s window)
+// ============================================================
+
 async function updateReviewContext(interview, corrections) {
   if (interview.status !== "SKILL_REVIEW" && interview.status !== "RESUME_PROCESSING") {
     const err = new Error("Review window is closed; cannot modify project details after interview starts.");
@@ -198,16 +250,11 @@ async function updateReviewContext(interview, corrections) {
     }));
   }
 
-  if (Array.isArray(corrections.skills)) {
-    currentCtx.skills = corrections.skills;
-  }
-
-  if (Array.isArray(corrections.technologies)) {
-    currentCtx.technologies = corrections.technologies;
-  }
-
+  if (Array.isArray(corrections.skills)) currentCtx.skills = corrections.skills;
+  if (Array.isArray(corrections.technologies)) currentCtx.technologies = corrections.technologies;
   if (corrections.selectedProject) {
     currentCtx.selectedProject = corrections.selectedProject;
+    interview.activeProjectId = corrections.selectedProject;
   }
 
   interview.projectContext = currentCtx;
@@ -216,12 +263,12 @@ async function updateReviewContext(interview, corrections) {
   return interview;
 }
 
-/**
- * Start the interview (either when 120s review window expires, or candidate clicks "Start Interview" early)
- */
+// ============================================================
+// STAGE 2: START INTERVIEW
+// ============================================================
+
 async function startAdaptiveInterview(interview, options = {}) {
   if (interview.status === "in_progress" || interview.status === "completed") {
-    // Idempotent recovery
     const session = await Session.findOne({ interview: interview._id });
     const firstQ = await Question.findOne({ interview: interview._id, order: 0 });
     return { interview, question: firstQ, session };
@@ -236,10 +283,13 @@ async function startAdaptiveInterview(interview, options = {}) {
 
   interview.initialAdaptiveScore = DEFAULT_INITIAL_SCORE;
   interview.currentAdaptiveScore = DEFAULT_INITIAL_SCORE;
+  interview.consecutiveInvalidAnswers = 0;
+  interview.terminationReason = null;
   interview.reviewStatus = "confirmed";
   interview.status = "in_progress";
   interview.startedAt = now;
   interview.interviewDeadline = interviewDeadline;
+  interview.activeProjectId = selectedProj.title;
   await interview.save();
 
   let session = await Session.findOne({ interview: interview._id });
@@ -247,7 +297,6 @@ async function startAdaptiveInterview(interview, options = {}) {
     session = await Session.create({ interview: interview._id, transcript: [] });
   }
 
-  // Create First Question using dedicated template
   const questionText = buildFirstQuestionText(selectedProj.title);
 
   let question = await Question.findOne({ interview: interview._id, order: 0 });
@@ -262,6 +311,8 @@ async function startAdaptiveInterview(interview, options = {}) {
       difficulty: "medium",
       projectReference: selectedProj.title,
       targetCompetencyLevel: "Intermediate",
+      followUpDepth: 0,
+      nextAction: "NEW_TOPIC",
     });
 
     session.transcript.push({
@@ -276,12 +327,14 @@ async function startAdaptiveInterview(interview, options = {}) {
   return { interview, question, session };
 }
 
-/**
- * Submit and evaluate candidate answer with adaptive scoring & next question generation
- */
+// ============================================================
+// STAGE 3: SUBMIT ANSWER (core of the new logic)
+// ============================================================
+
 async function submitAdaptiveAnswer(interview, { questionId, answerText, code, language }, options = {}) {
-  // Guard interview status
-  if (interview.status !== "in_progress" && interview.status !== "grace_period") {
+  // ── Guard: session must be active ──────────────────────────────────────────
+  const ACTIVE_STATUSES = new Set(["in_progress", "grace_period"]);
+  if (!ACTIVE_STATUSES.has(interview.status)) {
     const err = new Error("This interview is not currently accepting answers.");
     err.statusCode = 409;
     throw err;
@@ -300,18 +353,20 @@ async function submitAdaptiveAnswer(interview, { questionId, answerText, code, l
     throw err;
   }
 
-  // Idempotency: Prevent duplicate evaluation for same question
+  // ── Idempotency guard ──────────────────────────────────────────────────────
   const existingResponse = await Response.findOne({ interview: interview._id, question: question._id });
   if (existingResponse) {
-    // Return existing evaluation and look up next question
     const sessionState = await getAdaptiveSessionState(interview._id);
     return {
       response: existingResponse,
       nextQuestion: sessionState.currentQuestion,
       isFinalQuestion: !sessionState.currentQuestion,
+      warningMessage: null,
+      terminationMessage: null,
     };
   }
 
+  // ── Time checks ────────────────────────────────────────────────────────────
   const now = Date.now();
   const startTime = interview.startedAt ? new Date(interview.startedAt).getTime() : now;
   const elapsedMinutes = (now - startTime) / (1000 * 60);
@@ -327,21 +382,39 @@ async function submitAdaptiveAnswer(interview, { questionId, answerText, code, l
   const isTimeUp = elapsedMinutes >= durationLimit || interview.status === "grace_period";
   const nextIndex = question.order + 1;
   const maxQuestions = Number(interview.questionCount) || 20;
-  const isFinalQuestion = isTimeUp || nextIndex >= maxQuestions;
 
-  // 1. Record session transcript immediately
+  // ── 1. Record user message in transcript ───────────────────────────────────
   const session = await Session.findOne({ interview: interview._id });
+  const submittedText = (answerText || code || "").trim();
   if (session) {
     session.transcript.push({
       role: "user",
-      content: (answerText || code || "").trim(),
+      content: submittedText,
       questionIndex: question.order,
       createdAt: new Date(),
     });
     await session.save();
   }
 
-  // 2. Persist submitted answer record first with pending status
+  // ── 2. CLASSIFICATION: detect invalid answers before full evaluation ───────
+  let classification = "RELEVANT";
+  let classificationReasoning = "";
+  try {
+    const classResult = await aiService.classifyAdaptiveAnswer({
+      question: question.text,
+      answer: submittedText,
+      providerOverride: options.providerOverride,
+    });
+    classification = classResult.classification;
+    classificationReasoning = classResult.reasoning;
+  } catch (classErr) {
+    console.warn("[adaptiveEngine] Classification error, defaulting to RELEVANT:", classErr.message);
+    classification = "RELEVANT";
+  }
+
+  const isInvalidAnswer = INVALID_CLASSIFICATIONS.has(classification);
+
+  // ── 3. Persist response record (always, even for invalid answers) ──────────
   const previousAdaptiveScore = interview.currentAdaptiveScore ?? DEFAULT_INITIAL_SCORE;
 
   const responseDoc = await Response.create({
@@ -354,10 +427,180 @@ async function submitAdaptiveAnswer(interview, { questionId, answerText, code, l
     previousAdaptiveScore,
     updatedAdaptiveScore: previousAdaptiveScore,
     score: 0,
+    answerClassification: classification,
+    isRetryQuestion: question.isRetryQuestion || false,
+    projectId: question.projectReference || interview.activeProjectId || "",
     answerSubmittedAt: new Date(),
   });
 
-  // 3. Evaluate answer via centralized AI facade
+  // ── 4. INVALID ANSWER BRANCH ───────────────────────────────────────────────
+  if (isInvalidAnswer) {
+    // Increment counter atomically via findOneAndUpdate to avoid race conditions
+    const updatedInterview = await Interview.findOneAndUpdate(
+      { _id: interview._id },
+      { $inc: { consecutiveInvalidAnswers: 1 } },
+      { new: true }
+    );
+    const newInvalidCount = updatedInterview.consecutiveInvalidAnswers;
+
+    // Finalize response with score = 0 (hard rule, not AI-determined)
+    responseDoc.score = 0;
+    responseDoc.answerScore = 0;
+    responseDoc.updatedAdaptiveScore = previousAdaptiveScore; // invalid answers don't update adaptive score
+    responseDoc.evaluationStatus = "completed";
+    responseDoc.evaluationCompletedAt = new Date();
+    responseDoc.evaluation = {
+      correctness: 0,
+      clarity: 0,
+      confidence: 0,
+      notes: `Answer classified as ${classification}: ${classificationReasoning}`,
+      dimensions: {
+        technicalCorrectness: 0,
+        conceptualUnderstanding: 0,
+        projectRelevance: 0,
+        depthOfExplanation: 0,
+        architecturalReasoning: 0,
+        practicalImplementation: 0,
+        tradeoffAnalysis: 0,
+      },
+      strengths: [],
+      missingConcepts: ["Unable to assess — answer was not relevant to the question."],
+      technicalInaccuracies: [],
+      rationale: `Answer classified as ${classification}. Score forced to 0.`,
+      recommendedFollowUps: [],
+    };
+    await responseDoc.save();
+
+    // ── CASE A: Second consecutive invalid → TERMINATE ─────────────────────
+    if (newInvalidCount >= MAX_CONSECUTIVE_INVALID) {
+      // Reload interview to update
+      const finalInterview = await Interview.findById(interview._id);
+      finalInterview.status = "TERMINATED_INVALID_ANSWERS";
+      finalInterview.terminationReason = "Two consecutive invalid answers were submitted.";
+      finalInterview.completedAt = new Date();
+      await finalInterview.save();
+
+      const terminationMessage =
+        "Your last two responses were not relevant to the questions asked, so I need to end this interview. Your responses have been recorded, and the final report will summarize the interview outcome.";
+
+      if (session) {
+        session.transcript.push({ role: "ai", content: terminationMessage, questionIndex: -1, createdAt: new Date() });
+        await session.save();
+      }
+
+      console.log(`[adaptiveEngine] Interview ${interview._id} terminated: two consecutive invalid answers.`);
+
+      return {
+        response: responseDoc,
+        nextQuestion: null,
+        isFinalQuestion: true,
+        warningMessage: null,
+        terminationMessage,
+        terminationReason: "CONSECUTIVE_INVALID_ANSWERS",
+        adaptiveScore: previousAdaptiveScore,
+      };
+    }
+
+    // ── CASE B: First invalid → issue retry question on same concept ──────
+    const warningMessage =
+      "I couldn't identify a relevant answer to that question. Please try answering it seriously in your own words. Let's approach the same concept from a slightly different angle.";
+
+    if (session) {
+      session.transcript.push({ role: "ai", content: warningMessage, questionIndex: -1, createdAt: new Date() });
+    }
+
+    // Generate retry question testing the same concept with different wording
+    const allQuestionsForRetry = await Question.find({ interview: interview._id }).sort({ order: 1 });
+    const allProjects = interview.projectContext?.projects || [];
+    const remainingSeconds = Math.max(0, (durationLimit - elapsedMinutes) * 60);
+    const competencyLevel = getCompetencyLevel(previousAdaptiveScore);
+
+    let retryQuestionData;
+    try {
+      retryQuestionData = await aiService.generateAdaptiveQuestion({
+        projectContext: interview.projectContext,
+        allProjects,
+        previousQuestions: allQuestionsForRetry.map((pq) => ({
+          text: pq.text,
+          questionCategory: pq.questionCategory,
+          projectReference: pq.projectReference,
+          answerText: "",
+        })),
+        latestQuestion: question.text,
+        latestAnswer: submittedText,
+        latestEvaluation: { answerScore: 0, strengths: [], missingConcepts: [], technicalInaccuracies: [], recommendedFollowUps: [] },
+        adaptiveScore: previousAdaptiveScore,
+        remainingSeconds,
+        targetCategory: question.questionCategory || "Web Development",
+        competencyLevel,
+        currentFollowUpDepth: question.followUpDepth || 0,
+        maxFollowUpDepth: MAX_FOLLOW_UP_DEPTH,
+        questionsOnCurrentProject: countQuestionsForProject(allQuestionsForRetry, interview.activeProjectId || ""),
+        forceRetry: true,
+        providerOverride: options.providerOverride,
+      });
+    } catch (retryErr) {
+      console.error("[adaptiveEngine] Retry question generation error:", retryErr.message);
+      const selectedProj = selectBestProject(allProjects, interview.activeProjectId);
+      retryQuestionData = {
+        nextAction: "RETRY_SAME_CONCEPT",
+        questionCategory: question.questionCategory || "Web Development",
+        difficulty: competencyLevel.toLowerCase(),
+        questionText: `Let me ask this differently: in your project ${selectedProj.title}, can you walk me through a specific example of ${question.topic || "the technical concept we were just discussing"}?`,
+        targetCompetencyLevel: competencyLevel,
+        projectReference: selectedProj.title,
+        switchToProject: null,
+      };
+    }
+
+    const retryQuestion = await Question.create({
+      interview: interview._id,
+      text: retryQuestionData.questionText,
+      topic: question.topic || `${retryQuestionData.projectReference} - ${retryQuestionData.questionCategory}`,
+      order: nextIndex,
+      isCoding: false,
+      questionCategory: retryQuestionData.questionCategory || question.questionCategory,
+      difficulty: retryQuestionData.difficulty,
+      projectReference: retryQuestionData.projectReference || interview.activeProjectId,
+      targetCompetencyLevel: retryQuestionData.targetCompetencyLevel,
+      followUpDepth: (question.followUpDepth || 0) + 1,
+      parentQuestionId: question._id,
+      isRetryQuestion: true,
+      nextAction: "RETRY_SAME_CONCEPT",
+    });
+
+    interview.currentQuestionIndex = nextIndex;
+    await interview.save();
+
+    if (session) {
+      session.transcript.push({
+        role: "ai",
+        content: retryQuestion.text,
+        questionIndex: nextIndex,
+        createdAt: new Date(),
+      });
+      await session.save();
+    }
+
+    return {
+      response: responseDoc,
+      nextQuestion: retryQuestion,
+      isFinalQuestion: false,
+      warningMessage,
+      terminationMessage: null,
+      adaptiveScore: previousAdaptiveScore,
+    };
+  }
+
+  // ── 5. VALID ANSWER: Reset consecutive invalid counter ────────────────────
+  // Use atomic update to prevent race conditions
+  await Interview.findOneAndUpdate(
+    { _id: interview._id },
+    { consecutiveInvalidAnswers: 0 },
+    { new: true }
+  );
+
+  // ── 6. Full 7-dimension evaluation ────────────────────────────────────────
   let evaluationResult;
   try {
     evaluationResult = await aiService.evaluateAdaptiveAnswer({
@@ -365,13 +608,12 @@ async function submitAdaptiveAnswer(interview, { questionId, answerText, code, l
       question: question.text,
       questionCategory: question.questionCategory,
       difficulty: question.difficulty,
-      answer: answerText || code || "",
+      answer: submittedText,
       currentAdaptiveScore: previousAdaptiveScore,
       providerOverride: options.providerOverride,
     });
   } catch (evalErr) {
     console.error("[adaptiveEngine] Evaluation failed:", evalErr.message);
-    // Controlled fallback evaluation without discarding answer
     evaluationResult = {
       answerScore: 0.5,
       dimensionScores: {
@@ -391,7 +633,7 @@ async function submitAdaptiveAnswer(interview, { questionId, answerText, code, l
     };
   }
 
-  // 4. Update adaptive score only after evaluation
+  // ── 7. Update adaptive score ───────────────────────────────────────────────
   const answerScore = evaluationResult.answerScore;
   const alpha = interview.scoringAlpha || DEFAULT_ALPHA;
   const newAdaptiveScore = computeUpdatedAdaptiveScore(previousAdaptiveScore, answerScore, alpha);
@@ -400,9 +642,8 @@ async function submitAdaptiveAnswer(interview, { questionId, answerText, code, l
   interview.currentQuestionIndex = nextIndex;
   await interview.save();
 
-  // 5. Update response document with evaluation
-  const avgDimensionScore = Math.round(answerScore * 100);
-  responseDoc.score = avgDimensionScore;
+  // ── 8. Persist full evaluation on response ─────────────────────────────────
+  responseDoc.score = Math.round(answerScore * 100);
   responseDoc.answerScore = answerScore;
   responseDoc.updatedAdaptiveScore = newAdaptiveScore;
   responseDoc.evaluationStatus = "completed";
@@ -421,82 +662,169 @@ async function submitAdaptiveAnswer(interview, { questionId, answerText, code, l
   };
   await responseDoc.save();
 
-  // 6. Generate next question if interview is not final
-  let nextQuestion = null;
-  if (!isFinalQuestion) {
-    const remainingSeconds = Math.max(0, (durationLimit - elapsedMinutes) * 60);
+  // ── 9. Determine if this is the final question ─────────────────────────────
+  const isFinalQuestion = isTimeUp || nextIndex >= maxQuestions;
 
-    // Alternate categories: Web Development vs System Design
-    const previousQuestions = await Question.find({ interview: interview._id }).sort({ order: 1 });
-    const lastCategory = question.questionCategory;
-    const targetCategory =
-      lastCategory === "Web Development" ? "System Design" : "Web Development";
-    const competencyLevel = getCompetencyLevel(newAdaptiveScore);
+  if (isFinalQuestion) {
+    return {
+      response: responseDoc,
+      nextQuestion: null,
+      isFinalQuestion: true,
+      warningMessage: null,
+      terminationMessage: null,
+      adaptiveScore: newAdaptiveScore,
+    };
+  }
 
-    let generatedQuestionData;
-    try {
-      generatedQuestionData = await aiService.generateAdaptiveQuestion({
-        projectContext: interview.projectContext,
-        previousQuestions: previousQuestions.map((pq) => ({
-          text: pq.text,
-          questionCategory: pq.questionCategory,
-          answerText: pq.order === question.order ? answerText : "",
-        })),
-        latestAnswer: answerText || code || "",
-        latestEvaluation: evaluationResult,
-        adaptiveScore: newAdaptiveScore,
-        remainingSeconds,
-        targetCategory,
-        competencyLevel,
-        providerOverride: options.providerOverride,
-      });
-    } catch (qErr) {
-      console.error("[adaptiveEngine] Question generation error:", qErr.message);
-      const selectedProj = selectBestProject(interview.projectContext?.projects);
-      generatedQuestionData = {
-        questionCategory: targetCategory,
-        difficulty: competencyLevel.toLowerCase(),
-        questionText: `In ${selectedProj.title}, how did you organize the ${targetCategory === "Web Development" ? "frontend component state and API integration" : "high-level component boundaries and data consistency"}?`,
-        targetCompetencyLevel: competencyLevel,
-        projectReference: selectedProj.title,
-        rationale: "Fallback question maintaining adaptive context.",
-      };
-    }
+  // ── 10. Generate next contextual question ─────────────────────────────────
+  const allProjects = interview.projectContext?.projects || [];
+  const remainingSeconds = Math.max(0, (durationLimit - elapsedMinutes) * 60);
+  const competencyLevel = getCompetencyLevel(newAdaptiveScore);
+  const allQuestionsForNext = await Question.find({ interview: interview._id }).sort({ order: 1 });
 
-    nextQuestion = await Question.create({
-      interview: interview._id,
-      text: generatedQuestionData.questionText,
-      topic: `${generatedQuestionData.projectReference || "Project"} - ${generatedQuestionData.questionCategory}`,
-      order: nextIndex,
-      isCoding: false,
-      questionCategory: generatedQuestionData.questionCategory,
-      difficulty: generatedQuestionData.difficulty,
-      projectReference: generatedQuestionData.projectReference,
-      targetCompetencyLevel: generatedQuestionData.targetCompetencyLevel,
+  const currentFollowUpDepth = computeCurrentFollowUpDepth(allQuestionsForNext);
+  const questionsOnCurrentProject = countQuestionsForProject(allQuestionsForNext, interview.activeProjectId || "");
+
+  // Alternate categories: Web Development vs System Design
+  const lastCategory = question.questionCategory;
+  const targetCategory =
+    lastCategory === "Web Development" ? "System Design" : "Web Development";
+
+  let generatedQuestionData;
+  try {
+    generatedQuestionData = await aiService.generateAdaptiveQuestion({
+      projectContext: interview.projectContext,
+      allProjects,
+      previousQuestions: allQuestionsForNext.map((pq) => ({
+        text: pq.text,
+        questionCategory: pq.questionCategory,
+        projectReference: pq.projectReference,
+        answerText: pq.order === question.order ? submittedText : "",
+      })),
+      latestQuestion: question.text,
+      latestAnswer: submittedText,
+      latestEvaluation: evaluationResult,
+      adaptiveScore: newAdaptiveScore,
+      remainingSeconds,
+      targetCategory,
+      competencyLevel,
+      currentFollowUpDepth,
+      maxFollowUpDepth: MAX_FOLLOW_UP_DEPTH,
+      questionsOnCurrentProject,
+      forceRetry: false,
+      providerOverride: options.providerOverride,
     });
+  } catch (qErr) {
+    console.error("[adaptiveEngine] Question generation error:", qErr.message);
+    const selectedProj = selectBestProject(allProjects, interview.activeProjectId);
+    generatedQuestionData = {
+      nextAction: "NEW_TOPIC",
+      questionCategory: targetCategory,
+      difficulty: competencyLevel.toLowerCase(),
+      questionText: `In ${selectedProj.title}, how did you organize the ${
+        targetCategory === "Web Development"
+          ? "frontend component state and API integration"
+          : "high-level component boundaries and data consistency"
+      }?`,
+      targetCompetencyLevel: competencyLevel,
+      projectReference: selectedProj.title,
+      switchToProject: null,
+      rationale: "Fallback question maintaining adaptive context.",
+    };
+  }
 
-    if (session) {
+  // ── 11. Handle project switch if AI decided to switch ─────────────────────
+  let projectTransitionMessage = null;
+  const nextAction = generatedQuestionData.nextAction || "NEW_TOPIC";
+
+  if (nextAction === "SWITCH_PROJECT" && allProjects.length > 1) {
+    const nextProject = selectNextProject(
+      allProjects,
+      interview.activeProjectId || "",
+      generatedQuestionData.switchToProject
+    );
+
+    if (nextProject) {
+      // Update interview's active project context
+      interview.activeProjectId = nextProject.title;
+      interview.projectContext = {
+        ...interview.projectContext,
+        selectedProject: nextProject.title,
+      };
+      await interview.save();
+
+      projectTransitionMessage = `We've covered the key aspects of your ${
+        question.projectReference || allQuestionsForNext[0]?.projectReference || "previous project"
+      }. Let's now move to your project "${nextProject.title}". What was the most challenging technical decision you made while building it?`;
+
+      // If the AI generated a generic question, use the transition message as the question
+      if (!generatedQuestionData.questionText || generatedQuestionData.questionText.length < 20) {
+        generatedQuestionData.questionText = projectTransitionMessage;
+      }
+
+      generatedQuestionData.projectReference = nextProject.title;
+    }
+  }
+
+  // ── 12. Determine follow-up depth for the new question ────────────────────
+  const nextFollowUpDepth = computeNextFollowUpDepth(currentFollowUpDepth, nextAction);
+  const parentId = ["FOLLOW_UP", "PROBE", "DEEPEN", "RETRY_SAME_CONCEPT"].includes(nextAction)
+    ? question._id
+    : null;
+
+  // ── 13. Persist next question ──────────────────────────────────────────────
+  const nextQuestion = await Question.create({
+    interview: interview._id,
+    text: generatedQuestionData.questionText,
+    topic: `${generatedQuestionData.projectReference || "Project"} - ${generatedQuestionData.questionCategory}`,
+    order: nextIndex,
+    isCoding: false,
+    questionCategory: generatedQuestionData.questionCategory,
+    difficulty: generatedQuestionData.difficulty,
+    projectReference: generatedQuestionData.projectReference,
+    targetCompetencyLevel: generatedQuestionData.targetCompetencyLevel,
+    followUpDepth: nextFollowUpDepth,
+    parentQuestionId: parentId,
+    isRetryQuestion: false,
+    nextAction,
+  });
+
+  if (session) {
+    // Add project transition notice if applicable
+    if (projectTransitionMessage && nextAction === "SWITCH_PROJECT") {
+      session.transcript.push({
+        role: "ai",
+        content: projectTransitionMessage,
+        questionIndex: nextIndex,
+        createdAt: new Date(),
+      });
+    } else {
       session.transcript.push({
         role: "ai",
         content: nextQuestion.text,
         questionIndex: nextIndex,
         createdAt: new Date(),
       });
-      await session.save();
     }
+    await session.save();
   }
 
   return {
     response: responseDoc,
     nextQuestion,
-    isFinalQuestion,
+    isFinalQuestion: false,
+    warningMessage: null,
+    terminationMessage: null,
+    projectTransitionMessage,
+    nextAction,
     adaptiveScore: newAdaptiveScore,
   };
 }
 
-/**
- * Session state reader for adaptive interview
- */
+// ============================================================
+// SESSION STATE READER
+// ============================================================
+
 async function getAdaptiveSessionState(interviewId) {
   const [interview, session, responses, allQuestions] = await Promise.all([
     Interview.findById(interviewId),
@@ -510,7 +838,6 @@ async function getAdaptiveSessionState(interviewId) {
   // Review window auto-expiry check
   if (interview.status === "SKILL_REVIEW" && interview.reviewDeadline) {
     if (Date.now() >= new Date(interview.reviewDeadline).getTime()) {
-      // Auto-start interview
       await startAdaptiveInterview(interview);
       return getAdaptiveSessionState(interviewId);
     }
@@ -539,19 +866,56 @@ async function getAdaptiveSessionState(interviewId) {
     allQuestions,
     adaptiveScore: interview.currentAdaptiveScore ?? DEFAULT_INITIAL_SCORE,
     competencyLevel: getCompetencyLevel(interview.currentAdaptiveScore ?? DEFAULT_INITIAL_SCORE),
+    consecutiveInvalidAnswers: interview.consecutiveInvalidAnswers || 0,
+    terminationReason: interview.terminationReason || null,
+    activeProjectId: interview.activeProjectId || "",
   };
 }
 
-/**
- * Generate final report tailored for Adaptive Web Dev + System Design round
- */
+// ============================================================
+// FINALIZATION: 60-second bounded deadline
+// ============================================================
+
 async function finalizeAdaptiveReport(interviewId, options = {}) {
+  // ── Idempotency: return existing complete report immediately ───────────────
+  const existingReport = await Report.findOne({ interview: interviewId });
+  if (existingReport && ["complete", "degraded"].includes(existingReport.generationStatus)) {
+    return existingReport;
+  }
+
   const interview = await Interview.findById(interviewId);
   if (!interview) throw new Error("Interview not found");
 
-  const existingReport = await Report.findOne({ interview: interviewId });
-  if (existingReport) return existingReport;
+  // ── Idempotency for finalization start ────────────────────────────────────
+  // If already in FINALIZING and a report is being generated, avoid duplicate start
+  if (interview.status === "FINALIZING" && interview.finalizationStartedAt) {
+    const elapsed = Date.now() - new Date(interview.finalizationStartedAt).getTime();
+    if (elapsed < REPORT_FINALIZATION_DEADLINE_SECONDS * 1000) {
+      // Still within deadline window — check if report exists (possibly partially)
+      const partialReport = await Report.findOne({ interview: interviewId });
+      if (partialReport) return partialReport;
+    }
+  }
 
+  // ── Mark FINALIZING if not already ───────────────────────────────────────
+  const isTerminated = interview.status === "TERMINATED_INVALID_ANSWERS";
+  const shouldBeCompleted = ["completed", "TERMINATED_INVALID_ANSWERS", "grace_period", "in_progress"].includes(interview.status);
+
+  if (shouldBeCompleted) {
+    const now = new Date();
+    interview.status = "FINALIZING";
+    interview.finalizationStartedAt = interview.finalizationStartedAt || now;
+    interview.reportDeadlineAt = new Date(
+      new Date(interview.finalizationStartedAt).getTime() + REPORT_FINALIZATION_DEADLINE_SECONDS * 1000
+    );
+    await interview.save();
+  }
+
+  const deadline = interview.reportDeadlineAt
+    ? new Date(interview.reportDeadlineAt).getTime()
+    : Date.now() + REPORT_FINALIZATION_DEADLINE_SECONDS * 1000;
+
+  // ── Collect session data ──────────────────────────────────────────────────
   const [session, responses, allQuestions] = await Promise.all([
     Session.findOne({ interview: interviewId }),
     Response.find({ interview: interviewId }).populate("question").sort({ createdAt: 1 }),
@@ -563,119 +927,183 @@ async function finalizeAdaptiveReport(interviewId, options = {}) {
   const unanswered = allQuestions.filter((q) => !answeredIds.has(String(q._id)));
 
   for (const unans of unanswered) {
-    const unansDoc = await Response.create({
-      interview: interviewId,
-      question: unans._id,
-      answerText: "[Not Answered - Interview Concluded]",
-      score: 0,
-      answerScore: 0,
-      previousAdaptiveScore: interview.currentAdaptiveScore ?? 0.5,
-      updatedAdaptiveScore: interview.currentAdaptiveScore ?? 0.5,
-      evaluationStatus: "completed",
-      evaluation: {
-        correctness: 0,
-        clarity: 0,
-        confidence: 0,
-        notes: "Question was not answered before the interview ended.",
-        dimensions: {
-          technicalCorrectness: 0,
-          conceptualUnderstanding: 0,
-          projectRelevance: 0,
-          depthOfExplanation: 0,
-          architecturalReasoning: 0,
-          practicalImplementation: 0,
-          tradeoffAnalysis: 0,
+    try {
+      const unansDoc = await Response.create({
+        interview: interviewId,
+        question: unans._id,
+        answerText: "[Not Answered - Interview Concluded]",
+        score: 0,
+        answerScore: 0,
+        answerClassification: "NON_RESPONSIVE",
+        previousAdaptiveScore: interview.currentAdaptiveScore ?? 0.5,
+        updatedAdaptiveScore: interview.currentAdaptiveScore ?? 0.5,
+        evaluationStatus: "completed",
+        evaluation: {
+          correctness: 0, clarity: 0, confidence: 0,
+          notes: "Question was not answered before the interview ended.",
+          dimensions: {
+            technicalCorrectness: 0, conceptualUnderstanding: 0, projectRelevance: 0,
+            depthOfExplanation: 0, architecturalReasoning: 0, practicalImplementation: 0,
+            tradeoffAnalysis: 0,
+          },
         },
-      },
-    });
-    responses.push(unansDoc);
+      });
+      responses.push(unansDoc);
+    } catch (dupErr) {
+      // Already exists (concurrent request), ignore
+      if (dupErr.code !== 11000) throw dupErr;
+    }
   }
 
-  let reportData;
-  try {
-    reportData = await aiService.generateAdaptiveFinalReport({
-      interview,
-      projectContext: interview.projectContext,
-      responses,
-      providerOverride: options.providerOverride,
-    });
-  } catch (err) {
-    console.error("[adaptiveEngine] Final report AI error:", err.message);
-    const validScores = responses
-      .filter((r) => typeof r.score === "number")
-      .map((r) => r.score);
-    const avgScore = validScores.length > 0 ? Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length) : 50;
-    reportData = {
-      overall: avgScore,
-      technical: avgScore,
-      communication: avgScore,
-      confidence: avgScore,
-      problemSolving: avgScore,
-      coding: 0,
-      webDevelopment: avgScore,
-      systemDesign: avgScore,
-      conceptualUnderstanding: avgScore,
-      technicalCorrectness: avgScore,
-      projectOwnership: avgScore,
-      architecturalReasoning: avgScore,
-      strengths: ["Completed adaptive technical project evaluation."],
-      weaknesses: [],
-      knowledgeGaps: [],
-      misconceptions: [],
-      areasForImprovement: [],
-      suggestions: ["Review architectural design trade-offs for scaling."],
-      summary: "Adaptive Web Development + System Design round completed.",
-      interviewerSummary: "Completed round with demonstrated project context.",
-    };
-  }
+  // ── Compute deterministic score floor ────────────────────────────────────
+  const allValidScores = responses
+    .filter((r) => typeof r.answerScore === "number" && r.answerClassification !== "GIBBERISH" && r.answerClassification !== "NON_RESPONSIVE")
+    .map((r) => r.answerScore * 100);
 
+  const calculatedAvg =
+    allValidScores.length > 0
+      ? Math.round(allValidScores.reduce((a, b) => a + b, 0) / allValidScores.length)
+      : 0;
+
+  // Termination due to invalid answers = overall score 0
+  const overallScoreOverride = isTerminated ? 0 : null;
+
+  const invalidAnswerCount = responses.filter((r) =>
+    INVALID_CLASSIFICATIONS.has(r.answerClassification)
+  ).length;
+
+  // ── Create/update Report in pending state ─────────────────────────────────
   const selectedProj = selectBestProject(interview.projectContext?.projects);
+  const allDiscussedProjects = [...new Set(allQuestions.map((q) => q.projectReference).filter(Boolean))];
 
-  const report = await Report.findOneAndUpdate(
+  // Upsert with generationStatus=generating to prevent duplicate AI calls
+  let reportDoc = await Report.findOneAndUpdate(
     { interview: interviewId },
     {
-      interview: interviewId,
-      user: interview.user,
-      scores: {
-        overall: reportData.overall,
-        technical: reportData.technical,
-        communication: reportData.communication,
-        confidence: reportData.confidence,
-        problemSolving: reportData.problemSolving,
-        coding: reportData.coding || 0,
-        webDevelopment: reportData.webDevelopment || reportData.technical,
-        systemDesign: reportData.systemDesign || reportData.problemSolving,
-        conceptualUnderstanding: reportData.conceptualUnderstanding || reportData.technical,
-        technicalCorrectness: reportData.technicalCorrectness || reportData.technical,
-        projectOwnership: reportData.projectOwnership || reportData.confidence,
-        architecturalReasoning: reportData.architecturalReasoning || reportData.problemSolving,
+      $setOnInsert: {
+        interview: interviewId,
+        user: interview.user,
+        generationStatus: "generating",
+        terminationReason: interview.terminationReason || null,
       },
-      adaptiveDetails: {
-        projectsDiscussed: [selectedProj.title],
-        totalQuestionsAsked: allQuestions.length,
-        evaluatedAnswersCount: responses.filter((r) => r.answerText && !r.answerText.includes("[Not Answered")).length,
-        unansweredCount: unanswered.length,
-        initialAdaptiveScore: interview.initialAdaptiveScore ?? DEFAULT_INITIAL_SCORE,
-        finalAdaptiveScore: interview.currentAdaptiveScore ?? DEFAULT_INITIAL_SCORE,
-        knowledgeGaps: reportData.knowledgeGaps || [],
-        misconceptions: reportData.misconceptions || [],
-        areasForImprovement: reportData.areasForImprovement || [],
-        interviewerSummary: reportData.interviewerSummary || reportData.summary || "",
-      },
-      strengths: reportData.strengths || [],
-      weaknesses: reportData.weaknesses || [],
-      suggestions: reportData.suggestions || [],
-      summary: reportData.summary || "",
     },
     { upsert: true, new: true }
   );
 
-  interview.status = "completed";
-  interview.completedAt = new Date();
-  await interview.save();
+  if (reportDoc.generationStatus === "complete" || reportDoc.generationStatus === "degraded") {
+    // Another concurrent call already finished it
+    return reportDoc;
+  }
 
-  return report;
+  // ── Attempt AI report generation within 60s deadline ─────────────────────
+  let reportData = null;
+  let generationError = null;
+  const timeRemainingMs = deadline - Date.now();
+
+  if (timeRemainingMs > 5000 && !isTerminated) {
+    // Only attempt AI generation if we have more than 5 seconds and interview was not terminated for invalid answers
+    try {
+      const reportPromise = aiService.generateAdaptiveFinalReport({
+        interview,
+        projectContext: interview.projectContext,
+        responses,
+        providerOverride: options.providerOverride,
+      });
+
+      // Race against the deadline
+      reportData = await Promise.race([
+        reportPromise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Report generation deadline exceeded")), timeRemainingMs - 2000)
+        ),
+      ]);
+    } catch (err) {
+      generationError = err.message;
+      console.error("[adaptiveEngine] AI report generation failed:", err.message);
+    }
+  }
+
+  // ── Build final report data (deterministic fallback if AI failed) ─────────
+  const effectiveAvg = overallScoreOverride !== null ? overallScoreOverride : (reportData ? null : calculatedAvg);
+
+  const finalScores = {
+    overall: overallScoreOverride !== null ? 0 : (reportData?.overall ?? calculatedAvg),
+    technical: overallScoreOverride !== null ? 0 : (reportData?.technical ?? calculatedAvg),
+    communication: overallScoreOverride !== null ? 0 : (reportData?.communication ?? calculatedAvg),
+    confidence: overallScoreOverride !== null ? 0 : (reportData?.confidence ?? calculatedAvg),
+    problemSolving: overallScoreOverride !== null ? 0 : (reportData?.problemSolving ?? calculatedAvg),
+    coding: 0,
+    webDevelopment: overallScoreOverride !== null ? 0 : (reportData?.webDevelopment ?? calculatedAvg),
+    systemDesign: overallScoreOverride !== null ? 0 : (reportData?.systemDesign ?? calculatedAvg),
+    conceptualUnderstanding: overallScoreOverride !== null ? 0 : (reportData?.conceptualUnderstanding ?? calculatedAvg),
+    technicalCorrectness: overallScoreOverride !== null ? 0 : (reportData?.technicalCorrectness ?? calculatedAvg),
+    projectOwnership: overallScoreOverride !== null ? 0 : (reportData?.projectOwnership ?? calculatedAvg),
+    architecturalReasoning: overallScoreOverride !== null ? 0 : (reportData?.architecturalReasoning ?? calculatedAvg),
+  };
+
+  const generationStatus = isTerminated
+    ? "complete"
+    : generationError
+    ? "degraded"
+    : "complete";
+
+  const finalSummary = isTerminated
+    ? "This interview was terminated because two consecutive responses were not relevant to the questions asked. No technical score could be awarded."
+    : (reportData?.summary || `Adaptive Web Development + System Design round completed with an average answer score of ${calculatedAvg}/100.`);
+
+  const finalInterviewerSummary = isTerminated
+    ? "Interview terminated due to two consecutive invalid/irrelevant answers. Score set to 0 as per evaluation policy."
+    : (reportData?.interviewerSummary || "Completed round with demonstrated project context.");
+
+  // ── Persist final report ──────────────────────────────────────────────────
+  reportDoc = await Report.findOneAndUpdate(
+    { interview: interviewId },
+    {
+      interview: interviewId,
+      user: interview.user,
+      scores: finalScores,
+      adaptiveDetails: {
+        projectsDiscussed: allDiscussedProjects.length > 0 ? allDiscussedProjects : [selectedProj.title],
+        totalQuestionsAsked: allQuestions.length,
+        evaluatedAnswersCount: responses.filter((r) => r.answerText && !r.answerText.includes("[Not Answered")).length,
+        unansweredCount: unanswered.length,
+        invalidAnswerCount,
+        initialAdaptiveScore: interview.initialAdaptiveScore ?? DEFAULT_INITIAL_SCORE,
+        finalAdaptiveScore: isTerminated ? 0 : (interview.currentAdaptiveScore ?? DEFAULT_INITIAL_SCORE),
+        knowledgeGaps: reportData?.knowledgeGaps || [],
+        misconceptions: reportData?.misconceptions || [],
+        areasForImprovement: reportData?.areasForImprovement || [],
+        interviewerSummary: finalInterviewerSummary,
+      },
+      strengths: isTerminated ? [] : (reportData?.strengths || ["Provided technical explanations grounded in project context."]),
+      weaknesses: reportData?.weaknesses || [],
+      suggestions: isTerminated
+        ? ["Ensure answers are relevant to the questions asked in future interviews."]
+        : (reportData?.suggestions || ["Continue practicing structured architecture trade-off discussions."]),
+      summary: finalSummary,
+      generationStatus,
+      generationError: generationError || null,
+      generatedAt: new Date(),
+      terminationReason: interview.terminationReason || null,
+    },
+    { upsert: true, new: true }
+  );
+
+  // ── Mark interview as completed ───────────────────────────────────────────
+  await Interview.findOneAndUpdate(
+    { _id: interviewId },
+    {
+      status: isTerminated ? "TERMINATED_INVALID_ANSWERS" : "completed",
+      completedAt: new Date(),
+    }
+  );
+
+  return reportDoc;
 }
+
+// ============================================================
+// EXPORTS
+// ============================================================
 
 module.exports = {
   DEFAULT_INITIAL_SCORE,
@@ -683,10 +1111,17 @@ module.exports = {
   REVIEW_WINDOW_SECONDS,
   ANSWER_TIME_LIMIT_SECONDS,
   BACKEND_PROCESSING_ALLOWANCE_SECONDS,
+  REPORT_FINALIZATION_DEADLINE_SECONDS,
+  MAX_CONSECUTIVE_INVALID,
+  MAX_FOLLOW_UP_DEPTH,
+  INVALID_CLASSIFICATIONS,
   getCompetencyLevel,
   computeUpdatedAdaptiveScore,
   selectBestProject,
+  selectNextProject,
   buildFirstQuestionText,
+  countQuestionsForProject,
+  computeCurrentFollowUpDepth,
   initializeAdaptiveReview,
   updateReviewContext,
   startAdaptiveInterview,

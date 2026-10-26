@@ -8,6 +8,7 @@ const responseSchema = new mongoose.Schema(
     code: { type: String, default: "" },
     language: { type: String, default: "" },
     score: { type: Number, default: 0 },
+
     // Adaptive Web Development + System Design Round detailed fields
     answerScore: { type: Number, default: 0 }, // 0.0 - 1.0 normalized
     previousAdaptiveScore: { type: Number, default: 0.5 },
@@ -19,12 +20,34 @@ const responseSchema = new mongoose.Schema(
     },
     answerSubmittedAt: { type: Date, default: Date.now },
     evaluationCompletedAt: { type: Date },
+
+    // Answer quality classification (backend-enforced)
+    answerClassification: {
+      type: String,
+      enum: [
+        "RELEVANT",
+        "PARTIALLY_RELEVANT",
+        "INCORRECT_BUT_RELEVANT",
+        "GIBBERISH",
+        "NON_RESPONSIVE",
+        "ABUSIVE_OR_INAPPROPRIATE",
+        "UNKNOWN",
+      ],
+      default: "UNKNOWN",
+    },
+
+    // True if this answer is to a retry question (same concept, different wording)
+    isRetryQuestion: { type: Boolean, default: false },
+
+    // Which project this response belongs to
+    projectId: { type: String, default: "" },
+
     evaluation: {
       correctness: { type: Number, default: 0 },
       clarity: { type: Number, default: 0 },
       confidence: { type: Number, default: 0 },
       notes: { type: String, default: "" },
-      // Structured 7-dimension scores (0-100 or 0-1)
+      // Structured 7-dimension scores (0-100)
       dimensions: {
         technicalCorrectness: { type: Number, default: 0 },
         conceptualUnderstanding: { type: Number, default: 0 },

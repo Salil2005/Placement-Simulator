@@ -34,6 +34,7 @@ const reportSchema = new mongoose.Schema(
       totalQuestionsAsked: { type: Number, default: 0 },
       evaluatedAnswersCount: { type: Number, default: 0 },
       unansweredCount: { type: Number, default: 0 },
+      invalidAnswerCount: { type: Number, default: 0 },
       initialAdaptiveScore: { type: Number, default: 0.5 },
       finalAdaptiveScore: { type: Number, default: 0.5 },
       knowledgeGaps: [{ type: String }],
@@ -47,6 +48,18 @@ const reportSchema = new mongoose.Schema(
     quotedMoments: [quotedMomentSchema],
     summary: { type: String, default: "" },
     pdfPath: { type: String, default: null },
+
+    // Finalization tracking
+    generationStatus: {
+      type: String,
+      enum: ["pending", "generating", "complete", "degraded", "failed"],
+      default: "pending",
+    },
+    generationError: { type: String, default: null },
+    generatedAt: { type: Date, default: null },
+
+    // Termination reason if interview was cut short
+    terminationReason: { type: String, default: null },
   },
   { timestamps: true }
 );

@@ -29,6 +29,7 @@ const interviewSchema = new mongoose.Schema(
         "EVALUATING",
         "GENERATING_QUESTION",
         "FINALIZING",
+        "TERMINATED_INVALID_ANSWERS",
         "FAILED",
       ],
       default: "not_started",
@@ -42,6 +43,18 @@ const interviewSchema = new mongoose.Schema(
     initialAdaptiveScore: { type: Number, default: 0.5 },
     currentAdaptiveScore: { type: Number, default: 0.5 },
     scoringAlpha: { type: Number, default: 0.35 },
+
+    // Multi-project tracking
+    activeProjectId: { type: String, default: "" },
+
+    // Answer integrity enforcement (backend-owned, not AI-owned)
+    consecutiveInvalidAnswers: { type: Number, default: 0 },
+    terminationReason: { type: String, default: null },
+
+    // Finalization timing
+    finalizationStartedAt: { type: Date, default: null },
+    reportDeadlineAt: { type: Date, default: null },
+
     projectContext: {
       selectedProject: { type: String, default: "" },
       projects: [

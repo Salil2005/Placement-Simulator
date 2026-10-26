@@ -17,6 +17,12 @@ function Shimmer() {
   );
 }
 
+/**
+ * Conversation renders the full message thread.
+ * Each message may have special metadata flags:
+ * - isWarning, isTermination, isProjectTransition, isSystem
+ * These are forwarded to ChatBubble to render appropriate visual treatments.
+ */
 export default function Conversation({ messages, pending }) {
   const bottomRef = useRef(null);
 
@@ -27,7 +33,16 @@ export default function Conversation({ messages, pending }) {
   return (
     <div className="flex h-full flex-col gap-3 overflow-y-auto p-4">
       {messages.map((m, i) => (
-        <ChatBubble key={i} role={m.role} content={m.content} flagged={m.flagged} />
+        <ChatBubble
+          key={m.id || i}
+          role={m.role}
+          content={m.content}
+          flagged={m.flagged}
+          isWarning={m.isWarning}
+          isTermination={m.isTermination}
+          isProjectTransition={m.isProjectTransition}
+          isSystem={m.isSystem}
+        />
       ))}
       {pending && <Shimmer />}
       <div ref={bottomRef} />

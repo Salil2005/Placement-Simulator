@@ -585,6 +585,7 @@ const {
   buildResumeContextPrompt,
   buildResumeVsInterviewPrompt,
   buildAdaptiveResumeParsePrompt,
+  buildAdaptiveClassificationPrompt,
   buildAdaptiveEvaluationPrompt,
   buildAdaptiveQuestionPrompt,
   buildAdaptiveFinalReportPrompt,
@@ -1058,28 +1059,98 @@ Do not provide a long explanation.
   },
 
   /**
+   * Fast-path answer quality classifier.
+   * Runs BEFORE full evaluation to detect gibberish/non-responsive answers.
+   * Returns one of: RELEVANT | PARTIALLY_RELEVANT | INCORRECT_BUT_RELEVANT |
+   *                 GIBBERISH | NON_RESPONSIVE | ABUSIVE_OR_INAPPROPRIATE
+   */
+  async classifyAdaptiveAnswer({ question, answer, providerOverride }) {
+    const VALID_CLASSIFICATIONS = [
+      "RELEVANT",
+      "PARTIALLY_RELEVANT",
+      "INCORRECT_BUT_RELEVANT",
+      "GIBBERISH",
+      "NON_RESPONSIVE",
+      "ABUSIVE_OR_INAPPROPRIATE",
+    ];
+
+    // Very short "I don't know" style answers: classify deterministically without LLM call
+    const trimmed = (answer || "").trim().toLowerCase();
+    if (
+      trimmed === "i don't know" ||
+      trimmed === "i dont know" ||
+      trimmed === "idk" ||
+      trimmed === "don't know" ||
+      trimmed === "dont know" ||
+      trimmed === "no idea" ||
+      trimmed === "not sure" ||
+      trimmed === "i am not sure"
+    ) {
+      return { classification: "RELEVANT", reasoning: "Explicit admission of uncertainty is a valid response." };
+    }
+
+    // Heuristic pre-check: if string is long enough to be real prose, skip LLM call
+    const words = trimmed.split(/\s+/).filter(Boolean);
+    if (words.length >= 10) {
+      return { classification: "RELEVANT", reasoning: "Answer is long enough to be a genuine attempt." };
+    }
+
+    try {
+      const prompt = buildAdaptiveClassificationPrompt({ question, answer });
+      const provider = getProvider(providerOverride);
+      const text = await provider.complete([{ role: "user", content: prompt }]);
+      const parsed = safeParseJSON(text, null);
+
+      if (parsed && VALID_CLASSIFICATIONS.includes(parsed.classification)) {
+        return {
+          classification: parsed.classification,
+          reasoning: parsed.reasoning || "",
+        };
+      }
+    } catch (err) {
+      console.warn("[aiService] classifyAdaptiveAnswer failed, defaulting to RELEVANT:", err.message);
+    }
+
+    // Default to RELEVANT on any failure (fail-open to avoid false positives)
+    return { classification: "RELEVANT", reasoning: "Classification unavailable; defaulting to relevant." };
+  },
+
+  /**
    * Generates next project-specific question based on latest evaluation & adaptive score.
+   * Returns structured decision including nextAction and optional project switch.
    */
   async generateAdaptiveQuestion({
     projectContext,
+    allProjects,
     previousQuestions,
+    latestQuestion,
     latestAnswer,
     latestEvaluation,
     adaptiveScore,
     remainingSeconds,
     targetCategory,
     competencyLevel,
+    currentFollowUpDepth,
+    maxFollowUpDepth,
+    questionsOnCurrentProject,
+    forceRetry,
     providerOverride,
   }) {
     const prompt = buildAdaptiveQuestionPrompt({
       projectContext,
+      allProjects,
       previousQuestions,
+      latestQuestion,
       latestAnswer,
       latestEvaluation,
       adaptiveScore,
       remainingSeconds,
       targetCategory,
       competencyLevel,
+      currentFollowUpDepth: currentFollowUpDepth || 0,
+      maxFollowUpDepth: maxFollowUpDepth || 3,
+      questionsOnCurrentProject: questionsOnCurrentProject || 0,
+      forceRetry: forceRetry || false,
     });
 
     const provider = getProvider(providerOverride);
@@ -1091,24 +1162,38 @@ Do not provide a long explanation.
       (p) => p.title === projectContext.selectedProject
     ) || projectContext?.projects?.[0] || { title: "Candidate Project" };
 
+    const VALID_ACTIONS = ["FOLLOW_UP", "PROBE", "DEEPEN", "SWITCH_PROJECT", "NEW_TOPIC", "RETRY_SAME_CONCEPT", "CLOSE"];
+
     if (!parsed || !parsed.questionText) {
       // Deterministic fallback question
       return {
+        nextAction: forceRetry ? "RETRY_SAME_CONCEPT" : "NEW_TOPIC",
         questionCategory: targetCategory,
         difficulty: competencyLevel.toLowerCase(),
         questionText: `In your project ${selectedProj.title}, how did you design the interaction between the frontend client and your backend APIs, and what error recovery mechanisms did you implement?`,
         targetCompetencyLevel: competencyLevel,
         projectReference: selectedProj.title,
+        switchToProject: null,
         rationale: "Follow-up on project implementation and API communication.",
       };
     }
 
+    // Validate nextAction
+    const nextAction = VALID_ACTIONS.includes(parsed.nextAction)
+      ? parsed.nextAction
+      : forceRetry ? "RETRY_SAME_CONCEPT" : "NEW_TOPIC";
+
+    // If forceRetry is active, override any non-retry action the AI returned
+    const finalAction = forceRetry && nextAction !== "RETRY_SAME_CONCEPT" ? "RETRY_SAME_CONCEPT" : nextAction;
+
     return {
+      nextAction: finalAction,
       questionCategory: parsed.questionCategory || targetCategory,
       difficulty: parsed.difficulty || competencyLevel.toLowerCase(),
       questionText: parsed.questionText,
       targetCompetencyLevel: parsed.targetCompetencyLevel || competencyLevel,
       projectReference: parsed.projectReference || selectedProj.title,
+      switchToProject: finalAction === "SWITCH_PROJECT" ? (parsed.switchToProject || null) : null,
       rationale: parsed.rationale || "",
     };
   },

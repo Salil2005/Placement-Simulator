@@ -6,10 +6,16 @@ const { generateReport, REPORTS_DIR } = require("../services/report/reportGenera
 const { finalizeAdaptiveReport } = require("../services/interview/adaptiveEngine");
 const { asyncHandler } = require("../utils/asyncHandler");
 
-// POST /api/interviews/:id/finish -> generates the final report
+// POST /api/interviews/:id/finish -> triggers bounded finalization workflow
 const finishInterview = asyncHandler(async (req, res) => {
   const interview = await Interview.findOne({ _id: req.params.id, user: req.user._id });
   if (!interview) return res.status(404).json({ error: "Interview not found" });
+
+  // Idempotency: if report already finalized, return it immediately
+  const existingReport = await Report.findOne({ interview: interview._id });
+  if (existingReport && ["complete", "degraded"].includes(existingReport.generationStatus)) {
+    return res.json({ report: existingReport });
+  }
 
   let report;
   if (interview.isAdaptive || interview.category === "adaptive-web-system") {
@@ -26,14 +32,15 @@ const getReport = asyncHandler(async (req, res) => {
   const report = await Report.findOne({ interview: req.params.interviewId, user: req.user._id });
   if (!report) return res.status(404).json({ error: "Report not found" });
 
-  // The answer score is stored on each response as a percentage. Expose it as
-  // a simple 0-10 mark so the report can show a question-wise breakdown.
   const responses = await Response.find({ interview: report.interview })
-    .populate("question", "order text")
+    .populate("question", "order text questionCategory")
     .sort({ createdAt: 1 });
+
   const questionMarks = responses.map((response, index) => ({
     question: `Q${response.question?.order ?? index + 1}`,
     marks: Math.round((Math.max(0, Math.min(100, Number(response.score) || 0)) / 10) * 10) / 10,
+    classification: response.answerClassification || "UNKNOWN",
+    category: response.question?.questionCategory || "General",
   }));
 
   res.json({ report: { ...report.toObject(), questionMarks } });

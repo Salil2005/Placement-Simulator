@@ -650,6 +650,48 @@ Return ONLY a valid JSON object with the following schema:
 `.trim();
 }
 
+/**
+ * Fast-path classification prompt — runs BEFORE full evaluation when gibberish detection is needed.
+ * Separate from full evaluation to avoid wasting tokens on invalid answers.
+ */
+function buildAdaptiveClassificationPrompt({ question, answer }) {
+  return `
+You are an answer quality classifier for a technical interview system.
+
+Your sole task is to classify the candidate's answer into one of these categories:
+- RELEVANT: The answer is a genuine attempt to address the question, even if incorrect or incomplete.
+- PARTIALLY_RELEVANT: The answer addresses some but not all of what was asked.
+- INCORRECT_BUT_RELEVANT: The answer is wrong, but clearly engages with the topic.
+- GIBBERISH: The answer is random text, keyboard mashing, nonsensical phrases, or completely unreadable.
+- NON_RESPONSIVE: The answer ignores the question and discusses something entirely different.
+- ABUSIVE_OR_INAPPROPRIATE: The answer contains offensive, abusive, or inappropriate content.
+
+IMPORTANT CLASSIFICATION RULES:
+1. An answer of "I don't know" or similar honest admission = RELEVANT. Not GIBBERISH.
+2. Short answers are NOT automatically GIBBERISH. A one-word answer can be RELEVANT.
+3. Grammatical mistakes, informal language, or poor English = still RELEVANT if on-topic.
+4. A technically wrong answer about the right topic = INCORRECT_BUT_RELEVANT.
+5. Only classify as GIBBERISH if the text has no decipherable meaning related to any technical topic.
+6. Only classify as NON_RESPONSIVE if the answer clearly addresses a completely different topic.
+
+QUESTION:
+"""
+${question}
+"""
+
+CANDIDATE ANSWER:
+"""
+${answer}
+"""
+
+Respond with ONLY a valid JSON object:
+{
+  "classification": "RELEVANT",
+  "reasoning": "One sentence explaining the classification."
+}
+`.trim();
+}
+
 function buildAdaptiveEvaluationPrompt({
   projectContext,
   question,
@@ -691,16 +733,16 @@ EVALUATION SPECIFICATION:
 1. Evaluate against the actual question and candidate's verified project context.
 2. Do not reward answers solely for length, buzzwords, or superficial keyword matching.
 3. Penalize technical inaccuracies, hand-waving, misconceptions, or claims contradicted by project realities.
-4. If the candidate answers "I don't know", reflect this accurately without inventing knowledge.
+4. If the candidate answers "I don't know", reflect this accurately without inventing knowledge — give a low score but do not treat it as gibberish.
 5. Score across these 7 dimensions (each 0 to 100):
-   - technicalCorrectness (0-100)
-   - conceptualUnderstanding (0-100)
-   - projectRelevance (0-100)
-   - depthOfExplanation (0-100)
-   - architecturalReasoning (0-100)
-   - practicalImplementation (0-100)
-   - tradeoffAnalysis (0-100)
-6. Calculate an overall normalized answerScore between 0.00 and 1.00 (e.g., 0.78).
+   - technicalCorrectness: How technically accurate are the claims?
+   - conceptualUnderstanding: Does the candidate understand the underlying concept?
+   - projectRelevance: Does the answer engage with the actual project context?
+   - depthOfExplanation: How much useful detail is provided?
+   - architecturalReasoning: Does the candidate reason about system-level trade-offs?
+   - practicalImplementation: Are implementation details grounded and realistic?
+   - tradeoffAnalysis: Does the candidate acknowledge trade-offs and limitations?
+6. Calculate an overall normalized answerScore between 0.00 and 1.00.
 
 Return ONLY a valid JSON object matching this exact schema:
 {
@@ -733,75 +775,121 @@ Return ONLY a valid JSON object matching this exact schema:
 
 function buildAdaptiveQuestionPrompt({
   projectContext,
+  allProjects,
   previousQuestions,
+  latestQuestion,
   latestAnswer,
   latestEvaluation,
   adaptiveScore,
   remainingSeconds,
   targetCategory,
   competencyLevel,
+  currentFollowUpDepth,
+  maxFollowUpDepth,
+  questionsOnCurrentProject,
+  forceRetry,
 }) {
   const selectedProj = projectContext?.projects?.find(
     (p) => p.title === projectContext.selectedProject
   ) || projectContext?.projects?.[0] || { title: "Candidate Project", description: "Project under discussion" };
 
+  // Build the list of all available projects for context
+  const allProjectsSummary = (allProjects || [])
+    .map((p, i) => `Project ${i + 1}: ${p.title} | Technologies: ${(p.technologies || []).join(", ")}`)
+    .join("\n");
+
   const historySummary = (previousQuestions || [])
+    .slice(-8) // Keep last 8 to avoid token bloat
     .map(
       (pq, i) =>
-        `Q${i + 1} [${pq.questionCategory || "General"}]: "${pq.text}"\nAnswer snippet: "${(pq.answerText || "").slice(0, 150)}..."`
+        `Q${previousQuestions.length - Math.min(8, previousQuestions.length) + i + 1} [${pq.questionCategory || "General"}][${pq.projectReference || selectedProj.title}]: "${pq.text}"\nAnswer: "${(pq.answerText || "").slice(0, 200)}"`
     )
     .join("\n\n");
 
+  const timePhase =
+    remainingSeconds > 0.6 * (Number(projectContext?.totalDurationSeconds) || 900)
+      ? "EARLY"
+      : remainingSeconds > 0.25 * (Number(projectContext?.totalDurationSeconds) || 900)
+      ? "MIDDLE"
+      : "FINAL";
+
   return `
 You are a senior principal engineer conducting an Adaptive Web Development + System Design interview.
+You behave like a real technical interviewer — you ask contextual follow-up questions, probe gaps, challenge assumptions, and switch topics intelligently.
 
-PROJECT CONTEXT:
+ACTIVE PROJECT CONTEXT:
 - Project Name: ${selectedProj.title}
-- Description: ${selectedProj.description}
-- Technologies: ${(selectedProj.technologies || []).join(", ")}
+- Description: ${selectedProj.description || "N/A"}
+- Technologies: ${(selectedProj.technologies || []).join(", ") || "N/A"}
 - Frontend Architecture: ${selectedProj.frontendArchitecture || "N/A"}
 - Backend Architecture: ${selectedProj.backendArchitecture || "N/A"}
 - Databases: ${(selectedProj.databases || []).join(", ") || "N/A"}
 - Key Decisions: ${selectedProj.keyDecisions || "N/A"}
+- Scalability: ${selectedProj.scalabilityAndPerformance || "N/A"}
+- Auth: ${selectedProj.auth || "N/A"}
 
-CANDIDATE ADAPTIVE STATE:
-- Current Adaptive Score: ${adaptiveScore.toFixed(3)} (0.00-1.00)
-- Candidate Competency Level: ${competencyLevel}
-- Target Next Category: ${targetCategory} (Web Development or System Design)
-- Remaining Interview Time: ${Math.round(remainingSeconds)} seconds
+ALL CANDIDATE PROJECTS:
+${allProjectsSummary || "Only one project available."}
 
-LATEST EVALUATION SUMMARY:
-- Last Answer Score: ${latestEvaluation?.answerScore ?? "N/A"}
+CANDIDATE STATE:
+- Adaptive Score: ${adaptiveScore.toFixed(3)} (0.00-1.00)
+- Competency Level: ${competencyLevel}
+- Remaining Time: ${Math.round(remainingSeconds)} seconds
+- Interview Phase: ${timePhase} (EARLY=explore broadly, MIDDLE=probe depth, FINAL=high-value gaps only)
+- Questions Asked About Current Project: ${questionsOnCurrentProject}
+- Follow-up Depth on Current Topic: ${currentFollowUpDepth}/${maxFollowUpDepth}
+
+LAST QUESTION ASKED:
+"${latestQuestion || "(none yet)"}"
+
+CANDIDATE'S LAST ANSWER:
+"${(latestAnswer || "").slice(0, 400)}"
+
+LAST EVALUATION:
+- Score: ${latestEvaluation?.answerScore ?? "N/A"}
 - Strengths: ${(latestEvaluation?.strengths || []).join("; ") || "None"}
 - Missing Concepts: ${(latestEvaluation?.missingConcepts || []).join("; ") || "None"}
-- Technical Inaccuracies: ${(latestEvaluation?.technicalInaccuracies || []).join("; ") || "None"}
+- Inaccuracies: ${(latestEvaluation?.technicalInaccuracies || []).join("; ") || "None"}
 - Recommended Follow-ups: ${(latestEvaluation?.recommendedFollowUps || []).join("; ") || "None"}
 
-PREVIOUS QUESTIONS ASKED:
-${historySummary || "None"}
+FULL INTERVIEW HISTORY (last 8 Q&A pairs):
+${historySummary || "None yet."}
 
-ADAPTIVE QUESTION RULES:
-1. Question MUST be strictly relevant to the verified project (${selectedProj.title}).
-2. Do NOT repeat or rephrase previously asked questions.
-3. Do NOT ask generic DSA, HR, or general trivia questions.
-4. Do NOT assume unverified technologies (e.g. do not assume Redis exists unless in project stack, though you may ask if caching could be introduced as a proposed improvement).
-5. If the candidate had missing concepts or technical inaccuracies in the previous answer, prefer a targeted follow-up or clarification before advancing difficulty.
-6. Match difficulty to competency level (${competencyLevel}):
-   - Foundational (0.00-0.24): Basic project understanding, simple component responsibilities, simple data flow.
-   - Developing (0.25-0.44): Implementation details, API contracts, state management, database interactions.
-   - Intermediate (0.45-0.64): Architecture trade-offs, request lifecycle, error handling, data consistency.
-   - Advanced (0.65-0.79): Scalability bottlenecks, caching strategies, resilience, security boundaries.
-   - Expert (0.80-1.00): Complex trade-offs, failure modes, distributed system constraints, scaling bottlenecks.
+${forceRetry ? `IMPORTANT: The candidate gave an invalid/irrelevant answer. You MUST generate a RETRY_SAME_CONCEPT question that tests the exact same concept as the last question but with completely different wording or a practical scenario approach. Do NOT advance to a new topic.
+` : ""}
+NEXT ACTION DECISION RULES:
+Decide which action to take based on the evaluation and context:
 
-Return ONLY a valid JSON object matching this schema:
+1. FOLLOW_UP — candidate gave a partial or interesting answer; ask a clarifying or probing follow-up on the same topic. Use when: score 0.3-0.7, missing concepts present, or candidate made a claim worth probing.
+2. PROBE — candidate made a specific technical claim; probe it deeper with a counterexample or edge case. Use when: score > 0.6, candidate made a specific implementaton claim.
+3. DEEPEN — candidate answered well; increase difficulty on the same topic. Use when: score > 0.7, follow-up depth < max, time is early/middle.
+4. SWITCH_PROJECT — move to another project. Use when: questionsOnCurrentProject >= 5 OR (score consistently good AND no meaningful follow-ups remain) OR time is running out.
+5. NEW_TOPIC — move to a different aspect of the same project (e.g., from state management to error handling). Use when: current topic covered, stay on same project.
+6. RETRY_SAME_CONCEPT — only when forceRetry=true (gibberish answer detected by backend).
+7. CLOSE — only if remainingSeconds < 60 and all important topics covered.
+
+CONSTRAINTS:
+- Do NOT repeat any previously asked question.
+- Do NOT ask generic questions unrelated to the verified project stack.
+- Do NOT switch projects in the middle of a retry (forceRetry=true).
+- Do NOT use follow-up depth beyond ${maxFollowUpDepth}; switch topic/project instead.
+- If remainingSeconds < 120, prefer SWITCH_PROJECT or NEW_TOPIC over deep follow-ups.
+- Target category preference this turn: ${targetCategory}.
+
+Return ONLY a valid JSON object:
 {
-  "questionCategory": "${targetCategory}",
-  "difficulty": "${competencyLevel.toLowerCase()}",
-  "questionText": "The exact question text to ask the candidate.",
+  "nextAction": "FOLLOW_UP",
+  "questionCategory": "Web Development",
+  "difficulty": "intermediate",
+  "questionText": "The exact question text to present to the candidate.",
   "targetCompetencyLevel": "${competencyLevel}",
   "projectReference": "${selectedProj.title}",
-  "rationale": "Why this question was chosen based on the candidate's previous response and adaptive score."
+  "switchToProject": null,
+  "rationale": "Why this question and action were chosen."
 }
+
+nextAction must be exactly one of: FOLLOW_UP, PROBE, DEEPEN, SWITCH_PROJECT, NEW_TOPIC, RETRY_SAME_CONCEPT, CLOSE
+switchToProject: set to the project title string if nextAction is SWITCH_PROJECT, otherwise null.
 `.trim();
 }
 
@@ -902,6 +990,7 @@ module.exports = {
   buildResumeContextPrompt,
   buildResumeVsInterviewPrompt,
   buildAdaptiveResumeParsePrompt,
+  buildAdaptiveClassificationPrompt,
   buildAdaptiveEvaluationPrompt,
   buildAdaptiveQuestionPrompt,
   buildAdaptiveFinalReportPrompt,
