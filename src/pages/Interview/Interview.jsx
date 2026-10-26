@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useInterview } from "../../hooks/useInterview.js";
 import Conversation from "../../components/interview/Conversation.jsx";
@@ -12,6 +12,10 @@ import Loader from "../../components/common/Loader.jsx";
 export default function Interview() {
   const { id } = useParams();
   const [inGracePeriod, setInGracePeriod] = useState(false);
+  const [approachText, setApproachText] = useState("");
+  const [editorCode, setEditorCode] = useState("");
+  const [editorLang, setEditorLang] = useState("javascript");
+
   const {
     interview,
     currentQuestion,
@@ -29,7 +33,23 @@ export default function Interview() {
     speech,
   } = useInterview(id);
 
+  const isCoding = interview?.category === "dsa";
+
+  // Set default language when interview loads
+  useEffect(() => {
+    if (interview?.programmingLanguage) {
+      setEditorLang(interview.programmingLanguage);
+    }
+  }, [interview?.programmingLanguage]);
+
+  // Reset approach text when a new question arrives
+  useEffect(() => {
+    setApproachText("");
+  }, [currentQuestion?._id]);
+
   if (!interview && pending) return <Loader fullScreen label="Preparing your interview..." />;
+
+  const isAdaptive = interview?.isAdaptive || interview?.category === "adaptive-web-system";
 
   // Render 120-second Skill/Project Review Window if in review stage
   if (interview?.status === "SKILL_REVIEW" || interview?.status === "RESUME_PROCESSING") {
@@ -42,8 +62,18 @@ export default function Interview() {
     );
   }
 
-  const isCoding = interview?.category === "dsa";
-  const isAdaptive = interview?.isAdaptive || interview?.category === "adaptive-web-system";
+  const handleSubmit = (overrides = {}) => {
+    const textToSubmit = overrides.answerText !== undefined ? overrides.answerText : approachText;
+    const codeToSubmit = overrides.code !== undefined ? overrides.code : editorCode;
+    const langToSubmit = overrides.language !== undefined ? overrides.language : editorLang;
+
+    submitAnswer({
+      answerText: textToSubmit,
+      code: isCoding ? codeToSubmit : undefined,
+      language: isCoding ? langToSubmit : undefined,
+    });
+    setApproachText("");
+  };
 
   return (
     <div className="mx-auto flex h-[calc(100vh-64px)] max-w-6xl flex-col px-4 py-4 md:px-8">
@@ -64,6 +94,11 @@ export default function Interview() {
             </>
           )}
           <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{interview?.role}</span>
+          {isCoding && (
+            <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">
+              💡 Code in editor + Explain approach below
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <Timer
@@ -104,7 +139,10 @@ export default function Interview() {
         <div className="card flex flex-1 flex-col overflow-hidden">
           <Conversation messages={messages} pending={pending} />
           <PromptInput
-            onSubmit={(text) => submitAnswer({ answerText: text })}
+            isCoding={isCoding}
+            value={approachText}
+            onChange={setApproachText}
+            onSubmit={(text) => handleSubmit({ answerText: text })}
             disabled={pending}
             speech={speech}
             questionCreatedAt={currentQuestion?.createdAt}
@@ -116,7 +154,11 @@ export default function Interview() {
           <div className="hidden md:block">
             <CodeEditor
               defaultLanguage={interview?.programmingLanguage}
-              onSubmit={({ code, language }) => submitAnswer({ code, language })}
+              code={editorCode}
+              onCodeChange={setEditorCode}
+              language={editorLang}
+              onLanguageChange={setEditorLang}
+              onSubmit={({ code, language }) => handleSubmit({ code, language })}
               disabled={pending}
               questionCreatedAt={currentQuestion?.createdAt}
             />

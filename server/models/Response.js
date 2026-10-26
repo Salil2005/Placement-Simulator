@@ -8,7 +8,6 @@ const responseSchema = new mongoose.Schema(
     code: { type: String, default: "" },
     language: { type: String, default: "" },
     score: { type: Number, default: 0 },
-
     // Adaptive Web Development + System Design Round detailed fields
     answerScore: { type: Number, default: 0 }, // 0.0 - 1.0 normalized
     previousAdaptiveScore: { type: Number, default: 0.5 },
@@ -42,12 +41,14 @@ const responseSchema = new mongoose.Schema(
     // Which project this response belongs to
     projectId: { type: String, default: "" },
 
+    answerStatus: { type: String, enum: ["answered", "unanswered"], default: "answered" },
     evaluation: {
       correctness: { type: Number, default: 0 },
       clarity: { type: Number, default: 0 },
       confidence: { type: Number, default: 0 },
       notes: { type: String, default: "" },
-      // Structured 7-dimension scores (0-100)
+
+      // Structured 7-dimension scores (0-100) for Web Dev / System Design
       dimensions: {
         technicalCorrectness: { type: Number, default: 0 },
         conceptualUnderstanding: { type: Number, default: 0 },
@@ -57,11 +58,36 @@ const responseSchema = new mongoose.Schema(
         practicalImplementation: { type: Number, default: 0 },
         tradeoffAnalysis: { type: Number, default: 0 },
       },
-      strengths: [{ type: String }],
       missingConcepts: [{ type: String }],
       technicalInaccuracies: [{ type: String }],
       rationale: { type: String, default: "" },
       recommendedFollowUps: [{ type: String }],
+
+      // Structured transparent evaluation for HR, DSA & Core CS
+      performanceScore: { type: Number, default: 0 },
+      maxPerformanceScore: { type: Number, default: 10 },
+      quality: {
+        type: String,
+        enum: ["excellent", "good", "average", "weak", "incorrect", "unanswered"],
+        default: "average",
+      },
+      correctnessAssessment: {
+        type: String,
+        enum: ["fully_correct", "mostly_correct", "partially_correct", "mostly_incorrect", "incorrect", "unanswered"],
+        default: "partially_correct",
+      },
+      strengths: [{ type: String }],
+      missingPoints: [{ type: String }],
+      importantConcepts: [{ type: String }],
+      explanation: { type: String, default: "" },
+      improvementSuggestions: [{ type: String }],
+    },
+    adaptiveScoring: {
+      scoreBefore: { type: Number, default: 5 },
+      scoreChange: { type: Number, default: 0 },
+      scoreAfter: { type: Number, default: 5 },
+      changeReason: { type: String, default: "" },
+      nextTargetDifficulty: { type: String, enum: ["easy", "medium", "hard"], default: "medium" },
     },
   },
   { timestamps: true }

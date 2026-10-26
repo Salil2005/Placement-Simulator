@@ -49,73 +49,82 @@ GENERAL EVALUATION RULES:
 function buildEvaluationPrompt({
     interview,
     question,
-    answer
+    answer,
+    topic,
+    difficulty,
+    isCoding
 }) {
-
     const category =
         CATEGORY_LABELS[interview.category] ||
         interview.category ||
         "Technical Interview";
 
+    const isHr = interview.category === "hr";
+    const isDsa = interview.category === "dsa" || isCoding;
+
+    let rubricInstructions = "";
+    let answerPresentation = "";
+    if (isDsa && answer && typeof answer === "object") {
+        answerPresentation = `
+CANDIDATE'S CODE IMPLEMENTATION:
+\`\`\`${answer.language || "code"}
+${answer.code || "[No code provided]"}
+\`\`\`
+
+CANDIDATE'S APPROACH & COMPLEXITY EXPLANATION:
+${answer.approach || answer.answerText || "[No approach explanation provided]"}
+`;
+    } else {
+        answerPresentation = `Candidate's answer:\n${typeof answer === "object" ? JSON.stringify(answer) : answer}`;
+    }
+
+    if (isDsa) {
+        rubricInstructions = `
+RUBRIC FOR CODING / DSA QUESTIONS:
+You must evaluate BOTH aspects:
+1. CODE EVALUATION: Evaluate syntax, implementation completeness, correctness, edge case handling, and efficiency in the submitted code.
+2. APPROACH EVALUATION: Evaluate the candidate's written conceptual explanation, thought process, logic breakdown, choice of algorithm/data structure, and stated time & space complexity.
+Combine both the code implementation and the approach explanation to determine performanceScore, quality, correctnessAssessment, strengths, and missing points. If the code is missing or incomplete, evaluate the approach. If the approach is missing, evaluate the code. When both are provided, evaluate them comprehensively.
+`;
+    }
 
     return [
-
         `You are an expert interviewer evaluating one candidate answer in a ${category} interview.`,
-
-        `Interview difficulty: ${interview.difficulty || "unknown"}.`,
-
+        `Interview Topic: ${topic || "General"}. Question Difficulty: ${difficulty || interview.difficulty || "medium"}.`,
         `Question:
 ${question}`,
-
-        `Candidate's answer:
-${answer}`,
-
+        answerPresentation,
         EVALUATION_RULES,
-
+        rubricInstructions,
         `
-SCORING CRITERIA:
+QUALITY CLASSIFICATION CRITERIA:
+- "excellent": Thoroughly correct, complete, precise, well-explained, addresses edge cases / key principles. (Score: 9-10 / 10)
+- "good": Mostly correct and solid understanding, but with minor omissions or slight imprecision. (Score: 7-8 / 10)
+- "average": Partially correct; understands general concept but has noticeable gaps or minor errors. (Score: 5-6 / 10)
+- "weak": Mostly incorrect, vague, or demonstrates significant misunderstandings. (Score: 3-4 / 10)
+- "incorrect": Fundamentally wrong, irrelevant, or non-answer. (Score: 0-2 / 10)
 
-CORRECTNESS (0-100):
-- 90-100: Fully correct, technically precise, complete, and demonstrates strong understanding.
-- 75-89: Mostly correct with only minor omissions or imprecision.
-- 50-74: Partially correct; understands the main idea but has meaningful gaps.
-- 25-49: Significant misunderstanding or multiple important errors.
-- 0-24: Fundamentally incorrect, irrelevant, or no meaningful answer.
+CORRECTNESS ASSESSMENT:
+Must be one of: "fully_correct" | "mostly_correct" | "partially_correct" | "mostly_incorrect" | "incorrect"
 
-CLARITY (0-100):
-- 90-100: Extremely clear, structured, concise, precise, and easy to follow.
-- 75-89: Clear and understandable with minor organization issues.
-- 50-74: Understandable but somewhat vague, disorganized, repetitive, or incomplete.
-- 25-49: Difficult to follow or poorly structured.
-- 0-24: Essentially unintelligible or does not communicate a usable answer.
+Provide specific, evidence-based feedback explaining what the candidate did well and what was missing or incorrect. Never use generic filler statements.
 
-CONFIDENCE (0-100):
-Evaluate only how confidently the candidate communicates.
-- 90-100: Decisive, direct, well-structured, and demonstrates ownership of the explanation.
-- 75-89: Generally confident with minor hesitation or uncertainty.
-- 50-74: Mixed confidence; some uncertainty or hedging.
-- 25-49: Frequent uncertainty, guessing, or lack of conviction.
-- 0-24: Extremely uncertain or openly unable to explain the answer.
-
-IMPORTANT:
-A technically correct answer can still have a lower confidence or clarity score.
-A confident but technically incorrect answer must receive a low correctness score.
-Do not let one score automatically determine another score.
-
-NOTES:
-Give one concise but highly specific improvement note.
-The note must identify the most important thing the candidate should improve.
-Avoid generic statements such as "practice more" or "be more clear."
-`,
-
-        `Respond with ONLY this valid JSON object:
+Respond with ONLY valid JSON matching this exact structure:
 {
-  "correctness": number,
-  "clarity": number,
-  "confidence": number,
-  "notes": string
+  "performanceScore": number, // 0 to 10
+  "maxPerformanceScore": 10,
+  "quality": "excellent" | "good" | "average" | "weak" | "incorrect",
+  "correctnessAssessment": "fully_correct" | "mostly_correct" | "partially_correct" | "mostly_incorrect" | "incorrect",
+  "correctness": number, // 0 to 100
+  "clarity": number, // 0 to 100
+  "confidence": number, // 0 to 100
+  "strengths": string[], // What the user did well
+  "missingPoints": string[], // What was incorrect, missing, incomplete, or unclear
+  "importantConcepts": string[], // Crucial points/concepts candidate should have covered
+  "explanation": string, // Concise explanation of why the answer received this score
+  "improvementSuggestions": string[], // Specific actionable suggestions for improvement
+  "notes": string // 1-2 sentence overall feedback note
 }`
-
     ].join("\n\n");
 }
 

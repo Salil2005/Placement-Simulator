@@ -678,15 +678,54 @@ function stringList(value) {
 // ============================================================
 
 function normalizeEvaluation(value) {
-  return {
-    correctness: score(value?.correctness, 50),
-    clarity: score(value?.clarity, 50),
-    confidence: score(value?.confidence, 50),
+  const correctness = score(value?.correctness, 50);
+  const clarity = score(value?.clarity, 50);
+  const confidence = score(value?.confidence, 50);
 
-    notes:
-      typeof value?.notes === "string"
-        ? value.notes.trim()
-        : "",
+  // Derive / validate performance score (0-10)
+  let performanceScore = Number(value?.performanceScore);
+  if (!Number.isFinite(performanceScore)) {
+    // Fallback based on 0-100 correctness / clarity
+    performanceScore = Math.round((correctness * 0.7 + clarity * 0.3) / 10);
+  }
+  performanceScore = Math.max(0, Math.min(10, Math.round(performanceScore)));
+
+  // Validate quality classification
+  const validQualities = ["excellent", "good", "average", "weak", "incorrect", "unanswered"];
+  let quality = String(value?.quality || "").toLowerCase().trim();
+  if (!validQualities.includes(quality)) {
+    if (performanceScore >= 9) quality = "excellent";
+    else if (performanceScore >= 7) quality = "good";
+    else if (performanceScore >= 5) quality = "average";
+    else if (performanceScore >= 3) quality = "weak";
+    else quality = "incorrect";
+  }
+
+  // Validate correctness assessment
+  const validAssessments = ["fully_correct", "mostly_correct", "partially_correct", "mostly_incorrect", "incorrect", "unanswered"];
+  let correctnessAssessment = String(value?.correctnessAssessment || "").toLowerCase().trim();
+  if (!validAssessments.includes(correctnessAssessment)) {
+    if (correctness >= 90) correctnessAssessment = "fully_correct";
+    else if (correctness >= 75) correctnessAssessment = "mostly_correct";
+    else if (correctness >= 50) correctnessAssessment = "partially_correct";
+    else if (correctness >= 25) correctnessAssessment = "mostly_incorrect";
+    else correctnessAssessment = "incorrect";
+  }
+
+  return {
+    correctness,
+    clarity,
+    confidence,
+    performanceScore,
+    maxPerformanceScore: 10,
+    quality,
+    correctnessAssessment,
+    strengths: stringList(value?.strengths),
+    missingPoints: stringList(value?.missingPoints),
+    importantConcepts: stringList(value?.importantConcepts),
+    explanation: typeof value?.explanation === "string" ? value.explanation.trim() : "",
+    improvementSuggestions: stringList(value?.improvementSuggestions),
+    notes: typeof value?.notes === "string" ? value.notes.trim() : "",
   };
 }
 
@@ -752,11 +791,17 @@ const aiService = {
     interview,
     question,
     answer,
+    topic,
+    difficulty,
+    isCoding,
   }) {
     const prompt = buildEvaluationPrompt({
       interview,
       question,
       answer,
+      topic,
+      difficulty,
+      isCoding,
     });
 
     const provider = getProvider();
@@ -770,11 +815,19 @@ const aiService = {
 
     return normalizeEvaluation(
       safeParseJSON(text, {
+        performanceScore: 5,
+        maxPerformanceScore: 10,
+        quality: "average",
+        correctnessAssessment: "partially_correct",
         correctness: 50,
         clarity: 50,
         confidence: 50,
-        notes:
-          "Automated evaluation unavailable - default score applied.",
+        strengths: ["Attempted the response with clear intent."],
+        missingPoints: ["Further technical depth and precision required."],
+        importantConcepts: ["Core principles for the topic."],
+        explanation: "Automated evaluation fallback - average score applied.",
+        improvementSuggestions: ["Provide more concrete examples and technical details."],
+        notes: "Automated evaluation unavailable - default score applied.",
       })
     );
   },

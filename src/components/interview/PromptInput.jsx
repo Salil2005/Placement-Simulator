@@ -6,8 +6,21 @@ export default function PromptInput({
   speech,
   questionCreatedAt,
   minWaitSeconds = 120,
+  isCoding = false,
+  value: externalValue,
+  onChange: externalOnChange,
 }) {
-  const [value, setValue] = useState("");
+  const [internalValue, setInternalValue] = useState("");
+  const isControlled = externalValue !== undefined;
+  const value = isControlled ? externalValue : internalValue;
+  const setValue = isControlled ? (val) => {
+    if (typeof val === "function") {
+      externalOnChange?.(val(value));
+    } else {
+      externalOnChange?.(val);
+    }
+  } : setInternalValue;
+
   const [lockRemaining, setLockRemaining] = useState(0);
   const initialValueOnPressRef = useRef("");
 
@@ -31,7 +44,7 @@ export default function PromptInput({
     e?.preventDefault();
     if (!value.trim() || lockRemaining > 0 || disabled) return;
     onSubmit(value);
-    setValue("");
+    if (!isControlled) setValue("");
   };
 
   const handleHoldStart = (e) => {
@@ -86,8 +99,12 @@ export default function PromptInput({
           rows={2}
           placeholder={
             isLocked
-              ? `You can type or prepare your answer now... (Submits unlock in ${lockMins}:${lockSecs})`
-              : "Type your answer, or hold the mic button to speak..."
+              ? isCoding
+                ? `Write your approach, intuition & complexity here... (Submission unlocks in ${lockMins}:${lockSecs})`
+                : `You can type or prepare your answer now... (Submits unlock in ${lockMins}:${lockSecs})`
+              : isCoding
+                ? "Explain your approach, algorithm & time/space complexity here (or hold mic to speak)..."
+                : "Type your answer, or hold the mic button to speak..."
           }
           value={value}
           onChange={(e) => setValue(e.target.value)}

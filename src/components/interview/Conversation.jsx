@@ -37,6 +37,8 @@ export default function Conversation({ messages, pending }) {
           key={m.id || i}
           role={m.role}
           content={m.content}
+          code={m.code}
+          approach={m.approach}
           flagged={m.flagged}
           isWarning={m.isWarning}
           isTermination={m.isTermination}

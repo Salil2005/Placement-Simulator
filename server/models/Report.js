@@ -60,6 +60,46 @@ const reportSchema = new mongoose.Schema(
 
     // Termination reason if interview was cut short
     terminationReason: { type: String, default: null },
+
+    // Adaptive & preparation analytics
+    initialAdaptiveScore: { type: Number, default: 5 },
+    finalAdaptiveScore: { type: Number, default: 5 },
+    totalQuestions: { type: Number, default: 0 },
+    answeredQuestions: { type: Number, default: 0 },
+    unansweredQuestions: { type: Number, default: 0 },
+    totalPerformanceScore: { type: Number, default: 0 },
+    maxPerformanceScore: { type: Number, default: 0 },
+    percentageScore: { type: Number, default: 0 },
+    preparationAssessment: { type: String, default: "" },
+    adaptiveHistory: [
+      {
+        questionOrder: Number,
+        questionText: String,
+        topic: String,
+        difficulty: String,
+        scoreBefore: Number,
+        scoreChange: Number,
+        scoreAfter: Number,
+        changeReason: String,
+      },
+    ],
+    topicPerformance: [
+      {
+        topic: String,
+        count: Number,
+        averageScore: Number,
+        assessment: String,
+      },
+    ],
+    difficultyPerformance: [
+      {
+        difficulty: String,
+        count: Number,
+        averageScore: Number,
+      },
+    ],
+    strongestAreas: [{ type: String }],
+    areasNeedingImprovement: [{ type: String }],
   },
   { timestamps: true }
 );

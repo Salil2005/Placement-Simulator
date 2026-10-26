@@ -170,11 +170,19 @@ export function useInterview(interviewId) {
         return;
       }
 
-      isSubmitting.current = true;
-      setError(null);
       setWarningMessage(null); // Clear previous warning before new submission
 
-      const optimisticMessage = { id: crypto.randomUUID(), role: "user", content: answerText || code };
+      const optimisticContent = answerText && code
+        ? `${answerText}\n\n[Code submitted]`
+        : (answerText || (code ? `[Code submitted]\n${code}` : ""));
+
+      const optimisticMessage = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: optimisticContent,
+        code: code || "",
+        approach: answerText || "",
+      };
       setMessages((prev) => [...prev, optimisticMessage]);
       setPending(true);
 
@@ -206,6 +214,10 @@ export function useInterview(interviewId) {
 
         if (typeof newScore === "number") {
           setAdaptiveScore(newScore);
+        }
+
+        if (response?.adaptive_scoring?.score_after) {
+          setInterview((prev) => prev ? { ...prev, currentAdaptiveScore: response.adaptive_scoring.score_after } : prev);
         }
 
         // ── Case 1: Interview terminated (two consecutive invalid answers) ──

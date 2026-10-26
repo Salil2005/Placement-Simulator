@@ -5,6 +5,8 @@ const Session = require("../../models/Session");
 const aiService = require("../ai/aiService");
 const { assertSufficientQuestions, selectQuestion } = require("./questionBankService");
 
+const { getInitialAdaptiveScore, computeAdaptiveTransition, mapScoreToDifficulty } = require("./adaptiveService");
+
 /** Starts an interview: creates the session doc and selects question #1 from the bank. */
 async function startInterview(interview) {
   if (interview.status !== "not_started") {
@@ -13,10 +15,15 @@ async function startInterview(interview) {
     throw err;
   }
 
+  // Ensure initial adaptive score is set
+  const initialAdaptiveScore = interview.initialAdaptiveScore || getInitialAdaptiveScore(interview.difficulty);
+  interview.initialAdaptiveScore = initialAdaptiveScore;
+  interview.currentAdaptiveScore = initialAdaptiveScore;
+
   // Validate before creating session state so an underfilled bank leaves the
   // interview safely startable after it has been replenished.
   await assertSufficientQuestions(interview);
-  const bankQuestion = await selectQuestion(interview);
+  const bankQuestion = await selectQuestion(interview, initialAdaptiveScore);
   const session = await Session.create({ interview: interview._id, transcript: [] });
 
   const question = await Question.create({
@@ -26,6 +33,9 @@ async function startInterview(interview) {
     topic: bankQuestion.topic,
     order: 0,
     isCoding: interview.category === "dsa",
+    actualDifficulty: bankQuestion.actualDifficulty || mapScoreToDifficulty(initialAdaptiveScore),
+    selectionReason: bankQuestion.selectionReason || "Initial question selected at baseline difficulty.",
+    adaptiveScoreAtSelection: initialAdaptiveScore,
   });
 
   session.transcript.push({ role: "ai", content: question.text, questionIndex: 0 });
@@ -39,8 +49,49 @@ async function startInterview(interview) {
 }
 
 /**
+ * Formats a Response and Question doc into the standardized transparent API contract.
+ */
+function formatTransparentResponse(responseDoc, questionDoc, nextTargetDifficulty) {
+  const evalData = responseDoc.evaluation || {};
+  const adaptData = responseDoc.adaptiveScoring || {};
+
+  return {
+    _id: responseDoc._id,
+    question_id: String(questionDoc?._id || responseDoc.question?._id || responseDoc.question),
+    question: questionDoc?.text || "",
+    topic: questionDoc?.topic || "",
+    difficulty: questionDoc?.actualDifficulty || "medium",
+    answer_status: responseDoc.answerStatus || "answered",
+    user_answer: responseDoc.answerText || responseDoc.code || "",
+    evaluation: {
+      performance_score: evalData.performanceScore ?? Math.round((responseDoc.score || 0) / 10),
+      max_performance_score: evalData.maxPerformanceScore || 10,
+      quality: evalData.quality || "average",
+      correctness: evalData.correctnessAssessment || "partially_correct",
+      raw_correctness: evalData.correctness ?? 50,
+      raw_clarity: evalData.clarity ?? 50,
+      raw_confidence: evalData.confidence ?? 50,
+      strengths: evalData.strengths || [],
+      missing_points: evalData.missingPoints || [],
+      important_concepts: evalData.importantConcepts || [],
+      explanation: evalData.explanation || evalData.notes || "",
+      improvement_suggestions: evalData.improvementSuggestions || [],
+      notes: evalData.notes || "",
+    },
+    adaptive_scoring: {
+      score_before: adaptData.scoreBefore ?? 5,
+      score_change: adaptData.scoreChange ?? 0,
+      score_after: adaptData.scoreAfter ?? 5,
+      change_reason: adaptData.changeReason || "",
+      next_target_difficulty: nextTargetDifficulty || adaptData.nextTargetDifficulty || "medium",
+    },
+    score: responseDoc.score,
+  };
+}
+
+/**
  * Records the candidate's answer, evaluates it, stores the response,
- * and selects the next bank question (or marks the interview ready to finish).
+ * updates the adaptive score, and selects the next bank question (or marks the interview ready to finish).
  */
 async function submitAnswer(interview, { questionId, answerText, code, language }) {
   if (interview.status !== "in_progress" && interview.status !== "grace_period") {
@@ -95,13 +146,6 @@ async function submitAnswer(interview, { questionId, answerText, code, language 
     throw err;
   }
 
-  // Once regular duration is reached (or interview is in grace_period), this answered question is the final one
-  const isTimeUp = elapsedMinutes >= durationLimit || interview.status === "grace_period";
-  const isFinalQuestion = isTimeUp || nextIndex >= (interview.questionCount || 20);
-
-  // Resolve the next database record ONLY if not the final question
-  const nextBankQuestion = isFinalQuestion ? null : await selectQuestion(interview);
-
   const session = await Session.findOne({ interview: interview._id });
   if (!session) throw new Error("Interview session was not found");
   session.transcript.push({
@@ -110,28 +154,71 @@ async function submitAnswer(interview, { questionId, answerText, code, language 
     questionIndex: question.order,
   });
 
+  // Evaluate candidate answer using LLM evaluator with transparent dimensions
+  // For DSA/coding questions, pass structured answer with code, language, and approach
+  const answerPayload = (interview.category === "dsa" || question.isCoding)
+    ? {
+        code: code || "",
+        language: language || interview.programmingLanguage || "javascript",
+        approach: answerText || "",
+        answerText: answerText || "",
+      }
+    : (answerText || code || "");
+
   const evaluation = await aiService.evaluateAnswer({
     interview,
     question: question.text,
-    answer: answerText || code || "",
+    answer: answerPayload,
+    topic: question.topic,
+    difficulty: question.actualDifficulty,
+    isCoding: question.isCoding,
   });
 
+  // Compute adaptive transition from current interview adaptive score
+  const currentAdaptive = interview.currentAdaptiveScore ?? getInitialAdaptiveScore(interview.difficulty);
+  const adaptiveResult = computeAdaptiveTransition({
+    currentScore: currentAdaptive,
+    quality: evaluation.quality,
+    isUnanswered: false,
+  });
+
+  // Performance score normalized: 0-100%
   const avgScore = Math.round(
     (evaluation.correctness + evaluation.clarity + evaluation.confidence) / 3
   );
 
-  const response = await Response.create({
+  const responseDoc = await Response.create({
     interview: interview._id,
     question: question._id,
-    answerText,
-    code,
-    language,
+    answerText: answerText || "",
+    code: code || "",
+    language: language || "",
     score: avgScore,
+    answerStatus: "answered",
     evaluation,
+    adaptiveScoring: {
+      scoreBefore: adaptiveResult.scoreBefore,
+      scoreChange: adaptiveResult.scoreChange,
+      scoreAfter: adaptiveResult.scoreAfter,
+      changeReason: adaptiveResult.changeReason,
+      nextTargetDifficulty: adaptiveResult.nextTargetDifficulty,
+    },
   });
 
+  // Save the updated adaptive score immediately before selecting the next question
+  interview.currentAdaptiveScore = adaptiveResult.scoreAfter;
+  interview.currentQuestionIndex = nextIndex;
+  await interview.save();
+
+  // Once regular duration is reached (or interview is in grace_period), this answered question is the final one
+  const isTimeUp = elapsedMinutes >= durationLimit || interview.status === "grace_period";
+  const isFinalQuestion = isTimeUp || nextIndex >= (interview.questionCount || 20);
+
+  // Resolve the next database record ONLY if not the final question, using the updated adaptive score
+  const nextBankQuestion = isFinalQuestion ? null : await selectQuestion(interview, interview.currentAdaptiveScore);
+
   let nextQuestion = null;
-  if (!isFinalQuestion) {
+  if (!isFinalQuestion && nextBankQuestion) {
     nextQuestion = await Question.create({
       interview: interview._id,
       bankQuestion: nextBankQuestion._id,
@@ -140,16 +227,27 @@ async function submitAnswer(interview, { questionId, answerText, code, language 
       order: nextIndex,
       isCoding: interview.category === "dsa",
       isFollowUp: avgScore < 50,
+      actualDifficulty: nextBankQuestion.actualDifficulty || adaptiveResult.nextTargetDifficulty,
+      selectionReason: nextBankQuestion.selectionReason || `Target difficulty (${adaptiveResult.nextTargetDifficulty}) from adaptive score ${adaptiveResult.scoreAfter}.`,
+      adaptiveScoreAtSelection: interview.currentAdaptiveScore,
     });
 
     session.transcript.push({ role: "ai", content: nextQuestion.text, questionIndex: nextIndex });
   }
 
-  interview.currentQuestionIndex = nextIndex;
-  await interview.save();
   await session.save();
 
-  return { response, nextQuestion, isFinalQuestion };
+  const formattedResponse = formatTransparentResponse(
+    responseDoc,
+    question,
+    adaptiveResult.nextTargetDifficulty
+  );
+
+  return {
+    response: formattedResponse,
+    nextQuestion,
+    isFinalQuestion,
+  };
 }
 
 /**
@@ -189,4 +287,4 @@ async function getSessionState(interviewId) {
   return { interview, session, responses, currentQuestion };
 }
 
-module.exports = { startInterview, submitAnswer, getSessionState };
+module.exports = { startInterview, submitAnswer, getSessionState, formatTransparentResponse };

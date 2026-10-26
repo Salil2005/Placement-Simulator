@@ -4,8 +4,11 @@ const { asyncHandler } = require("../utils/asyncHandler");
 
 // GET /api/history
 const getHistory = asyncHandler(async (req, res) => {
-  const interviews = await Interview.find({ user: req.user._id, status: "completed" })
-    .sort({ completedAt: -1 })
+  const interviews = await Interview.find({
+    user: req.user._id,
+    status: { $in: ["completed", "TERMINATED_INVALID_ANSWERS"] },
+  })
+    .sort({ updatedAt: -1, completedAt: -1 })
     .lean();
 
   const reports = await Report.find({ user: req.user._id }).lean();

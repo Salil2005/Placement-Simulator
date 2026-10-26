@@ -5,8 +5,19 @@
  * - isTermination: red banner shown when interview is terminated
  * - isProjectTransition: blue banner shown when switching projects
  * - isSystem: neutral gray system message
+ * - code & approach: rendered for coding / DSA questions
  */
-export default function ChatBubble({ role, content, flagged, isWarning, isTermination, isProjectTransition, isSystem }) {
+export default function ChatBubble({
+  role,
+  content,
+  code,
+  approach,
+  flagged,
+  isWarning,
+  isTermination,
+  isProjectTransition,
+  isSystem,
+}) {
   const isAi = role === "ai";
 
   // Warning message (first invalid answer)
@@ -72,13 +83,32 @@ export default function ChatBubble({ role, content, flagged, isWarning, isTermin
   return (
     <div className={`flex ${isAi ? "justify-start" : "justify-end"}`}>
       <div
-        className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+        className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
           isAi
             ? "bg-white text-slate-800 dark:bg-slate-800 dark:text-slate-100"
             : "bg-brand-600 text-white"
         }`}
       >
-        <p className="whitespace-pre-wrap">{content}</p>
+        {code && (
+          <div className="mb-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider opacity-80 block mb-1">
+              Submitted Code
+            </span>
+            <pre className="overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-2.5 text-xs font-mono">
+              <code>{code}</code>
+            </pre>
+          </div>
+        )}
+        {(approach || content) && (
+          <div>
+            {code && (
+              <span className="text-[11px] font-semibold uppercase tracking-wider opacity-80 block mb-1">
+                Approach & Complexity
+              </span>
+            )}
+            <p className="whitespace-pre-wrap">{approach || content}</p>
+          </div>
+        )}
         {flagged && (flagged.correctness < 50 || flagged.clarity < 50) && (
           <p className="mt-2 rounded-lg bg-amber-100 px-2 py-1 text-[11px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
             ⚠ {flagged.notes}

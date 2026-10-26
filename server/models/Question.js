@@ -11,7 +11,6 @@ const questionSchema = new mongoose.Schema(
     order: { type: Number, required: true },
     isCoding: { type: Boolean, default: false },
     isFollowUp: { type: Boolean, default: false },
-
     // Adaptive Web Development + System Design Round metadata
     questionCategory: {
       type: String,
@@ -39,6 +38,11 @@ const questionSchema = new mongoose.Schema(
       enum: ["FOLLOW_UP", "PROBE", "DEEPEN", "SWITCH_PROJECT", "CLOSE", "RETRY_SAME_CONCEPT", "NEW_TOPIC"],
       default: "NEW_TOPIC",
     },
+
+    // Adaptive tracking for HR, DSA, and Core CS rounds
+    actualDifficulty: { type: String, enum: ["easy", "medium", "hard"], default: "medium" },
+    selectionReason: { type: String, default: "" },
+    adaptiveScoreAtSelection: { type: Number, default: 5 },
   },
   { timestamps: true }
 );

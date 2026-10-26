@@ -35,13 +35,13 @@ const interviewSchema = new mongoose.Schema(
       default: "not_started",
     },
     currentQuestionIndex: { type: Number, default: 0 },
+    initialAdaptiveScore: { type: Number, default: 5 },
+    currentAdaptiveScore: { type: Number, default: 5 },
     startedAt: { type: Date },
     completedAt: { type: Date },
 
     // Adaptive Web Development + System Design Round fields
     isAdaptive: { type: Boolean, default: false },
-    initialAdaptiveScore: { type: Number, default: 0.5 },
-    currentAdaptiveScore: { type: Number, default: 0.5 },
     scoringAlpha: { type: Number, default: 0.35 },
 
     // Multi-project tracking

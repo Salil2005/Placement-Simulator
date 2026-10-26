@@ -24,11 +24,25 @@ export default function CodeEditor({
   disabled,
   questionCreatedAt,
   minWaitSeconds = 120,
+  code: externalCode,
+  onCodeChange: externalOnCodeChange,
+  language: externalLanguage,
+  onLanguageChange: externalOnLanguageChange,
 }) {
   const { theme } = useTheme();
-  const [language, setLanguage] = useState(defaultLanguage);
-  const [code, setCode] = useState(STARTER[defaultLanguage]);
+  const [internalLanguage, setInternalLanguage] = useState(defaultLanguage);
+  const [internalCode, setInternalCode] = useState(STARTER[defaultLanguage]);
   const [lockRemaining, setLockRemaining] = useState(0);
+
+  const language = externalLanguage !== undefined ? externalLanguage : internalLanguage;
+  const code = externalCode !== undefined ? externalCode : internalCode;
+
+  // Reset starter code whenever a new question starts
+  useEffect(() => {
+    const starter = STARTER[language] || "";
+    if (externalOnCodeChange) externalOnCodeChange(starter);
+    else setInternalCode(starter);
+  }, [questionCreatedAt]);
 
   useEffect(() => {
     const start = questionCreatedAt ? new Date(questionCreatedAt).getTime() : Date.now();
@@ -46,8 +60,12 @@ export default function CodeEditor({
 
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
-    setLanguage(lang);
-    setCode(STARTER[lang] || "");
+    const starter = STARTER[lang] || "";
+    if (externalOnLanguageChange) externalOnLanguageChange(lang);
+    else setInternalLanguage(lang);
+
+    if (externalOnCodeChange) externalOnCodeChange(starter);
+    else setInternalCode(starter);
   };
 
   const isLocked = lockRemaining > 0;
@@ -86,7 +104,10 @@ export default function CodeEditor({
           height="100%"
           language={language}
           value={code}
-          onChange={(v) => setCode(v ?? "")}
+          onChange={(v) => {
+            if (externalOnCodeChange) externalOnCodeChange(v ?? "");
+            else setInternalCode(v ?? "");
+          }}
           theme={theme === "dark" ? "vs-dark" : "light"}
           options={{
             fontSize: 14,

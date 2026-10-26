@@ -15,6 +15,8 @@ const createInterview = asyncHandler(async (req, res) => {
   }
 
   const isAdaptive = category === "adaptive-web-system";
+  const { getInitialAdaptiveScore } = require("../services/interview/adaptiveService");
+  const initialAdaptiveScore = getInitialAdaptiveScore(difficulty);
 
   const interview = await Interview.create({
     user: req.user._id,
@@ -22,6 +24,8 @@ const createInterview = asyncHandler(async (req, res) => {
     role,
     experience,
     difficulty,
+    initialAdaptiveScore,
+    currentAdaptiveScore: initialAdaptiveScore,
     durationMinutes: duration,
     questionCount: count,
     programmingLanguage: programmingLanguage || "javascript",
@@ -136,10 +140,18 @@ const respond = asyncHandler(async (req, res) => {
   } catch (err) {
     // If a duplicate key error occurs on the responses collection, handle it idempotently
     if (err.code === 11000) {
-      // Fetch the next logical question or session state to recover gracefully
+      const Response = require("../models/Response");
+      const Question = require("../models/Question");
+      const existingResponse = await Response.findOne({ interview: interview._id, question: questionId });
+      const questionDoc = await Question.findById(questionId);
       const sessionState = await interviewEngine.getSessionState(interview._id);
+      
+      const formatted = existingResponse
+        ? interviewEngine.formatTransparentResponse(existingResponse, questionDoc, sessionState.interview?.difficulty)
+        : { evaluation: "Response already recorded." };
+
       return res.status(200).json({
-        response: { evaluation: "Response already recorded." },
+        response: formatted,
         nextQuestion: sessionState.currentQuestion,
         isFinalQuestion: !sessionState.currentQuestion,
       });

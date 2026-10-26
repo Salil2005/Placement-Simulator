@@ -8,7 +8,13 @@ import Loader from "../../components/common/Loader.jsx";
 import EmptyState from "../../components/common/EmptyState.jsx";
 import { formatDate } from "../../utils/formatDate.js";
 
-const STATUS_COLOR = { not_started: "neutral", in_progress: "warning", completed: "success" };
+const STATUS_COLOR = {
+  not_started: "neutral",
+  in_progress: "warning",
+  grace_period: "warning",
+  completed: "success",
+  TERMINATED_INVALID_ANSWERS: "danger",
+};
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -98,10 +104,10 @@ export default function Dashboard() {
               <h3 className="mb-1 font-semibold">{iv.role}</h3>
               <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">{formatDate(iv.createdAt)} · {iv.difficulty}</p>
               <Link
-                to={iv.status === "completed" ? `/report/${iv._id}` : `/interview/${iv._id}`}
+                to={iv.status === "completed" || iv.status === "TERMINATED_INVALID_ANSWERS" ? `/report/${iv._id}` : `/interview/${iv._id}`}
                 className="btn-secondary w-full"
               >
-                {iv.status === "completed" ? "View Report" : "Continue"}
+                {iv.status === "completed" || iv.status === "TERMINATED_INVALID_ANSWERS" ? "View Report" : "Continue"}
               </Link>
             </Card>
           ))}

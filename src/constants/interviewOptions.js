@@ -3,8 +3,6 @@ export const CATEGORIES = [
   { value: "hr", label: "HR / Behavioral" },
   { value: "dsa", label: "Data Structures & Algorithms" },
   { value: "core-cs", label: "Core Computer Science" },
-  { value: "web-dev", label: "Web Development" },
-  { value: "system-design", label: "System Design" },
 ];
 
 export const DIFFICULTIES = [
